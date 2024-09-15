@@ -6,8 +6,8 @@
 #define DHTTYPE DHT11 
 DHT dht11(DHTPIN, DHTTYPE); 
 
-String URL = "http://192.168.237.195/new-controller-smart-farm/config/db.php"; 
-// ganti 192.168.237.195 sesuai ipv4 di cmd mu dengan command ipconfig
+// url hosting file
+String URL = "http://localhost:5000/config/db.php"; 
 
 const char* ssid = "zeru"; 
 const char* password = "zeruIOT09"; 
