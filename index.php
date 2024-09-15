@@ -3,6 +3,17 @@ $host = "localhost";
 $username = "root";
 $password = "";
 $database = "smart_farm";
+$url = 'http://localhost:5000/config/api.php';
+
+$response = @file_get_contents($url);
+
+// Mengecek apakah ada respons
+if ($response === FALSE) {
+    die('Error occurred while fetching data.');
+    $host = "localhost";
+} else {
+    $host = trim($response, "\"");
+}
 
 // Buat koneksi ke database
 $connection = mysqli_connect($host, $username, $password, $database);
