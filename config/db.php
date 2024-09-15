@@ -4,7 +4,7 @@ $host = "localhost";
 $username = "root";
 $password = "";
 $database = "smart_farm";
-$url = 'http://localhost:5000/config/api.php';
+$url = 'http://localhost:5050/api.php';
 
 $response = @file_get_contents($url);
 
