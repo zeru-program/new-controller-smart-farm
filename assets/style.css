@@ -36,3 +36,20 @@ body {
   width: 100%;
   height: 100vh;
 }
+
+.footer {
+  background-color: #386c5f;
+  color: #d9eddf;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+}
+.foottitle{
+  color: white;
+  text-align: center;
+}
+.footer a {
+  color: #4ef7a1;
+  align-content: center;
+}
