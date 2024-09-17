@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+  font-family: "Montserrat", Sans-Serif;
+}
+
+.bg-primary {
+  background: #4ef7a1;
+}
+.bg-secondary {
+  background: #629d79;
+}
+.bg-primary2 {
+  background: #386c5f;
+}
+.bg-secondary2 {
+  background: #d9eddf;
+}
+.color-primary {
+  background: #4ef7a1;
+}
+.color-secondary {
+  background: #629d79;
+}
+.color-primary2 {
+  background: #386c5f;
+}
+.color-secondary2 {
+  background: #d9eddf;
+}
+
+.navbar-toggler {
+}
+
+.hero-home {
+  width: 100%;
+  height: 100vh;
+}
