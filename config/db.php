@@ -40,5 +40,31 @@ if(isset($_POST["temperature"]) && isset($_POST["humidity"]) && isset($_POST["mo
 	}
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $sql = "SELECT device_name, pin, type FROM devices";
+    $result = $connection->query($sql);
+
+    // Array untuk menyimpan data
+    $devices = array();
+
+    // Jika ada data yang ditemukan
+    if ($result->num_rows > 0) {
+        // Loop melalui data dan masukkan ke array
+        while ($row = $result->fetch_assoc()) {
+            $devices[] = array(
+                "device_name" => $row['device_name'],
+                "pin" => $row['pin'],
+                "type" => $row['type']
+            );
+        }
+    }
+
+    // Kirim data dalam format JSON
+    echo json_encode($devices);
+} else {
+    // Jika bukan method GET, kirimkan error
+    echo json_encode(array("message" => "Invalid request method. Use GET."));
+}
+
 
 ?>
