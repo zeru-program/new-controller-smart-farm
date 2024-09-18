@@ -41,9 +41,10 @@ body {
   background-color: #386c5f;
   color: #d9eddf;
   display: flex;
+  text-align: center;
   flex-wrap: wrap;
   align-items: center;
-  align-content: center;
+  justify-content: center;
 }
 .foottitle{
   color: white;
