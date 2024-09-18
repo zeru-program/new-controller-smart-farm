@@ -1,13 +1,19 @@
+/* import font style monserat */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* configuration */
 body {
   font-family: "Montserrat", Sans-Serif;
+  width: 100%;
+  overflow: hidden;
 }
-
-.bg-primary {
+html {
+  overflow: hidden;
+}
+.bg-primarys {
   background: #4ef7a1;
 }
-.bg-secondary {
+.bg-secondarys {
   background: #629d79;
 }
 .bg-primary2 {
@@ -17,21 +23,44 @@ body {
   background: #d9eddf;
 }
 .color-primary {
-  background: #4ef7a1;
+  color: #4ef7a1;
 }
 .color-secondary {
-  background: #629d79;
+  color: #629d79;
 }
 .color-primary2 {
-  background: #386c5f;
+  color: #386c5f;
 }
 .color-secondary2 {
-  background: #d9eddf;
+  color: #d9eddf;
 }
+/* configuration */
 
+/* navbar */
 .navbar-toggler {
+  border: 0 !important;
+  border-radius: 3px !important;
+  background: rgba(78,247,161,.4) !important;
 }
+.navbar-toggler:focus,
+.navbar-toggler:hover,
+.navbar-toggler:active {
+  box-shadow: 0 0 0 !important;
+}
+.navbar {
+}
+.nav-link {
+  color: #386c5f;
+}
+.bi-list {
+  color: #386c5f !important;
+  font-size: 1.8em;
+  font-weight: 600;
+}
+/* navbar */
 
+
+/*** home style ***/
 .hero-home {
   width: 100%;
   height: 100vh;
@@ -45,7 +74,110 @@ body {
   padding-block: 8px;
   border-radius: 20px;
 }
+/*** home style ***/
 
+/* circular progres */
+.progress-wrapper {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    justify-content: center;
+}
+.progress-container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+}
+svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+circle {
+    fill: none;
+    stroke-width: 10;
+}
+.circle-bg {
+    stroke: #e0e0e0;
+}
+.circle-progress {
+    stroke: #4caf50;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.35s;
+}
+.progress-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+}
+#page_button {
+    border: 3px solid rgba(119, 237, 150, .2);
+    background-color: rgba(119, 237, 150);
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    justify-content: right;
+}
+table {
+    flex: center;
+    border: collapse;
+    width: 80%;
+    border-radius: 5px;
+}
+td, th {
+    border: 2px solid rgba(119, 237, 150);
+    text-align: center;
+    padding: 2px;
+}
+tr:nth-child(odd) {
+    background-color: rgba(119, 237, 150);
+}
+
+#GiveData {
+    border: 5px solid rgba(119, 237, 150, .2);
+    color: white;
+    background-color: rgba(119, 237, 150);
+    justify-self: center;
+}
+.pagination {
+    border-radius: 50%;
+    display: flex;
+
+}
+.pagination a {
+    border: 1px #77ed96 solid;
+    color: #77ed96;
+    padding: 6px 18px;
+    text-decoration: none;
+}
+.pagination a.active {
+    background-color: #77ed96;
+    color: white;
+}
+.pagination a:hover:not(.active) {
+    background-color: rgba(119, 237, 150, .2);
+}
+.rectangle-bar-container {
+  width: 100px;
+  height: 60px;
+  background: rgb(133,133,133,.5);
+  border-radius: 5px;
+  transform: rotate(-90deg);
+  position: relative;
+  overflow: hidden;
+}
+.rectangle-value {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 60px;
+  background: #77ed96;
+}
 
 /* footer design*/
 /* media phone design*/
@@ -68,7 +200,7 @@ body {
   align-items: center;
   justify-content: center;
 }
-.foottitle{
+.foottitle {
   color: white;
   text-align: center;
   font-weight: bold;
