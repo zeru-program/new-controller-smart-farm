@@ -191,7 +191,7 @@ tr:nth-child(odd) {
   .footer {
     flex-direction: row !important;
   }
-}
+} 
 .footer {
   background-color: #386c5f;
   color: #d9eddf;
