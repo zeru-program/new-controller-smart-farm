@@ -1,16 +1,5 @@
 <?php
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "smart_farm";
-
-// Buat koneksi ke database
-$connection = mysqli_connect($host, $username, $password, $database);
-
-if (!$connection) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
+include("db.php");
 // Query untuk mengambil data terbaru
 $query = "SELECT * FROM smart_farm_data ORDER BY id DESC LIMIT 1";
 
@@ -21,10 +10,19 @@ if ($result && mysqli_num_rows($result) > 0) {
     
     // Buat array untuk dikirimkan sebagai JSON
     $data = array(
-        "temperature" => $row['temperature'],
-        "humidity" => $row['humidity'],
-        "moisture" => $row['moisture'],
-        "timestamp" => $row['datetime']
+    "temperature" => $row['temperature'],
+    "humidity" => $row['humidity'],
+    "moisture1" => $row['moisture1'],
+    "moisture2" => $row['moisture2'],
+    "moisture3" => $row['moisture3'],
+    "moisture4" => $row['moisture4'],
+    "moisture5" => $row['moisture5'],
+    "moisture6" => $row['moisture6'],
+    "moisture7" => $row['moisture7'],
+    "moisture8" => $row['moisture8'],
+    "moisture9" => $row['moisture9'],
+    "moisture10" => $row['moisture10'],
+    "timestamp" => $row['datetime']
     );
 
     // Konversi array ke format JSON

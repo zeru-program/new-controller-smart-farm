@@ -27,7 +27,7 @@
         if (index == 0) {
         progressValues[index].innerHTML = `Temp<br/>${percentage}°C`;
         } else if (index == 1) {
-        progressValues[index].innerHTML = `Humidity<br/>${percentage}%`;
+        progressValues[index].innerHTML = `Humidity<br/>${percentage}°C`;
         } else if (index == 2) {
         progressValues[index].innerHTML = `Moisture<br/>${percentage}%`;
         }

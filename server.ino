@@ -2,8 +2,9 @@
 #include <HTTPClient.h>
 #include <DHT.h>
 
+#define DHTPIN 19
 #define DHTTYPE DHT11 
-#define SOILPIN 34 //D34
+#define MAX_SOIL_SENSORS 10 // Maksimum 10 soil sensors
 
 // URL hosting file
 String URL = "http://192.168.109.60/smart-farm/config/"; 
@@ -13,35 +14,31 @@ String URLGetSensor = "http://192.168.109.60/smart-farm/config/getDevice.php?";
 const char* ssid = "zeru"; 
 const char* password = "zeruIOT09"; 
 
-// Arrays to store pin numbers for DHT sensors and soil sensors
-int dhtPins[10] = {0}; // Array for DHT sensor pins
-int soilPins[10] = {0}; // Array for soil sensor pins
+int soilPins[MAX_SOIL_SENSORS] = {0}; // Array untuk pin soil sensor
+float temperature = 0.0; 
+float humidity = 0.0;
+int moisture[MAX_SOIL_SENSORS] = {0};
 
-// Variables for sensor data
-float temperature[10] = {0.0}; // Array for storing temperatures from DHT sensors
-float humidity[10] = {0.0};    // Array for storing humidity from DHT sensors
-int moisture = 0;
+// DHT object untuk satu sensor
+DHT dht11(DHTPIN, DHTTYPE);
 
-// Array to hold DHT objects
-DHT* dhtSensors[10];
-
-void getDhtPins() {
+// Fungsi untuk mendapatkan pin soil sensor dari server
+void getSoilPins() {
   HTTPClient http;
-  for (int i = 1; i <= 10; i++) {
-    String url = URLGetSensor + "dht=" + i;
+  for (int i = 1; i <= MAX_SOIL_SENSORS; i++) {
+    String url = URLGetSensor + "soil=" + i;
     http.begin(url);
     int httpCode = http.GET();
     if (httpCode > 0) {
       String payload = http.getString();
-      Serial.print("Payload for dht"); Serial.print(i); Serial.print(": "); Serial.println(payload);
+      Serial.print("Payload for soil "); Serial.print(i); Serial.print(": "); Serial.println(payload);
 
-      int pin = payload.toInt(); // Convert payload to integer
+      int pin = payload.toInt(); // Konversi payload ke integer
       if (pin > 0) {
-        dhtPins[i - 1] = pin; // Store pin value
-        dhtSensors[i - 1] = new DHT(pin, DHTTYPE); // Create new DHT object
-        dhtSensors[i - 1]->begin(); // Initialize the sensor
+        soilPins[i - 1] = pin; // Simpan nilai pin
+        pinMode(pin, INPUT); // Set pin sebagai input
       } else {
-        Serial.print("Invalid pin for dht"); Serial.print(i); Serial.println(".");
+        Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
       }
     } else {
       Serial.print("Error code: ");
@@ -55,13 +52,11 @@ void setup() {
   Serial.begin(115200);
   connectWiFi();
   
-  // Get DHT sensor pins and initialize them
-  getDhtPins();
+  // DHT sensor initialization
+  dht11.begin();
   
-  // Initialize soil sensors
-  for (int i = 0; i < 10; i++) {
-    pinMode(soilPins[i], INPUT); // Initialize soil sensor pins
-  }
+  // Get soil sensor pins and initialize them
+  getSoilPins();
 }
 
 void loop() {
@@ -69,16 +64,17 @@ void loop() {
     connectWiFi();
   }
 
-  // Read data from all DHT sensors
-  for (int i = 0; i < 10; i++) {
-    if (dhtSensors[i] != nullptr) {
-      Load_DHT_Data(i);
-    }
-  }
+  // Read data from DHT sensor
+  Load_DHT_Data();
 
   // Read soil moisture
-  int sensor_analog = analogRead(SOILPIN);
-  moisture = 100 - ((sensor_analog / 4095.0) * 100);
+  for (int i = 0; i < MAX_SOIL_SENSORS; i++) {
+    if (soilPins[i] > 0) {
+      int sensor_analog = analogRead(soilPins[i]);
+      moisture[i] = 100 - ((sensor_analog / 4095.0) * 100); // Konversi nilai soil moisture
+      Serial.printf("Soil Moisture Sensor %d - Moisture: %d%%\n", i + 1, moisture[i]);
+    }
+  }
 
   // Format data for POST request
   String postData = formatPostData();
@@ -98,38 +94,30 @@ void loop() {
   delay(5000);
 }
 
-void Load_DHT_Data(int index) {
-  // Read data from a DHT sensor based on index
-  if (dhtSensors[index] != nullptr) {
-    float temp = dhtSensors[index]->readTemperature();
-    float hum = dhtSensors[index]->readHumidity();
+void Load_DHT_Data() {
+  // Baca data dari sensor DHT11
+  temperature = dht11.readTemperature();
+  humidity = dht11.readHumidity();
   
-    if (isnan(temp) || isnan(hum)) {
-      Serial.printf("Failed to read from DHT sensor at pin %d!\n", dhtPins[index]);
-      temperature[index] = 0.0;
-      humidity[index] = 0.0;
-    } else {
-      temperature[index] = temp;
-      humidity[index] = hum;
-      Serial.printf("DHT at pin %d - Temperature: %.2f °C, Humidity: %.2f %%\n", dhtPins[index], temp, hum);
-    }
+  if (isnan(temperature) || isnan(humidity)) {
+    Serial.println("Failed to read from DHT sensor!");
+    temperature = 0.0;
+    humidity = 0.0;
+  } else {
+    Serial.printf("DHT Sensor - Temperature: %.2f °C, Humidity: %.2f %%\n", temperature, humidity);
   }
 }
 
 String formatPostData() {
-  String postData = "";
-  for (int i = 0; i < 10; i++) {
-    if (dhtSensors[i] != nullptr) {
-      postData += "temperatureDht" + String(i + 1) + "=" + String(temperature[i], 2);
-      postData += "&humidityDht" + String(i + 1) + "=" + String(humidity[i], 2);
-      if (i < 9) {
-        postData += "&";
-      }
+  String postData = "temperature=" + String(temperature, 2);
+  postData += "&humidity=" + String(humidity, 2);
+
+  // Tambahkan data soil moisture ke POST request
+  for (int i = 0; i < MAX_SOIL_SENSORS; i++) {
+    if (soilPins[i] > 0) {
+      postData += "&moisture" + String(i + 1) + "=" + String(moisture[i]);
     }
   }
-
-  // Add soil moisture data
-  postData += "&moisture=" + String(moisture);
 
   return postData;
 }

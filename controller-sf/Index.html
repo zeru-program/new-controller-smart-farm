@@ -42,7 +42,9 @@
       <h1 class="color-primary2 fw-bold">Farming Controller</h1>
       <div class="d-flex gap-2 align-items-center">
         <p class="m-0">Kondisi Tanaman : </p>
+        <div id="kondisi-tanaman">
         <p class="bg-primarys m-0 px-3 py-1">Stabil</p>
+        </div>
       </div>
       <div class="d-flex gap-2 mt-2 align-items-center">
         <p class="m-0">System Farming : </p>
@@ -141,5 +143,45 @@
     
     <script src="../assets/circular.js" type="text/javascript" charset="utf-8"></script>
     <script src="../assets/main.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+        
+        function getData() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "../config/getDataSensor.php", true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+        
+                    var moistureValue1 = parseFloat(data.moisture1);
+                    var changeKondisiTanaman = document.getElementById("kondisi-tanaman");
+        
+                    if (moistureValue1 == 0) {
+                        changeKondisiTanaman.innerHTML = '<p class="bg-danger text-light m-0 px-3 py-1">Soil moisture belum aktif</p>';
+                    } else if (moistureValue1 > 90) {
+                        changeKondisiTanaman.innerHTML = '<p class="bg-primary text-light m-0 px-3 py-1">Tanah lembab</p>';
+                    } else if (moistureValue1 <= 50) {
+                        changeKondisiTanaman.innerHTML = '<p class="bg-danger text-light m-0 px-3 py-1">Kering</p>';
+                    } else {
+                        changeKondisiTanaman.innerHTML = '<p class="bg-primarys m-0 px-3 py-1">Stabil</p>';
+                    }
+        
+                    if (!data.error) {
+                        updateProgress(0, data.temperature);
+                        updateProgress(1, data.humidity);
+                        updateProgress(2, data.moisture1);
+                    }
+                }
+            };
+            xhr.send();
+        }
+        
+
+        // Panggil fungsi getData() setiap 5 detik
+        setInterval(getData, 5000);
+
+        // Panggil saat pertama kali halaman dimuat
+        window.onload = getData;
+    
+    </script>
   </body>
 </html>

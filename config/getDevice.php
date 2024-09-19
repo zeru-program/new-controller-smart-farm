@@ -5,9 +5,9 @@ include "db.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
-    $dht = isset($_GET['dht']) ? intval($_GET['dht']) : null;
+    $soil = isset($_GET['soil']) ? intval($_GET['soil']) : null;
 
-    if ($dht) {
+    if ($soil) {
         $sql = "SELECT device_name, pin, type FROM devices_manager";
         $result = $connection->query($sql);
 
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($result->num_rows > 0) {
             // Loop melalui data dan temukan device yang cocok
             while ($row = $result->fetch_assoc()) {
-                if ($row['device_name'] === "dht" . $dht) {
+                if ($row['device_name'] === "soil" . $soil) {
                     echo $row['pin']; // Kirimkan nilai pin sebagai integer
                     exit; // Hentikan eksekusi setelah mengirimkan pin
                 }
