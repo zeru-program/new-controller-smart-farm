@@ -4,23 +4,25 @@
 #include <DHT.h> 
 #define DHTPIN 19 //D19 
 #define DHTTYPE DHT11 
+#define SOILPIN 34 //D34
 DHT dht11(DHTPIN, DHTTYPE); 
 
 // url hosting file
-String URL = "http://localhost:5000/config/db.php"; 
+String URL = "http://192.168.109.60/smart-farm/config/db.php"; 
 
 const char* ssid = "zeru"; 
 const char* password = "zeruIOT09"; 
 
-int temperature = 0;
-int humidity = 0;
+float temperature = 0.0;
+float humidity = 0.0;
 int moisture = 0;
 
 void setup() {
   Serial.begin(115200);
 
+  pinMode(SOILPIN, INPUT);
+
   dht11.begin(); 
-  
   connectWiFi();
 }
 
@@ -30,6 +32,10 @@ void loop() {
   }
 
   Load_DHT11_Data();
+  int sensor_analog = analogRead(SOILPIN);
+  moisture = 100 - ((sensor_analog / 4095.0) * 100);
+  
+  // Format data with two decimal places
   String postData = "temperature=" + String(temperature, 2) + "&humidity=" + String(humidity, 2) + "&moisture=" + String(moisture);
   
   HTTPClient http;
@@ -49,19 +55,19 @@ void loop() {
 
 
 void Load_DHT11_Data() {
-  //-----------------------------------------------------------
-  temperature = dht11.readTemperature(); //Celsius
+  // Baca data dari sensor
+  temperature = dht11.readTemperature(); // Celsius
   humidity = dht11.readHumidity();
-  //-----------------------------------------------------------
-  // Check if any reads failed.
+  
+  // Check if any reads failed
   if (isnan(temperature) || isnan(humidity)) {
     Serial.println("Failed to read from DHT sensor!");
-    temperature = 0;
-    humidity = 0;
+    temperature = 0.0;
+    humidity = 0.0;
+  } else {
+    Serial.printf("Temperature: %.2f °C\n", temperature);
+    Serial.printf("Humidity: %.2f %%\n", humidity);
   }
-  //-----------------------------------------------------------
-  Serial.printf("Temperature: %d °C\n", temperature);
-  Serial.printf("Humidity: %d %%\n", humidity);
 }
 
 void connectWiFi() {

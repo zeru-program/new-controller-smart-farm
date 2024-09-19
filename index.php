@@ -1,46 +1,65 @@
-<?php
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "smart_farm";
-$url = 'http://localhost:5050/api.php';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Farm Data</title>
+    <script>
+        // Fungsi untuk mengambil data menggunakan AJAX
+        function getData() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "config/getDataSensor.php", true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    
+                    if (!data.error) {
+                        // Update konten halaman dengan data baru
+                        document.getElementById("temperature").innerHTML = data.temperature + " °C";
+                        document.getElementById("humidity").innerHTML = data.humidity + " %";
+                        document.getElementById("moisture").innerHTML = data.moisture + " %";
+                        document.getElementById("timestamp").innerHTML = data.timestamp;
+                    } else {
+                        document.getElementById("temperature").innerHTML = "No data";
+                        document.getElementById("humidity").innerHTML = "No data";
+                        document.getElementById("moisture").innerHTML = "No data";
+                        document.getElementById("timestamp").innerHTML = "No data";
+                    }
+                }
+            };
+            xhr.send();
+        }
+        
+        function removeFarmData() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "config/db.php?remove_farm_data=true", true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    
+                    if (!data.error) {
+                        alert("data berhasil dihapus")
+                    } else {
+                        alert("data gagal dihapus")
+                    }
+                }
+            };
+            xhr.send();
+        }
 
-$response = @file_get_contents($url);
+        // Panggil fungsi getData() setiap 5 detik
+        setInterval(getData, 5000);
 
-// Mengecek apakah ada respons
-if ($response === FALSE) {
-    die('Error occurred while fetching data.');
-    $host = "localhost";
-} else {
-    $host = trim($response, "\"");
-}
-
-// Buat koneksi ke database
-$connection = mysqli_connect($host, $username, $password, $database);
-
-if (!$connection) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-// Query untuk mengambil data terbaru berdasarkan ID atau timestamp
-$query = "SELECT * FROM smart_farm_data ORDER BY id DESC LIMIT 1"; // Bisa juga pakai ORDER BY timestamp DESC
-
-$result = mysqli_query($connection, $query);
-if ($result && mysqli_num_rows($result) > 0) {
-    $row = mysqli_fetch_assoc($result);
-    $temperature = $row['temperature'];
-    $humidity = $row['humidity'];
-    $timestamp = $row['datetime'];
-    
-    // Tampilkan hasil di halaman web
-    echo "<h1>Data Terbaru dari Sensor DHT</h1>";
-    echo "Temperature: " . $temperature . " °C<br>";
-    echo "Humidity: " . $humidity . " %<br>";
-    echo "Timestamp: " . $timestamp . "<br>";
-} else {
-    echo "No data found.";
-}
-
-mysqli_close($connection);
-?>
-
+        // Panggil saat pertama kali halaman dimuat
+        window.onload = getData;
+    </script>
+</head>
+<body>
+    <h1>Data Terbaru dari Sensor DHT</h1>
+    <p>Temperature: <span id="temperature">Loading...</span></p>
+    <p>Humidity: <span id="humidity">Loading...</span></p>
+    <p>Moisture: <span id="moisture">Loading...</span></p>
+    <p>Timestamp: <span id="timestamp">Loading...</span></p>
+    <button onclick="removeFarmData()">hapus semua data</button>
+</body>
+</html>
