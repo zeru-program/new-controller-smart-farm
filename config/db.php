@@ -1,20 +1,9 @@
 <?php
 
-$host = "localhost";
+$host = "localhost:3306";
 $username = "root";
 $password = "";
 $database = "smart_farm";
-$url = 'http://localhost:5050/api.php';
-
-$response = @file_get_contents($url);
-
-// Mengecek apakah ada respons
-if ($response === FALSE) {
-    die('Error occurred while fetching data.');
-    $host = "localhost";
-} else {
-    $host = trim($response, "\"");
-}
 
 $connection = mysqli_connect($host, $username, $password, $database);
 
@@ -22,49 +11,19 @@ if (!$connection) {
     die("Connection failed : " . mysqli_connect_error());
 }  
 
-echo("Success connect to database " . $database);
+// echo("Success connect to database " . $database);
 
 
-if(isset($_POST["temperature"]) && isset($_POST["humidity"]) && isset($_POST["moisture"])) {
-
-	$t = $_POST["temperature"];
-	$h = $_POST["humidity"];
-	$m = $_POST["moisture"];
-
-	$sql = "INSERT INTO smart_farm_data (temperature, humidity, moisture) VALUES (".$t.", ".$h.", ".$m.")"; 
-
-	if (mysqli_query($connection, $sql)) { 
-		echo "\nNew record created successfully"; 
-	} else { 
-		echo "Error: " . $sql . "<br>" . mysqli_error($conn); 
-	}
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $sql = "SELECT device_name, pin, type FROM devices";
-    $result = $connection->query($sql);
-
-    // Array untuk menyimpan data
-    $devices = array();
-
-    // Jika ada data yang ditemukan
-    if ($result->num_rows > 0) {
-        // Loop melalui data dan masukkan ke array
-        while ($row = $result->fetch_assoc()) {
-            $devices[] = array(
-                "device_name" => $row['device_name'],
-                "pin" => $row['pin'],
-                "type" => $row['type']
-            );
-        }
+if (isset($_GET['remove_farm_data']) && $_GET['remove_farm_data'] == 'true') {
+    
+    // Query untuk menghapus semua baris di tabel smart_farm_data menggunakan TRUNCATE
+    $query = "TRUNCATE TABLE smart_farm_data";
+    
+    if (mysqli_query($connection, $query)) {
+        echo json_encode(array("status" => "success", "message" => "All records truncated successfully."));
+    } else {
+        echo json_encode(array("status" => "error", "message" => "Error truncating records: " . mysqli_error($connection)));
     }
-
-    // Kirim data dalam format JSON
-    echo json_encode($devices);
-} else {
-    // Jika bukan method GET, kirimkan error
-    echo json_encode(array("message" => "Invalid request method. Use GET."));
 }
-
 
 ?>

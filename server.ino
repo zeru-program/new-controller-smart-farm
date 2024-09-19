@@ -1,81 +1,86 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
-#include <DHT.h> 
-#include <ArduinoJson.h>
+#include <DHT.h>
 
+#define DHTPIN 19
+#define DHTTYPE DHT11 
+#define MAX_SOIL_SENSORS 10 // Maksimum 10 soil sensors
 
-#define DHTPIN 19 //D19 
-#define DHTTYPE DHT11
-// url hosting file
-String URL = "http://localhost:5000/config/db.php"; 
+// URL hosting file
+String URL = "http://192.168.109.60/smart-farm/config/"; 
+String URLGetSensor = "http://192.168.109.60/smart-farm/config/getDevice.php?";
+
+// WiFi credentials
 const char* ssid = "zeru"; 
 const char* password = "zeruIOT09"; 
-int temperature = 0;
-int humidity = 0;
-int moisture = 0;
 
-DHT dht11(DHTPIN, DHTTYPE); 
-HTTPClient http;
+int soilPins[MAX_SOIL_SENSORS] = {0}; // Array untuk pin soil sensor
+float temperature = 0.0; 
+float humidity = 0.0;
+int moisture[MAX_SOIL_SENSORS] = {0};
 
-void getDevice() {
-    http.begin(URL);
-    http.addHeader("Content-Type", "application/json");
-    int httpCodeGD = http.GET();
-    if (httpCodeGD > 0) {
-    String payload = http.getString(); 
-    // Buat buffer untuk mem-parsing JSON
-    const size_t capacity = JSON_ARRAY_SIZE(10) + 10*JSON_OBJECT_SIZE(3) + 200;
-    DynamicJsonDocument doc(capacity);
-    
-    // Parse JSON dari respon HTTP
-    DeserializationError error = deserializeJson(doc, payload);
+// DHT object untuk satu sensor
+DHT dht11(DHTPIN, DHTTYPE);
 
-    if (error) {
-      Serial.print("Gagal parsing JSON: ");
-      Serial.println(error.c_str());
-      return;
+// Fungsi untuk mendapatkan pin soil sensor dari server
+void getSoilPins() {
+  HTTPClient http;
+  for (int i = 1; i <= MAX_SOIL_SENSORS; i++) {
+    String url = URLGetSensor + "soil=" + i;
+    http.begin(url);
+    int httpCode = http.GET();
+    if (httpCode > 0) {
+      String payload = http.getString();
+      Serial.print("Payload for soil "); Serial.print(i); Serial.print(": "); Serial.println(payload);
+
+      int pin = payload.toInt(); // Konversi payload ke integer
+      if (pin > 0) {
+        soilPins[i - 1] = pin; // Simpan nilai pin
+        pinMode(pin, INPUT); // Set pin sebagai input
+      } else {
+        Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
+      }
+    } else {
+      Serial.print("Error code: ");
+      Serial.println(httpCode);
     }
-
-    // Jika JSON adalah array, lakukan perulangan
-    JsonArray dataArray = doc.as<JsonArray>();
-    for (JsonObject data : dataArray) {
-        if (data["device_name"] === "dht") {
-          const char* dht = data["pin"]; 
-          const char* type = data["type"];
-        }
-      
-      // Cetak data
-      Serial.print("dht pin: ");
-      Serial.println(dht);
-      Serial.print("type: ");
-      Serial.println(type);
-    }
-  } else {
-    Serial.print("Error code: ");
-    Serial.println(httpCode);
-  }
     http.end();
+  }
 }
 
 void setup() {
   Serial.begin(115200);
-
-  dht11.begin(); 
-  
-  getDevice();
-  
   connectWiFi();
+  
+  // DHT sensor initialization
+  dht11.begin();
+  
+  // Get soil sensor pins and initialize them
+  getSoilPins();
 }
 
 void loop() {
-  if(WiFi.status() != WL_CONNECTED) {
+  if (WiFi.status() != WL_CONNECTED) {
     connectWiFi();
   }
 
-  Load_DHT11_Data();
-  String postData = "temperature=" + String(temperature, 2) + "&humidity=" + String(humidity, 2) + "&moisture=" + String(moisture);
-  
-  http.begin(URL);
+  // Read data from DHT sensor
+  Load_DHT_Data();
+
+  // Read soil moisture
+  for (int i = 0; i < MAX_SOIL_SENSORS; i++) {
+    if (soilPins[i] > 0) {
+      int sensor_analog = analogRead(soilPins[i]);
+      moisture[i] = 100 - ((sensor_analog / 4095.0) * 100); // Konversi nilai soil moisture
+      Serial.printf("Soil Moisture Sensor %d - Moisture: %d%%\n", i + 1, moisture[i]);
+    }
+  }
+
+  // Format data for POST request
+  String postData = formatPostData();
+
+  HTTPClient http;
+  http.begin(URL + "postDataSensor.php");
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   
   int httpCode = http.POST(postData);
@@ -89,29 +94,38 @@ void loop() {
   delay(5000);
 }
 
-
-void Load_DHT11_Data() {
-  //-----------------------------------------------------------
-  temperature = dht11.readTemperature(); //Celsius
+void Load_DHT_Data() {
+  // Baca data dari sensor DHT11
+  temperature = dht11.readTemperature();
   humidity = dht11.readHumidity();
-  //-----------------------------------------------------------
-  // Check if any reads failed.
+  
   if (isnan(temperature) || isnan(humidity)) {
     Serial.println("Failed to read from DHT sensor!");
-    temperature = 0;
-    humidity = 0;
+    temperature = 0.0;
+    humidity = 0.0;
+  } else {
+    Serial.printf("DHT Sensor - Temperature: %.2f °C, Humidity: %.2f %%\n", temperature, humidity);
   }
-  //-----------------------------------------------------------
-  Serial.printf("Temperature: %d °C\n", temperature);
-  Serial.printf("Humidity: %d %%\n", humidity);
+}
+
+String formatPostData() {
+  String postData = "temperature=" + String(temperature, 2);
+  postData += "&humidity=" + String(humidity, 2);
+
+  // Tambahkan data soil moisture ke POST request
+  for (int i = 0; i < MAX_SOIL_SENSORS; i++) {
+    if (soilPins[i] > 0) {
+      postData += "&moisture" + String(i + 1) + "=" + String(moisture[i]);
+    }
+  }
+
+  return postData;
 }
 
 void connectWiFi() {
   WiFi.mode(WIFI_OFF);
   delay(1000);
-  //This line hides the viewing of ESP as wifi hotspot
-  WiFi.mode(WIFI_STA);
-  
+  WiFi.mode(WIFI_STA); // Hide as a WiFi hotspot
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi");
   
@@ -120,6 +134,6 @@ void connectWiFi() {
     Serial.print(".");
   }
     
-  Serial.print("connected to : "); Serial.println(ssid);
+  Serial.print("Connected to: "); Serial.println(ssid);
   Serial.print("IP address: "); Serial.println(WiFi.localIP());
 }
