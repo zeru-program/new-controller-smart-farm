@@ -31,6 +31,7 @@ void getRelayPumpPins() {
       if (pin > 0) {
         relayPumpPins[i - 1] = pin; // Simpan nilai pin
         pinMode(pin, OUTPUT); // Set pin sebagai input
+        digitalWrite(pin, HIGH);
       } else {
         Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
       }
@@ -55,6 +56,7 @@ void getRelayFanPins() {
       if (pin > 0) {
         relayFanPins[i - 1] = pin; // Simpan nilai pin
         pinMode(pin, OUTPUT); // Set pin sebagai input
+        digitalWrite(pin, HIGH);
       } else {
         Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
       }
@@ -69,6 +71,9 @@ void getRelayFanPins() {
 void setup() {
   Serial.begin(115200);
   connectWiFi();
+
+  getRelayPumpPins();
+  getRelayFanPins();
 
   lcd.init();
   lcd.backlight();
@@ -87,8 +92,13 @@ void loop() {
   if (WiFi.status() != WL_CONNECTED) {
     connectWiFi();
   }
-
+  
+  delay(1000);
+  digitalWrite(relayPumpPins[0], LOW); // Menggunakan relayPumpPins[0]
+  delay(1000);
+  digitalWrite(relayPumpPins[0], HIGH);
 }
+
 
 void connectWiFi() {
   WiFi.mode(WIFI_OFF);
