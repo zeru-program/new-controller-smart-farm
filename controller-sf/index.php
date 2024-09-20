@@ -7,7 +7,7 @@
     <script>
         function getData() {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "config/getDataSensor.php", true);
+            xhr.open("GET", "../config/getDataSensor.php", true);
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     var data = JSON.parse(xhr.responseText);
@@ -31,7 +31,7 @@
         
         function removeFarmData() {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "config/db.php?remove_farm_data=true", true);
+            xhr.open("GET", "../config/db.php?remove_farm_data=true", true);
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     var data = JSON.parse(xhr.responseText);
