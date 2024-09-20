@@ -7,9 +7,64 @@
 
 // WiFi credentials
 const char* ssid = "zeru"; 
-const char* password = "zeruIOT09"; 
+const char* password = "zeruIOT09";
+String URL = "http://192.168.109.60/smart-farm/config/"; 
+const int MAX_RELAY_PINS = 10; 
+int relayPumpPins[MAX_RELAY_PINS] = {0};
+int relayFanPins[MAX_RELAY_PINS] = {0};
 
 LiquidCrystal_I2C lcd(0x27,16,2);
+
+
+// Fungsi untuk mendapatkan pin soil sensor dari server
+void getRelayPumpPins() {
+  HTTPClient http;
+  for (int i = 1; i <= MAX_RELAY_PINS; i++) {
+    String url = URL + "getRelayPins.php?pump=" + i;
+    http.begin(url);
+    int httpCode = http.GET();
+    if (httpCode > 0) {
+      String payload = http.getString();
+      Serial.print("Payload for pump "); Serial.print(i); Serial.print(": "); Serial.println(payload);
+
+      int pin = payload.toInt(); // Konversi payload ke integer
+      if (pin > 0) {
+        relayPumpPins[i - 1] = pin; // Simpan nilai pin
+        pinMode(pin, OUTPUT); // Set pin sebagai input
+      } else {
+        Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
+      }
+    } else {
+      Serial.print("Error code: ");
+      Serial.println(httpCode);
+    }
+    http.end();
+  }
+}
+void getRelayFanPins() {
+  HTTPClient http;
+  for (int i = 1; i <= MAX_RELAY_PINS; i++) {
+    String url = URL + "getRelayPins.php?fan=" + i;
+    http.begin(url);
+    int httpCode = http.GET();
+    if (httpCode > 0) {
+      String payload = http.getString();
+      Serial.print("Payload for fan "); Serial.print(i); Serial.print(": "); Serial.println(payload);
+
+      int pin = payload.toInt(); // Konversi payload ke integer
+      if (pin > 0) {
+        relayFanPins[i - 1] = pin; // Simpan nilai pin
+        pinMode(pin, OUTPUT); // Set pin sebagai input
+      } else {
+        Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
+      }
+    } else {
+      Serial.print("Error code: ");
+      Serial.println(httpCode);
+    }
+    http.end();
+  }
+}
 
 void setup() {
   Serial.begin(115200);
