@@ -31,7 +31,7 @@ void getRelayPumpPins() {
       if (pin > 0) {
         relayPumpPins[i - 1] = pin; // Simpan nilai pin
         pinMode(pin, OUTPUT); // Set pin sebagai input
-        digitalWrite(pin, HIGH);
+        digitalWrite(pin, LOW);
       } else {
         Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
       }
@@ -56,7 +56,7 @@ void getRelayFanPins() {
       if (pin > 0) {
         relayFanPins[i - 1] = pin; // Simpan nilai pin
         pinMode(pin, OUTPUT); // Set pin sebagai input
-        digitalWrite(pin, HIGH);
+        digitalWrite(pin, LOW);
       } else {
         Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
       }
@@ -82,9 +82,9 @@ void getPumpStatus(int pumpNumber) {
     Serial.println("Status pump" + String(pumpNumber) + ": " + payload);
     int status = payload.toInt(); // ubah string menjadi integer
     if (status == 1) {
-      digitalWrite(pinsPump, LOW); // Mengaktifkan relay (ON)
+      digitalWrite(pinsPump, HIGH); // Mengaktifkan relay (ON)
     } else if (status == 0) {
-      digitalWrite(pinsPump, HIGH); // Mematikan relay (OFF)
+      digitalWrite(pinsPump, LOW); // Mematikan relay (OFF)
     }
   } else {
       Serial.println("Error on HTTP request");
@@ -104,9 +104,9 @@ void getFanStatus(int fanNumber) {
     Serial.println("Status pump" + String(fanNumber) + ": " + payload);
     int status = payload.toInt(); // ubah string menjadi integer
     if (status == 1) {
-      digitalWrite(pinsFan, LOW); // Mengaktifkan relay (ON)
+      digitalWrite(pinsFan, HIGH); // Mengaktifkan relay (ON)
     } else if (status == 0) {
-      digitalWrite(pinsFan, HIGH); // Mematikan relay (OFF)
+      digitalWrite(pinsFan, LOW); // Mematikan relay (OFF)
     }
   } else {
       Serial.println("Error on HTTP request");
