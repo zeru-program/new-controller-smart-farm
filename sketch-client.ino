@@ -12,6 +12,7 @@ String URL = "http://192.168.109.60/smart-farm/config/";
 const int MAX_RELAY_PINS = 10; 
 int relayPumpPins[MAX_RELAY_PINS] = {0};
 int relayFanPins[MAX_RELAY_PINS] = {0};
+int espLed = 2;
 
 LiquidCrystal_I2C lcd(0x27,16,2);
 
@@ -31,7 +32,7 @@ void getRelayPumpPins() {
       if (pin > 0) {
         relayPumpPins[i - 1] = pin; // Simpan nilai pin
         pinMode(pin, OUTPUT); // Set pin sebagai input
-        digitalWrite(pin, LOW);
+        digitalWrite(pin, HIGH);
       } else {
         Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
       }
@@ -56,7 +57,7 @@ void getRelayFanPins() {
       if (pin > 0) {
         relayFanPins[i - 1] = pin; // Simpan nilai pin
         pinMode(pin, OUTPUT); // Set pin sebagai input
-        digitalWrite(pin, LOW);
+        digitalWrite(pin, HIGH);
       } else {
         Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
       }
@@ -82,9 +83,9 @@ void getPumpStatus(int pumpNumber) {
     Serial.println("Status pump" + String(pumpNumber) + ": " + payload);
     int status = payload.toInt(); // ubah string menjadi integer
     if (status == 1) {
-      digitalWrite(pinsPump, HIGH); // Mengaktifkan relay (ON)
+      digitalWrite(pinsPump, LOW); // Mengaktifkan relay (ON)
     } else if (status == 0) {
-      digitalWrite(pinsPump, LOW); // Mematikan relay (OFF)
+      digitalWrite(pinsPump, HIGH); // Mematikan relay (OFF)
     }
   } else {
       Serial.println("Error on HTTP request");
@@ -104,9 +105,9 @@ void getFanStatus(int fanNumber) {
     Serial.println("Status pump" + String(fanNumber) + ": " + payload);
     int status = payload.toInt(); // ubah string menjadi integer
     if (status == 1) {
-      digitalWrite(pinsFan, HIGH); // Mengaktifkan relay (ON)
+      digitalWrite(pinsFan, LOW); // Mengaktifkan relay (ON)
     } else if (status == 0) {
-      digitalWrite(pinsFan, LOW); // Mematikan relay (OFF)
+      digitalWrite(pinsFan, HIGH); // Mematikan relay (OFF)
     }
   } else {
       Serial.println("Error on HTTP request");
@@ -120,6 +121,9 @@ void setup() {
 
   getRelayPumpPins();
   getRelayFanPins();
+
+  pinMode(espLed, OUTPUT);
+  digitalWrite(espLed, LOW);
 
   lcd.init();
   lcd.backlight();
@@ -137,9 +141,11 @@ void setup() {
 void loop() {
   if (WiFi.status() != WL_CONNECTED) {
     connectWiFi();
+    digitalWrite(espLed, LOW);
   }
   getPumpStatus(1);
   getFanStatus(1);
+  displayValueLcd(1);
 }
 
 
@@ -153,14 +159,49 @@ void connectWiFi() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
+    digitalWrite(espLed, LOW);
   }
     
   Serial.print("Connected to: "); Serial.println(ssid);
   Serial.print("IP address: "); Serial.println(WiFi.localIP());
+  digitalWrite(espLed, HIGH);
 }
 
 
 // lcd system
+void displayValueLcd(int soilPins) {
+  delay(1000);
+  lcd.setCursor(0,0);
+  lcd.print("Temp     : ");
+  lcd.setCursor(0,1);
+  lcd.print("Moisture : ");
+  HTTPClient http;
+  http.begin(URL + "getDataSensorEsp.php?moisture=" + String(soilPins));
+  int httpCode = http.GET() ;
+  String payload = http.getString();
+
+  if (httpCode > 0) {
+    lcd.setCursor(11,1);
+    lcd.print(payload + "%");
+  } else {
+    lcd.setCursor(11,1);
+    lcd.print("error");
+  }
+  http.end();
+
+  http.begin(URL + "getDataSensorEsp.php?temperature");
+  int httpCodeTemp = http.GET() ;
+  String payloadTemp = http.getString();
+
+  if (httpCodeTemp > 0) {
+    lcd.setCursor(11,0);
+    lcd.print(payloadTemp + "C");
+  } else {
+    lcd.setCursor(11,0);
+    lcd.print("error");
+  }
+  http.end();
+}
 void animateLoading(int repeats) {
   for (int r = 0; r < repeats; r++) {
     for (int i = 0; i < 10; i++) {
