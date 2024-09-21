@@ -5,10 +5,10 @@
 body {
   font-family: "Montserrat", Sans-Serif;
   width: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 html {
-  overflow: hidden;
+  overflow-x: hidden;
 }
 .bg-primarys {
   background: #4ef7a1;
@@ -73,6 +73,19 @@ html {
   padding-inline: 30px;
   padding-block: 8px;
   border-radius: 20px;
+}
+.btn-on-off {
+  border: 2px solid #386c5f;
+  border-radius: 30px;
+  padding-block: 10px;
+  padding-inline: 28px;
+  color: #386c5f;
+  font-weight: bold;
+  background: transparent;
+}
+.btno-active {
+  background: #386c5f !important;
+  color: white !important;
 }
 /*** home style ***/
 

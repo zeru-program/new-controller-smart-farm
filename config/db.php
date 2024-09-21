@@ -1,6 +1,6 @@
 <?php
 
-$host = "localhost";
+$host = "localhost:3306";
 $username = "root";
 $password = "";
 $database = "smart_farm";
@@ -11,7 +11,7 @@ if (!$connection) {
     die("Connection failed : " . mysqli_connect_error());
 }  
 
-// echo("Success connect to database " . $database);
+ //echo("Success connect to database " . $database);
 
 
 if (isset($_GET['remove_farm_data']) && $_GET['remove_farm_data'] == 'true') {

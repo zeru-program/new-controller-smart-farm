@@ -131,8 +131,36 @@
     </div>
     <!--popup alert-->
     
+    <!--popup button-->
+    <div class="m-0 w-100 shadow-lg position-fixed py-3" id="popup-btn" style="display:flex;bottom:0;left:0; background:white; z-index:999;">
+      <div class="container d-flex flex-column" style="background:white;">
+      <h1 class="m-0">Control Pump or Fan</h1>
+      <div class="display-alert mt-3 rounded-2 overflow-y-scroll" style="width:100%;height:200px; background:rgba(0,0,0,.1);">
+        <div class="w-100 mt-3 container d-flex text-center gap-2 justify-content-center">
+          <div class="d-flex flex-column justify-content-center">
+            <h5 class="m-0 pb-1 fw-bold" style="color:#386c5f">Pump1</h5>
+            <div class="d-flex gap-2">
+              <button class="btn-on-off" id="pump1-btn-on" onclick="pumpButton('on', this, 1)">ON</button>
+              <button class="btn-on-off btno-active" id="pump1-btn-off" onclick="pumpButton('off', this, 1)">OFF</button>
+            </div>
+          </div>
+          <div class="d-flex flex-column justify-content-center">
+            <h5 class="m-0 pb-1 fw-bold" style="color:#386c5f">Fan1</h5>
+            <div class="d-flex gap-2">
+              <button class="btn-on-off" id="fan1-btn-on" onclick="fanButton('on', this, 1)">ON</button>
+              <button class="btn-on-off btno-active" id="fan1-btn-off" onclick="fanButton('off', this, 1)">OFF</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      
+      <button class="btn btn-danger position-absolute" onclick="closeButton()" style="right:15px;top:15px;">X</button>
+    </div>
+    <!--popup button-->
+    
     <!--btn popup button-->
-    <button class="position-fixed bg-primarys border-0" style="border-radius:50%;width:50px; height:50px;right:10px;bottom:70px;" onclick="openButton()"><i class="bi bi-gear"></i></i>
+    <button class="position-fixed bg-primarys border-0" style="border-radius:50%;width:50px; height:50px;right:10px;bottom:70px;" onclick="openButton()"><i class="bi bi-hammer"></i></i>
     <!--btn popup button-->
     
     <!--btn popup alert-->
@@ -174,13 +202,64 @@
             };
             xhr.send();
         }
-        
+        var urlGetDeviceStatus = "../config/getDataRelay.php";
+
+function updateDeviceStatus() {
+    fetch(urlGetDeviceStatus)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Loop through all devices and update button states
+                data.devices.forEach(device => {
+                    var deviceName = device.device_name;
+                    var status = device.status;
+
+                    // Update the pump button status
+                    if (device.device_type === 'pump') {
+                        var btnOn = document.getElementById(deviceName + '-btn-on');
+                        var btnOff = document.getElementById(deviceName + '-btn-off');
+
+                        if (status == 1) {
+                            btnOn.classList.add("btno-active");
+                            btnOff.classList.remove("btno-active");
+                        } else {
+                            btnOn.classList.remove("btno-active");
+                            btnOff.classList.add("btno-active");
+                        }
+                    }
+
+                    // Update the fan button status
+                    if (device.device_type === 'fan') {
+                        var btnOn = document.getElementById(deviceName + '-btn-on');
+                        var btnOff = document.getElementById(deviceName + '-btn-off');
+
+                        if (status == 1) {
+                            btnOn.classList.add("btno-active");
+                            btnOff.classList.remove("btno-active");
+                        } else {
+                            btnOn.classList.remove("btno-active");
+                            btnOff.classList.add("btno-active");
+                        }
+                    }
+                });
+            } else {
+                console.error('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+
 
         // Panggil fungsi getData() setiap 5 detik
-        setInterval(getData, 5000);
+      // setInterval(getData, 5000);
+         setInterval(updateDeviceStatus, 1000);
 
         // Panggil saat pertama kali halaman dimuat
-        window.onload = getData;
+   //     window.onload = getData;
+          window.onload = updateDeviceStatus;
     
     </script>
   </body>

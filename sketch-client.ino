@@ -68,6 +68,52 @@ void getRelayFanPins() {
   }
 }
 
+// get status pump
+void getPumpStatus(int pumpNumber) {
+  delay(1000);
+  HTTPClient http;
+  String urlFix = URL + "getDataRelayEsp.php?pump=" + String(pumpNumber);
+  http.begin(urlFix);
+  int httpCode = http.GET();
+  int pinsPump = relayPumpPins[pumpNumber - 1];
+  
+  if (httpCode > 0) {
+    String payload = http.getString();
+    Serial.println("Status pump" + String(pumpNumber) + ": " + payload);
+    int status = payload.toInt(); // ubah string menjadi integer
+    if (status == 1) {
+      digitalWrite(pinsPump, LOW); // Mengaktifkan relay (ON)
+    } else if (status == 0) {
+      digitalWrite(pinsPump, HIGH); // Mematikan relay (OFF)
+    }
+  } else {
+      Serial.println("Error on HTTP request");
+    }
+    http.end();
+}
+void getFanStatus(int fanNumber) {
+  delay(1000);
+  HTTPClient http;
+  String urlFix = URL + "getDataRelayEsp.php?fan=" + String(fanNumber);
+  http.begin(urlFix);
+  int httpCode = http.GET();
+  int pinsFan = relayFanPins[fanNumber - 1];
+  
+  if (httpCode > 0) {
+    String payload = http.getString();
+    Serial.println("Status pump" + String(fanNumber) + ": " + payload);
+    int status = payload.toInt(); // ubah string menjadi integer
+    if (status == 1) {
+      digitalWrite(pinsFan, LOW); // Mengaktifkan relay (ON)
+    } else if (status == 0) {
+      digitalWrite(pinsFan, HIGH); // Mematikan relay (OFF)
+    }
+  } else {
+      Serial.println("Error on HTTP request");
+    }
+    http.end();
+}
+
 void setup() {
   Serial.begin(115200);
   connectWiFi();
@@ -92,11 +138,8 @@ void loop() {
   if (WiFi.status() != WL_CONNECTED) {
     connectWiFi();
   }
-  
-  delay(1000);
-  digitalWrite(relayPumpPins[0], LOW); // Menggunakan relayPumpPins[0]
-  delay(1000);
-  digitalWrite(relayPumpPins[0], HIGH);
+  getPumpStatus(1);
+  getFanStatus(1);
 }
 
 
