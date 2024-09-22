@@ -78,10 +78,15 @@ html {
   border: 2px solid #386c5f;
   border-radius: 30px;
   padding-block: 10px;
-  padding-inline: 28px;
+  padding-inline: 25px;
   color: #386c5f;
   font-weight: bold;
   background: transparent;
+}
+.btna-active {
+    background: rgba(78,247,161,.4) !important;
+    color: #386c5f !important;
+    padding: 7px;
 }
 .btno-active {
   background: #386c5f !important;

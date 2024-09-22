@@ -31,7 +31,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     // Konversi array ke format JSON
     echo json_encode($data);
 } else {
-    //echo json_encode(array("error" => "No data found."));
+    echo json_encode(array("error" => "No data found."));
 }
 
 mysqli_close($connection);

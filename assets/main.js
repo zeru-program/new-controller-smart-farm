@@ -1,3 +1,4 @@
+
 function openAlert() {
   document.getElementById("popup-alert").style.display = "flex"
 }
@@ -38,7 +39,11 @@ function pumpButton(type, elem, pumpNumber) {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert("Pump " + pumpNumber + " turned on successfully!");
+                Swal.fire({
+                        title: "Berhasil !",
+                        text: 'Pump' + pumpNumber + ' berhasil nyala',
+                        icon: "success"
+                      });
             } else {
                 alert("Error: " + data.message);
             }
@@ -62,7 +67,11 @@ function pumpButton(type, elem, pumpNumber) {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert("Pump " + pumpNumber + " turned off successfully!");
+                Swal.fire({
+                        title: "Berhasil !",
+                        text: 'Pump' + pumpNumber + ' berhasil dimatikan',
+                        icon: "success"
+                      });
             } else {
                 alert("Error: " + data.message);
             }
@@ -99,7 +108,11 @@ function fanButton(type, elem, fanNumber) {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert("Fan " + fanNumber + " turned on successfully!");
+                Swal.fire({
+                        title: "Berhasil !",
+                        text: 'Fan' + fanNumber + ' berhasil dinyalakan',
+                        icon: "success"
+                      });
             } else {
                 alert("Error: " + data.message);
             }
@@ -123,7 +136,11 @@ function fanButton(type, elem, fanNumber) {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert("Fan " + fanNumber + " turned off successfully!");
+                Swal.fire({
+                        title: "Berhasil !",
+                        text: 'Fan' + fanNumber + ' berhasil dimatikan',
+                        icon: "success"
+                      });
             } else {
                 alert("Error: " + data.message);
             }
