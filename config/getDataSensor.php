@@ -1,5 +1,8 @@
 <?php
 include("db.php");
+
+header('Content-Type: application/json');
+
 // Query untuk mengambil data terbaru
 $query = "SELECT * FROM smart_farm_data ORDER BY id DESC LIMIT 1";
 
