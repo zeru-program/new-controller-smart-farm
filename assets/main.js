@@ -12,6 +12,14 @@ function closeButton() {
   document.getElementById("popup-btn").style.display = "none"
 }
 
+function login() {
+  
+}
+
+function register() {
+  
+}
+
 var urlPostRelay = "../config/postDataRelay.php";
 function pumpButton(type, elem, pumpNumber) {
     var pinBtnOn = "pump" + pumpNumber + "-btn-on"
