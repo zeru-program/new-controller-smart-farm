@@ -12,6 +12,7 @@ String URL = "http://192.168.109.60/smart-farm/config/";
 const int MAX_RELAY_PINS = 10; 
 int relayPumpPins[MAX_RELAY_PINS] = {0};
 int relayFanPins[MAX_RELAY_PINS] = {0};
+String system = "";
 
 LiquidCrystal_I2C lcd(0x27,16,2);
 
@@ -114,12 +115,23 @@ void getFanStatus(int fanNumber) {
     http.end();
 }
 
+void getSystemFarm() {
+    HTTPClient http;
+    http.begin(URL + "getDataSystem.php");
+    int httpCode = http.GET();
+    
+    if (httpCode > 0) {
+        String payload = http.getString();
+        system = payload;
+    } else {
+      Serial.println("Error on HTTP request");
+    }
+    http.end();
+}
+
 void setup() {
   Serial.begin(115200);
   connectWiFi();
-
-  getRelayPumpPins();
-  getRelayFanPins();
 
   lcd.init();
   lcd.backlight();
@@ -132,6 +144,11 @@ void setup() {
   animateLoading(2);
   teksWelcomingLcd("192.168.109.60");
   lcd.clear();
+  
+  getSystemFarm();
+  getRelayPumpPins();
+  getRelayFanPins();
+
 }
 
 void loop() {

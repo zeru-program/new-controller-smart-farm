@@ -12,12 +12,18 @@ function closeButton() {
   document.getElementById("popup-btn").style.display = "none"
 }
 
+
+var usnInput = document.getElementById("username-ipt").value
+var emailInput = document.getElementById("email-ipt").value
+var passInput = document.getElementById("password-ipt").value
 function login() {
   
 }
 
 function register() {
-  
+  if (!usnInput && !emailInput && !passInput) {
+      alert("silakan isi data dengan benar")
+  }
 }
 
 var urlPostRelay = "../config/postDataRelay.php";
