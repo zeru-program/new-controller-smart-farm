@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="getApi()">Mulai fetch</button>
+    <p id="display">data : </p>
+    <p id="type">Type data : </p>
+    
+
+    <script>
+        function getApi() {
+            fetch("ipEsp.txt")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("display").textContent = "data : " + data
+                document.getElementById("type").textContent = "Type data : " + typeof(data)
+            })
+        }
+    </script>
+</body>
+</html>

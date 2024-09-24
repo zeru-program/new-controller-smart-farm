@@ -118,7 +118,7 @@
         </div>
       </div>
       <div class="container d-flex justify-content-center mt-3 mb-3">
-          <button class="btn-on-off btno-active" id="btns-on" style="display:none" onclick="server('on')">START SERVER</button>
+          <button class="btn-on-off btno-active" id="btns-on" style="display:flex" onclick="server('on')">START SERVER</button>
           <button class="btn-on-off btno-active" style="display:none;background:#FF2842 !important;border:3px solid #FF2842 !important;" id="btns-off" onclick="server('off')">TURN OFF SERVER</button>
       </div>
       </div>
@@ -174,12 +174,8 @@
     <!--popup button-->
     
     <!--btn popup button-->
-<<<<<<< HEAD
-    <button class="position-fixed bg-primarys border-0" style="border-radius:50%;width:50px; height:50px;right:10px;bottom:70px;" onclick="openButton()"><i class="bi bi-gear"></i></button>
-=======
     <button class="position-fixed justify-content-center align-items-center bg-primarys border-0" id="btn-btn" style="display:none;border-radius:50%;width:50px; height:50px;right:10px;bottom:70px;" onclick="openButton()"><i class="bi bi-hammer"></i></i>
->>>>>>> 6ccc60ad5b04d92e91ddf455dca5b214a498231b
-    <!--btn popup button-->
+   <!--btn popup button-->
     
     <!--btn popup alert-->
     <button class="position-fixed justify-content-center align-items-center bg-primarys border-0" id="btn-alert" style="display:none;border-radius:50%;width:50px; height:50px;right:10px;bottom:10px;" onclick="openAlert()"><i class="bi bi-bell"></i></button>
@@ -226,6 +222,145 @@
             }
         }
     
+var urlPostRelay = "../config/postDataRelay.php";
+function pumpButton(type, elem, pumpNumber) {
+    var pinBtnOn = "pump" + pumpNumber + "-btn-on"
+    var pinBtnOff = "pump" + pumpNumber + "-btn-off"
+    var btnOn = document.getElementById(pinBtnOn);
+    var btnOff = document.getElementById(pinBtnOff);
+    btnOn.classList.remove("btno-active");
+    btnOff.classList.remove("btno-active");
+    
+    var pumpStatus = (type === 'on') ? 1 : 0;  // Pump ON or OFF
+
+    if (type === 'on') {
+        elem.classList.add("btno-active");
+        fetch(urlPostRelay, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                pump: true,
+                pumpNumber: pumpNumber,
+                pumpStatus: pumpStatus
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                        title: "Berhasil !",
+                        text: 'Pump' + pumpNumber + ' berhasil nyala',
+                        icon: "success"
+                      });
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    } else if (type === 'off') {
+        elem.classList.add("btno-active");
+        fetch(urlPostRelay, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                pump: true,
+                pumpNumber: pumpNumber,
+                pumpStatus: pumpStatus
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                        title: "Berhasil !",
+                        text: 'Pump' + pumpNumber + ' berhasil dimatikan',
+                        icon: "success"
+                      });
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+function fanButton(type, elem, fanNumber) {
+   var pinBtnOn = "fan" + fanNumber + "-btn-on"
+    var pinBtnOff = "fan" + fanNumber + "-btn-off"
+    var btnOn = document.getElementById(pinBtnOn);
+    var btnOff = document.getElementById(pinBtnOff);
+  btnOn.classList.remove("btno-active")
+  btnOff.classList.remove("btno-active")
+  
+  var fanStatus = (type === 'on') ? 1 : 0;  // Pump ON or OFF
+
+    if (type === 'on') {
+        elem.classList.add("btno-active");
+        fetch(urlPostRelay, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fan: true,
+                fanNumber: fanNumber,
+                fanStatus: fanStatus
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                        title: "Berhasil !",
+                        text: 'Fan' + fanNumber + ' berhasil dinyalakan',
+                        icon: "success"
+                      });
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    } else if (type === 'off') {
+        elem.classList.add("btno-active");
+        fetch(urlPostRelay, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fan: true,
+                fanNumber: fanNumber,
+                fanStatus: fanStatus
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                        title: "Berhasil !",
+                        text: 'Fan' + fanNumber + ' berhasil dimatikan',
+                        icon: "success"
+                      });
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+}
+
         var statusServer = 0;
         function server(state) {
             let stateFix;
