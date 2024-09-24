@@ -3,18 +3,31 @@
 #include <WiFiClientSecure.h>   
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h> 
+#include <WiFiManager.h>
 
 
 // WiFi credentials
-const char* ssid = "zeru"; 
-const char* password = "zeruIOT09";
-String URL = "http://192.168.109.60/smart-farm/config/"; 
 const int MAX_RELAY_PINS = 10; 
 int relayPumpPins[MAX_RELAY_PINS] = {0};
 int relayFanPins[MAX_RELAY_PINS] = {0};
+String URL = "http://192.168.109.60/smart-farm/config/";
 
 LiquidCrystal_I2C lcd(0x27,16,2);
 
+
+// void setUpIpconfig() {
+//   HTTPClient http;
+//   http.begin("https://zeru-program.github.io/new-controller-smart-farm/config/ipEsp.txt");
+//   int httpCode = http.GET();
+//   if (httpCode > 0) {
+//     String payload = http.getString();
+//     URL += payload;
+//     Serial.println(payload);
+//   } else {
+//       Serial.println("Error on HTTP request");
+//     }
+//     http.end();
+// }
 
 // Fungsi untuk mendapatkan pin soil sensor dari server
 void getRelayPumpPins() {
@@ -114,13 +127,36 @@ void getFanStatus(int fanNumber) {
     http.end();
 }
 
-
 void setup() {
   Serial.begin(115200);
-  connectWiFi();
-
+  
   lcd.init();
   lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("WiFi manager");
+  lcd.setCursor(0, 1);
+  lcd.print("Connection..");
+  //connectWiFi();
+  WiFiManager wifiManager;
+
+  // Mengatur timeout (opsional)
+  wifiManager.setTimeout(60); // 30 detik timeout
+
+  // Memulai konfigurasi WiFi
+  if (!wifiManager.autoConnect("smart-farm-client", "zerudev09")) {
+    Serial.println("Gagal terhubung, rebooting...");
+    delay(3000);
+    ESP.restart();  
+  }
+
+  Serial.println("Terhubung!");
+  Serial.print("SSID: ");
+  Serial.println(WiFi.SSID());
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+  lcd.clear();
+  delay(1000);
+
   lcd.setCursor(0, 0);
   lcd.print("Wifi Connected !");
   delay(500);
@@ -137,30 +173,48 @@ void setup() {
 }
 
 void loop() {
-  if (WiFi.status() != WL_CONNECTED) {
-    connectWiFi();
-  }
+  // if (WiFi.status() != WL_CONNECTED) {
+  //   connectWiFi();
+  // }
   getPumpStatus(1);
   getFanStatus(1);
+  getDataTemp(1);
+  getDataMoisture(1);
 }
 
+void getDataTemp(int pin) {
 
-void connectWiFi() {
-  WiFi.mode(WIFI_OFF);
-  delay(1000);
-  WiFi.mode(WIFI_STA); // Hide as a WiFi hotspot
-  WiFi.begin(ssid, password);
-  Serial.println("Connecting to WiFi");
-  
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+  // get temp
+  HTTPClient http;
+  http.begin(URL + "getDataSensorEsp.php?temperature=" + String(pin));
+  int httpCode = http.GET();
+  if (httpCode > 0) {
+    String payload = http.getString();
+    lcd.setCursor(0, 0);
+    lcd.print("Temp   :  ");
+    lcd.setCursor(11, 0);
+    lcd.print(payload + "C");
   }
-    
-  Serial.print("Connected to: "); Serial.println(ssid);
-  Serial.print("IP address: "); Serial.println(WiFi.localIP());
+
+  http.end();
 }
 
+void getDataMoisture(int pin) {
+
+  // get temp
+  HTTPClient http;
+  http.begin(URL + "getDataSensorEsp.php?moisture=" + String(pin));
+  int httpCode = http.GET();
+  if (httpCode > 0) {
+    String payload = http.getString();
+    lcd.setCursor(0, 1);
+    lcd.print("Humidity : ");
+    lcd.setCursor(11, 1);
+    lcd.print(payload + "%");
+  }
+
+  http.end();
+}
 
 // lcd system
 void animateLoading(int repeats) {
