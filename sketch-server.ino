@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <DHT.h>
+#include <WiFiManager.h>
 
 #define DHTPIN 19
 #define DHTTYPE DHT11 
@@ -50,7 +51,24 @@ void getSoilPins() {
 
 void setup() {
   Serial.begin(115200);
-  connectWiFi();
+ // connectWiFi();
+   WiFiManager wifiManager;
+
+  // Mengatur timeout (opsional)
+  wifiManager.setTimeout(60); // 30 detik timeout
+
+  // Memulai konfigurasi WiFi
+  if (!wifiManager.autoConnect("smart-farm-server", "zerudev09")) {
+    Serial.println("Gagal terhubung, rebooting...");
+    delay(3000);
+    ESP.restart();  
+  }
+
+  Serial.println("Terhubung!");
+  Serial.print("SSID: ");
+  Serial.println(WiFi.SSID());
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
   
   // DHT sensor initialization
   dht11.begin();
