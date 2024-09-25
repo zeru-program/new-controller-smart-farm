@@ -19,7 +19,7 @@
     <!--navbar -->
       <nav class="navbar navbar-expand-lg" style="background:white;">
       <div class="container-fluid">
-        <img src="../assets/logo.png" style="width:50px" alt="">
+        <a class="navbar-brand" href="/">Logo</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="bi bi-list"></span>
         </button>
@@ -35,7 +35,6 @@
         </div>
       </div>
     </nav>
-    
     <!--navbar -->
     
     <main class="m-0 mt-5">
@@ -124,12 +123,6 @@
       </div>
       </div>
     </main>
-    
-      <!--footer-->
-      <?php
-        include "../components/footer.php"
-      ?>
-      <!--footer-->
     
     <!--popup alert-->
     <div class="m-0 w-100 shadow-lg position-fixed py-3" id="popup-alert" style="display:none;bottom:0;left:0; background:white; z-index:999;">

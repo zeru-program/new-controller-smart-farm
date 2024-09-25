@@ -1,3 +1,4 @@
+AOS.init();
 
 function openAlert() {
   document.getElementById("popup-alert").style.display = "flex"
@@ -20,10 +21,30 @@ function login() {
   
 }
 
-function register() {
-  if (!usnInput && !emailInput && !passInput) {
+function register() { 
+  var validation = false;
+  if (!usnInput && !emailInput && !passInput && validation) {
       alert("silakan isi data dengan benar")
   }
+  validation = true
+  
+  var userId = Math.floor(Math.random() * 10);
+  var data = {
+    user_id: userId,
+    username: usnInput,
+    password: passInput
+  }
+  fetch("../config/postDataAccount.php", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data)
+  })
 }
 
 var urlPostRelay = "../config/postDataRelay.php";
