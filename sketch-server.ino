@@ -2,14 +2,17 @@
 #include <HTTPClient.h>
 #include <DHT.h>
 #include <WiFiManager.h>
+#include <Firebase.h>
 
 #define DHTPIN 19
 #define DHTTYPE DHT11 
 #define MAX_SOIL_SENSORS 10 // Maksimum 10 soil sensors
+// Firebase config details
 
 // URL hosting file
-String URL = "http://192.168.109.60/smart-farm/config/"; 
-String URLGetSensor = "http://192.168.109.60/smart-farm/config/getDevice.php?";
+// String URL = "http://192.168.109.60/smart-farm/config/"; 
+Firebase fb("https://controler-smart-farm-default-rtdb.firebaseio.com/");
+String URL = "";
 
 // WiFi credentials
 const char* ssid = "zeru"; 
@@ -27,7 +30,7 @@ DHT dht11(DHTPIN, DHTTYPE);
 void getSoilPins() {
   HTTPClient http;
   for (int i = 1; i <= MAX_SOIL_SENSORS; i++) {
-    String url = URLGetSensor + "soil=" + i;
+    String url = URL + "getDevice.php?soil=" + i;
     http.begin(url);
     int httpCode = http.GET();
     if (httpCode > 0) {
@@ -54,8 +57,8 @@ void setup() {
  // connectWiFi();
    WiFiManager wifiManager;
 
-  // Mengatur timeout (opsional)
-  wifiManager.setTimeout(60); // 30 detik timeout
+  // // Mengatur timeout (opsional)
+  // wifiManager.setTimeout(60); // 30 detik timeout
 
   // Memulai konfigurasi WiFi
   if (!wifiManager.autoConnect("smart-farm-server", "zerudev09")) {
@@ -69,6 +72,10 @@ void setup() {
   Serial.println(WiFi.SSID());
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
+
+  URL = fb.getString("config/server_ip");
+  Serial.print(fb.getString("config/server_ip"));
+  delay(2000);
   
   // DHT sensor initialization
   dht11.begin();
@@ -78,9 +85,9 @@ void setup() {
 }
 
 void loop() {
-  if (WiFi.status() != WL_CONNECTED) {
-    connectWiFi();
-  }
+  // if (WiFi.status() != WL_CONNECTED) {
+  //   connectWiFi();
+  // }
 
   // Read data from DHT sensor
   Load_DHT_Data();

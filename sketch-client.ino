@@ -139,8 +139,8 @@ void setup() {
   //connectWiFi();
   WiFiManager wifiManager;
 
-  // Mengatur timeout (opsional)
-  wifiManager.setTimeout(60); // 30 detik timeout
+  // // Mengatur timeout (opsional)
+  // wifiManager.setTimeout(60); // 30 detik timeout
 
   // Memulai konfigurasi WiFi
   if (!wifiManager.autoConnect("smart-farm-client", "zerudev09")) {
