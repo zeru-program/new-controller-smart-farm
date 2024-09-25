@@ -31,7 +31,7 @@
         <p class="m-0">improve your farming with</p>
         <h1 style="font-size:2em;" class="m-0 text-uppercase fw-bolder">Smart Farm</h1>
         <p class="m-0">Click start to move farming controller page!</p>
-        <a href="controller-sf/index.html" class="mt-2" data-aos="fadeIn" data-aos-duration="1000" data-aos-delay="500">
+        <a href="controller-sf/" class="mt-2" data-aos="fadeIn" data-aos-duration="1000" data-aos-delay="500">
           <button class="btn-start py-2" type="button">
             <b>START</b>
           </button>
