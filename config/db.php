@@ -1,6 +1,6 @@
 <?php
 
-$host = "localhost";
+$host = "localhost:3306";
 $username = "root";
 $password = "";
 $database = "smart_farm";

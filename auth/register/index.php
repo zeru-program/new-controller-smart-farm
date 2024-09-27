@@ -75,12 +75,23 @@
         })
           .then(res => res.json())
           .then(data => {
+              if (data.status === 'success') {
             Swal.fire({
               title: "Success !",
               text: 'berhasil membuat akun, silakan login',
               icon: "success"
             });
+            setTimeout(() => {
             window.location.href = "../login/"
+            }, 2000)
+              } else {
+                  alert("error response failed")
+              }
+           })
+          .catch(error => {
+              alert(JSON.stringify(data))
+              console.log(error)
+              alert(error)
           })
       }
     }

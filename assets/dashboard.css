@@ -1,0 +1,35 @@
+.custom-table {
+  border-collapse: collapse;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 12px 15px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.custom-table td {
+  padding-block: 5px !important;
+  padding-left: 5px !important;
+}
+
+.custom-table th {
+  background-color: #386c5f;
+  color: white;
+  font-weight: 800;
+}
+
+.custom-table th:first-child,
+.custom-table td:first-child {
+}
+
+.custom-table tbody tr:nth-child(even) {
+  background-color: rgba(56, 108, 95, .2);
+}
+.temp-update-class {
+    background-color: rgba(56, 108, 95, .3);
+}

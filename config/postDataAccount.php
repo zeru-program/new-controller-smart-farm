@@ -1,4 +1,4 @@
-<?php  
+<?php
 header('Content-Type: application/json');
 
 // Include database connection
@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userId = isset($data['user_id']) ? mysqli_real_escape_string($connection, $data['user_id']) : "";
     $username = isset($data['username']) ? mysqli_real_escape_string($connection, $data['username']) : "";
     $password = isset($data['password']) ? mysqli_real_escape_string($connection, $data['password']) : "";
-    $passwordEncrypt = password_hash($password, PASSWORD_DEFAULT);;
+    $passwordEncrypt = password_hash($password, PASSWORD_DEFAULT);
 
     if ($userId !== null && $username !== null && $password !== null) {
         $query = "INSERT INTO account (user_id, role, username, password, created_at) VALUES ('$userId', 'user', '$username', '$passwordEncrypt', CURRENT_TIMESTAMP)";
