@@ -24,13 +24,14 @@ DROP TABLE IF EXISTS `account`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `account` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `role` varchar(200) NOT NULL,
   `username` varchar(200) NOT NULL,
   `password` varchar(200) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,6 +40,9 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
+INSERT INTO `account` VALUES
+(1,44,'user','bbbb','$2y$10$yjBdDvDLTasbsaI.FCEn1ekG7FyYgke1YY3OIFJqO5cwHeSncEAzW','2024-09-25 18:49:32'),
+(2,43,'user','zeru','$2y$10$DFxV2yOQcuIrzpycmmk95OfwjTUSiCWVvyDhbbXpFkxVlHiX37OH2','2024-09-25 18:50:48');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -83,13 +87,14 @@ DROP TABLE IF EXISTS `devices_manager`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `devices_manager` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `device_name` varchar(200) NOT NULL,
   `pin` int(11) NOT NULL,
   `type` varchar(200) NOT NULL,
   `kondisi` varchar(200) NOT NULL,
-  `update_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `update_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,9 +104,9 @@ CREATE TABLE `devices_manager` (
 LOCK TABLES `devices_manager` WRITE;
 /*!40000 ALTER TABLE `devices_manager` DISABLE KEYS */;
 INSERT INTO `devices_manager` VALUES
-(1,'DHT',19,'dht11','active','2024-09-19 16:48:30'),
-(2,'soil1',34,'moisture','active','2024-09-19 16:48:30'),
-(3,'soil2',0,'moisture','inactive','2024-09-19 16:48:30'),
+(1,'DHT',19,'dht11','active','2024-09-26 13:03:16'),
+(2,'soil1',34,'moisture','active','2024-09-26 13:06:14'),
+(3,'soil2',1,'moisture','inactive','2024-09-26 12:59:44'),
 (4,'soil3',0,'moisture','inactive','2024-09-19 16:48:30'),
 (5,'soil4',0,'moisture','inactive','2024-09-19 16:48:30'),
 (6,'soil5',0,'moisture','inactive','2024-09-19 16:48:30'),
@@ -129,7 +134,7 @@ INSERT INTO `devices_manager` VALUES
 (28,'fan7',0,'fan','inactive','2024-09-21 14:22:55'),
 (29,'fan8',0,'fan','inactive','2024-09-21 14:22:55'),
 (30,'fan9',0,'fan','inactive','2024-09-21 14:22:55'),
-(31,'fan10',0,'fan','inactive','2024-09-21 14:22:55');
+(42,'fan10',0,'fan','inactive','2024-09-26 13:49:04');
 /*!40000 ALTER TABLE `devices_manager` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -157,8 +162,8 @@ CREATE TABLE `devices_relay` (
 LOCK TABLES `devices_relay` WRITE;
 /*!40000 ALTER TABLE `devices_relay` DISABLE KEYS */;
 INSERT INTO `devices_relay` VALUES
-(1,'pump1','pump',0,'2024-09-22 12:37:20'),
-(2,'fan1','fan',0,'2024-09-22 12:37:20');
+(1,'pump1','pump',0,'2024-09-26 13:27:23'),
+(2,'fan1','fan',0,'2024-09-26 13:27:23');
 /*!40000 ALTER TABLE `devices_relay` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -278,6 +283,34 @@ LOCK TABLES `smart_farm_data` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `status_esp`
+--
+
+DROP TABLE IF EXISTS `status_esp`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `status_esp` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `esp_client` tinyint(1) NOT NULL,
+  `esp_server` tinyint(1) NOT NULL,
+  `datetime` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `status_esp`
+--
+
+LOCK TABLES `status_esp` WRITE;
+/*!40000 ALTER TABLE `status_esp` DISABLE KEYS */;
+INSERT INTO `status_esp` VALUES
+(1,0,0,'2024-09-25 19:10:19'),
+(2,1,1,'2024-09-25 19:17:51');
+/*!40000 ALTER TABLE `status_esp` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `status_server`
 --
 
@@ -299,7 +332,7 @@ CREATE TABLE `status_server` (
 LOCK TABLES `status_server` WRITE;
 /*!40000 ALTER TABLE `status_server` DISABLE KEYS */;
 INSERT INTO `status_server` VALUES
-(1,0,'2024-09-22 12:37:20');
+(1,0,'2024-09-26 13:27:23');
 /*!40000 ALTER TABLE `status_server` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -312,4 +345,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2024-09-23 19:58:20
+-- Dump completed on 2024-09-27 12:10:11
