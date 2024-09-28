@@ -40,7 +40,7 @@
     <main class="m-0 mt-5">
       <div class="container d-flex flex-column">
       <h1 class="color-primary2 m-0 fw-bold">Farming Controller</h1>
-      <p class="">Lorem ipsum dolor sit amet.</p>
+      <p class="">Controll your farming in here (pastikan server sudah menyala dengan mengklik button 'START SERVER' dibawah)</p>
       <div class="d-flex gap-2 align-items-center">
         <p class="m-0">Status server (mysql) : </p>
         <div id="kondisi-mysql">
@@ -475,6 +475,8 @@ function fanButton(type, elem, fanNumber) {
         }
         function getData() {
             if (statusServer == 0) {
+              var changeKondisiTanaman = document.getElementById("kondisi-tanaman");
+              changeKondisiTanaman.innerHTML = '<p class="bg-danger text-light m-0 px-3 py-1">Server not started</p>'
                 return
             }
             var xhr = new XMLHttpRequest();
@@ -493,7 +495,7 @@ function fanButton(type, elem, fanNumber) {
                     } else if (moistureValue1 <= 50) {
                         changeKondisiTanaman.innerHTML = '<p class="bg-danger text-light m-0 px-3 py-1">Kering</p>';
                     } else {
-                        changeKondisiTanaman.innerHTML = '<p class="bg-primarys m-0 px-3 py-1">Stabil</p>';
+                        changeKondisiTanaman.innerHTML = '<p class="bg-danger text-light m-0 px-3 py-1">Moisture not found</p>';
                     }
         
                     if (!data.error) {
@@ -501,6 +503,8 @@ function fanButton(type, elem, fanNumber) {
                         updateProgress(1, data.humidity);
                         updateProgress(2, data.moisture1);
                     }
+                } else {
+                    alert("http errror")
                 }
             };
             xhr.send();

@@ -65,6 +65,26 @@
                 <p class="m-0">Status esp32 (client) : </p>
                 <span class="bg-primarys p-1" id="kondisi-esp1">Loading..</span>
             </div>
+            <div class="d-flex align-items-center gap-2 mt-2">
+                <p class="m-0 col-5">Farm system : </p> 
+                <select name="" onchange="changeSystem(this)" class="bg-primarys border-0 px-3 py-1" value="" id="system_mode_input">
+                  <option value="" hidden>Loading..</option>
+                  <option value="automatic">automatic</option>
+                  <option value="manual">manual</option>
+                  <option value="schedule">schedule</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center gap-2 mt-2">
+                <p class="m-0 col-5">Ip addres (just ip) : </p> 
+                <input type="text" value="loading.." name="" id="ip-addres" class="form-control">
+            </div>
+            <div class="d-flex align-items-center gap-2 mt-2">
+                <p class="m-0 col-5">Ip addres (ip complete) : </p> 
+                <input type="text" value="loading.." name="" id="ip-addres-complete" class="form-control">
+            </div>
+            <div class="d-flex align-items-center gap-2 mt-2">
+                <button class="btn btn-primarys" onclick="saveIp()">Save ip</button>
+            </div>
         </div>
       </main>
     
@@ -93,7 +113,7 @@
       
     }
       
-      function getStatusEsp() {
+    function getStatusEsp() {
       fetch("../config/getStatusEsp.php")
       .then(res => res.json())
       .then(data => {
@@ -129,6 +149,84 @@
       })
       
     }
+    
+    function getIpAddres() {
+        fetch("https://controler-smart-farm-default-rtdb.firebaseio.com/config.json")
+        .then(res => res.json())
+        .then(data => {
+            var ip1 = document.getElementById("ip-addres")
+            var ip2 = document.getElementById("ip-addres-complete")
+            
+            ip1.value = data.ip
+            ip2.value = data.server_ip
+        })
+    }
+    
+    function saveIp() {
+        var ip1 = document.getElementById("ip-addres").value
+        var ip2 = document.getElementById("ip-addres-complete").value 
+        var data = {
+            ip: ip1,
+            server_ip: ip2
+        }
+        fetch("https://controler-smart-farm-default-rtdb.firebaseio.com/config.json", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => {
+            if (res.ok) {
+                Swal.fire({
+                        title: "Berhasil !",
+                        text: "berhasil memperbarui ip",
+                        icon: "success"
+                  });
+                  getIpAddres()
+            }
+        })
+    }
+    
+      function changeSystem(elem) {
+            var value = elem.value;
+            fetch("../config/postDataSystem.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    system: value
+                  })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        title: "Berhasil !",
+                        text: 'mengganti system ke ' + value,
+                        icon: "success"
+                      });
+                } else {
+                    Swal.fire({
+                        title: "Failed !",
+                        text: 'gagal mengganti system',
+                        icon: "info"
+                      });
+                }
+            })
+        }
+        
+        function getSystemFarm() {
+            fetch('../config/getDataSystem.php')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('system_mode_input').value = data
+            })
+        }
+      
+      getIpAddres()
+      setInterval(getSystemFarm, 1000)
       setInterval(getStatusMysql, 2000)
       setInterval(getStatusEsp, 2000)
       
