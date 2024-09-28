@@ -145,6 +145,16 @@ html {
   background: black !important;
   color: white !important;
 }
+.box-sensor {
+  background-color: #512B81;
+  border-radius: 8px;
+  width: 180px;
+  height: 150px;
+  color: white;
+}
+.box-sensor p {
+  font-size: .9em;
+}
 /*** home style ***/
 
 /* circular progres */

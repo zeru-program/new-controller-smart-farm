@@ -19,7 +19,7 @@
     <!--navbar -->
       <nav class="navbar navbar-expand-lg" style="background:white;">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/">Logo</a>
+        <img src="../assets/logo.png" style="width: 50px;" alt="">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="bi bi-list"></span>
         </button>
@@ -37,8 +37,38 @@
     </nav>
     <!--navbar -->
     
-    <main class="m-0 mt-5">
-      <div class="container d-flex flex-column">
+    <main class="m-0">
+        <div class="w-100 py-3 d-flex flex-column justify-content-center align-items-center bg-primarys gap-2" id="body-append-value-sensor">
+            <div class="d-flex gap-2">
+                <div class="d-flex flex-column p-2 box-sensor position-relative d-flex justify-content-center align-items-center" style="background:#F2613F">
+                    <p class="m-0 position-absolute" style="left:10px;top:5px">Temperature</p>
+                    <h1 style="font-size:3em" class="m-0 mt-2 fw-bold">10</h1>
+                    <p class="m-0">Normal</p>
+                    <p class="m-0 position-absolute" style="right:10px;top:5px">°C</p>
+                </div>
+                <div class="d-flex flex-column p-2 box-sensor position-relative d-flex justify-content-center align-items-center">
+                    <p class="m-0 position-absolute" style="left:10px;top:5px">Kel. Udara</p>
+                    <h1 style="font-size:3em" class="m-0 mt-2 fw-bold">10</h1>
+                    <p class="m-0">Normal</p>
+                    <p class="m-0 position-absolute" style="right:10px;top:5px">%</p>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <div class="d-flex flex-column p-2 box-sensor position-relative d-flex justify-content-center align-items-center" style="background:#FF204E">
+                    <p class="m-0 position-absolute" style="left:10px;top:5px">Kel. Tanah 1</p>
+                    <h1 style="font-size:3em" class="m-0 mt-2 fw-bold">10</h1>
+                    <p class="m-0">Normal</p>
+                    <p class="m-0 position-absolute" style="right:10px;top:5px">%</p>
+                </div>
+                <div class="d-flex flex-column p-2 box-sensor position-relative d-flex justify-content-center align-items-center" style="background:gray">
+                    <p class="m-0 position-absolute" style="left:10px;top:5px">Kel. Tanah 2</p>
+                    <h1 style="font-size:3em" class="m-0 mt-2 fw-bold">0</h1>
+                    <p class="m-0">Comming soon..</p>
+                    <p class="m-0 position-absolute" style="right:10px;top:5px">%</p>
+                </div>
+            </div>
+        </div>
+      <div class="container mt-4 d-flex flex-column">
       <h1 class="color-primary2 m-0 fw-bold">Farming Controller</h1>
       <p class="">Controll your farming in here (pastikan server sudah menyala dengan mengklik button 'START SERVER' dibawah)</p>
       <div class="d-flex gap-2 align-items-center">
@@ -56,6 +86,7 @@
       <div class="d-flex gap-2 mt-2 align-items-center">
         <p class="m-0">System Farming : </p>
         <select name="" onchange="changeSystem(this)" class="bg-primarys border-0 px-3 py-1" value="" id="system_mode_input">
+          <option value="" hidden>Loading..</option>
           <option value="automatic">automatic</option>
           <option value="manual">manual</option>
           <option value="schedule">schedule</option>
@@ -91,32 +122,6 @@
           </div>
          </div>
         </div>
-      <div class="d-flex gap-1 mt-2 overflow-x-scroll justify-content-center align-items-center" style="height:180px">
-        <div class="d-flex flex-column align-items-center gap-2">
-         <div class="rectangle-bar-container">
-          <div class="rectangle-value"></div>
-        </div>
-          <p class="mt-3">Sektor 1</p>
-        </div>
-        <div class="d-flex flex-column align-items-center gap-2">
-         <div class="rectangle-bar-container">
-          <div class="rectangle-value"></div>
-        </div>
-          <p class="mt-3">Sektor 2</p>
-        </div>
-        <div class="d-flex flex-column align-items-center gap-2">
-         <div class="rectangle-bar-container">
-          <div class="rectangle-value"></div>
-        </div>
-          <p class="mt-3">Sektor 3</p>
-        </div>
-        <div class="d-flex flex-column align-items-center gap-2">
-         <div class="rectangle-bar-container">
-          <div class="rectangle-value"></div>
-        </div>
-          <p class="mt-3">Sektor 4</p>
-        </div>
-      </div>
       <div class="container d-flex justify-content-center mt-3 mb-3">
           <button class="btn-on-off btno-active" id="btns-on" style="display:flex" onclick="server('on')">START SERVER</button>
           <button class="btn-on-off btno-active" style="display:none;background:#FF2842 !important;border:3px solid #FF2842 !important;" id="btns-off" onclick="server('off')">TURN OFF SERVER</button>
