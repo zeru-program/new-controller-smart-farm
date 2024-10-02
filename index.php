@@ -62,7 +62,7 @@
        </div>
        <div class="mt-3 d-flex flex-column align-items-center">
          <h1 class="m-0 fw-bold" data-aos="fadeIn">Our Circuits</h1>
-         <img src="/assets/circuits.png" data-aos="fadeIn" style="width:100%" alt="circuits image" class="m-0">
+         <img src="https://zeru-program.github.io/new-controller-smart-farm/assets/circuits.png" style="width:100%" alt="circuits image" class="m-0">
        </div>
       </div>
       <!--about us page editing-->
