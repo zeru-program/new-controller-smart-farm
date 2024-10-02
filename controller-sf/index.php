@@ -207,7 +207,7 @@
         <!--popup error connect mysql-->
 
 
-        <script src="../assets/circular.js" type="text/javascript" charset="utf-8"></script>
+        <!-- <script src="../assets/circular.js" type="text/javascript" charset="utf-8"></script> -->
         <script src="../assets/main.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
          const xValues = [8, 10, 12, 15, 18, 20, 23]; // Note: removing leading zero from 08
@@ -427,9 +427,6 @@ new Chart("myChart", {
                     stateFix = 1
                 } else if (state === "off") {
                     stateFix = 0
-                    updateProgress(0, 0);
-                    updateProgress(1, 0);
-                    updateProgress(2, 0);
                 }
                 fetch("../config/postStatusServer.php", {
                     method: "POST",
