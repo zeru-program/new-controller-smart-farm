@@ -24,7 +24,7 @@
     if (localStorage.getItem("login")) {
       window.location.href = "/"
     }
-    </script>
+  </script>
 </head>
 
 <body>
@@ -43,8 +43,6 @@
 
   <script src="../../assets/main.js" type="text/javascript" charset="utf-8"></script>
   <script>
-
-
     function register() {
       var usnInput = document.getElementById("username-ipt").value
       var emailInput = document.getElementById("email-ipt").value
@@ -67,35 +65,34 @@
           password: passInput
         }
         fetch("../../config/postDataAccount.php", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        })
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          })
           .then(res => res.json())
           .then(data => {
-              if (data.status === 'success') {
-            Swal.fire({
-              title: "Success !",
-              text: 'berhasil membuat akun, silakan login',
-              icon: "success"
-            });
-            setTimeout(() => {
-            window.location.href = "../login/"
-            }, 2000)
-              } else {
-                  alert("error response failed")
-              }
-           })
+            if (data.status === 'success') {
+              Swal.fire({
+                title: "Success !",
+                text: 'berhasil membuat akun, silakan login',
+                icon: "success"
+              });
+              setTimeout(() => {
+                window.location.href = "../login/"
+              }, 2000)
+            } else {
+              alert("error response failed")
+            }
+          })
           .catch(error => {
-              alert(JSON.stringify(data))
-              console.log(error)
-              alert(error)
+            alert(JSON.stringify(data))
+            console.log(error)
+            alert(error)
           })
       }
     }
-
   </script>
 </body>
 

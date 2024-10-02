@@ -24,7 +24,7 @@
     if (localStorage.getItem("login")) {
       window.location.href = "/"
     }
-    </script>
+  </script>
 </head>
 
 <body>
@@ -42,8 +42,6 @@
 
   <script src="../../assets/main.js" type="text/javascript" charset="utf-8"></script>
   <script>
-
-
     function login() {
       var usnInput = document.getElementById("username-ipt").value
       var passInput = document.getElementById("password-ipt").value
@@ -63,12 +61,12 @@
           password: passInput
         }
         fetch("../../config/getDataAccount.php", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        })
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          })
           .then(res => res.json())
           .then(data => {
             if (data.message === "success login") {
@@ -96,7 +94,6 @@
           })
       }
     }
-
   </script>
 </body>
 

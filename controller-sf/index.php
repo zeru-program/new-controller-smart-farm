@@ -17,7 +17,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
-</script>
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/js-circle-progress/dist/circle-progress.min.js" type="module"></script>
     <link rel="shortcut icon" href="https://i.pinimg.com/474x/ef/f6/ac/eff6acfcf843833a9b21070769dae764.jpg"
         type="image/x-icon">
@@ -210,51 +210,83 @@
         <!-- <script src="../assets/circular.js" type="text/javascript" charset="utf-8"></script> -->
         <script src="../assets/main.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
-         const xValues = [8, 10, 12, 15, 18, 20, 23]; // Note: removing leading zero from 08
-const yValues = [10, 20, 30, 10, 100, 10, 20];
-const yValues1 = [30, 20, 30, 10, 20, 10, 20];
-const yValues2 = [100, 50, 30, 10, 20, 10, 10];
+            const xValues = [8, 10, 12, 15, 18, 20, 23]; // Time or any x-axis values
+            const tempValues = [];
+            const humiValues = [];
+            const moistureValues1 = [];
 
-new Chart("myChart", {
-    type: "line",
-    data: {
-        labels: xValues,
-        datasets: [
-            {
-                label: "Temp", // Optional label for the legend
-                fill: false,
-                lineTension: 0,
-                backgroundColor: "rgba(242, 97, 63, 1)",
-                borderColor: "rgba(242, 97, 63, 0.8)",
-                data: yValues
-            },
-            {
-                label: "Humidity", // Second dataset
-                fill: false,
-                lineTension: 0,
-                backgroundColor: "#512B81",
-                borderColor: "rgba(81, 43, 129, 0.8)",
-                data: yValues1
-            },
-            {
-                label: "Moisture1", // Second dataset
-                fill: false,
-                lineTension: 0,
-                backgroundColor: "rgba(255, 32, 78, 1)",
-                borderColor: "rgba(255, 32, 78, 0.7)",
-                data: yValues2
-            }
-        ]
-    },
-    options: {
-        legend: { display: true }, // Display legend to differentiate datasets
-        scales: {
-            yAxes: [{ 
-                ticks: { min: 0, max: 100 }
-            }]
+            // Creating the chart
+            var myChart = new Chart("myChart", {
+                type: "line",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                            label: "Temp", // Optional label for the legend
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(242, 97, 63, 1)",
+                            borderColor: "rgba(242, 97, 63, 0.8)",
+                            data: tempValues
+                        },
+                        {
+                            label: "Humidity", // Second dataset
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "#512B81",
+                            borderColor: "rgba(81, 43, 129, 0.8)",
+                            data: humiValues
+                        },
+                        {
+                            label: "Moisture1", // Third dataset
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(255, 32, 78, 1)",
+                            borderColor: "rgba(255, 32, 78, 0.7)",
+                            data: moistureValues1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: true
+                    }, // Display legend to differentiate datasets
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 100
+                            }
+                        }]
+                    },
+                     animation: {
+            duration: 1000, // Duration of the animation in milliseconds
+            easing: 'easeInOutQuart' // Easing function for a smoother transition
         }
-    }
-});
+                }
+            });
+
+            // Function to automatically update the chart data
+            function updateChart() {
+                // Simulating new values being pushed to the datasets
+                tempValues.push(Math.floor(Math.random() * 100)); // Adding random temp data
+                humiValues.push(Math.floor(Math.random() * 100)); // Adding random humidity data
+                moistureValues1.push(Math.floor(Math.random() * 100)); // Adding random moisture data
+
+                // Shift xValues if needed (for example, if using timestamps)
+                if (xValues.length > 10) { // Keep max 10 data points, can adjust accordingly
+                    tempValues.shift();
+                    humiValues.shift();
+                    moistureValues1.shift();
+                }
+
+                myChart.update(); // Update the chart with new data
+            }
+
+            // Simulate live data updates every 2 seconds
+            setInterval(updateChart, 2000);
+
+
 
             function showAlert(type, elem) {
                 var btnPlant = document.getElementById("btna-plant")
@@ -282,6 +314,7 @@ new Chart("myChart", {
             }
 
             var urlPostRelay = "../config/postDataRelay.php";
+
             function pumpButton(type, elem, pumpNumber) {
                 var pinBtnOn = "pump" + pumpNumber + "-btn-on"
                 var pinBtnOff = "pump" + pumpNumber + "-btn-off"
@@ -290,21 +323,21 @@ new Chart("myChart", {
                 btnOn.classList.remove("btno-active");
                 btnOff.classList.remove("btno-active");
 
-                var pumpStatus = (type === 'on') ? 1 : 0;  // Pump ON or OFF
+                var pumpStatus = (type === 'on') ? 1 : 0; // Pump ON or OFF
 
                 if (type === 'on') {
                     elem.classList.add("btno-active");
                     fetch(urlPostRelay, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            pump: true,
-                            pumpNumber: pumpNumber,
-                            pumpStatus: pumpStatus
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                pump: true,
+                                pumpNumber: pumpNumber,
+                                pumpStatus: pumpStatus
+                            })
                         })
-                    })
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
@@ -323,16 +356,16 @@ new Chart("myChart", {
                 } else if (type === 'off') {
                     elem.classList.add("btno-active");
                     fetch(urlPostRelay, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            pump: true,
-                            pumpNumber: pumpNumber,
-                            pumpStatus: pumpStatus
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                pump: true,
+                                pumpNumber: pumpNumber,
+                                pumpStatus: pumpStatus
+                            })
                         })
-                    })
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
@@ -359,21 +392,21 @@ new Chart("myChart", {
                 btnOn.classList.remove("btno-active")
                 btnOff.classList.remove("btno-active")
 
-                var fanStatus = (type === 'on') ? 1 : 0;  // Pump ON or OFF
+                var fanStatus = (type === 'on') ? 1 : 0; // Pump ON or OFF
 
                 if (type === 'on') {
                     elem.classList.add("btno-active");
                     fetch(urlPostRelay, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            fan: true,
-                            fanNumber: fanNumber,
-                            fanStatus: fanStatus
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                fan: true,
+                                fanNumber: fanNumber,
+                                fanStatus: fanStatus
+                            })
                         })
-                    })
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
@@ -392,16 +425,16 @@ new Chart("myChart", {
                 } else if (type === 'off') {
                     elem.classList.add("btno-active");
                     fetch(urlPostRelay, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            fan: true,
-                            fanNumber: fanNumber,
-                            fanStatus: fanStatus
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                fan: true,
+                                fanNumber: fanNumber,
+                                fanStatus: fanStatus
+                            })
                         })
-                    })
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
@@ -421,6 +454,7 @@ new Chart("myChart", {
             }
 
             var statusServer = 0;
+
             function server(state) {
                 let stateFix;
                 if (state === "on") {
@@ -429,14 +463,14 @@ new Chart("myChart", {
                     stateFix = 0
                 }
                 fetch("../config/postStatusServer.php", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        status: stateFix
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            status: stateFix
+                        })
                     })
-                })
                     .then(res => res.json())
                     .then(data => {
                         if (data.status === 'success') {
@@ -458,17 +492,18 @@ new Chart("myChart", {
                         }
                     })
             }
+
             function changeSystem(elem) {
                 var value = elem.value;
                 fetch("../config/postDataSystem.php", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        system: value
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            system: value
+                        })
                     })
-                })
                     .then(res => res.json())
                     .then(data => {
                         if (data.status === 'success') {
@@ -486,6 +521,7 @@ new Chart("myChart", {
                         }
                     })
             }
+
             function getStatusMysql() {
                 fetch('../config/db.php?status')
                     .then(res => res.text())
@@ -499,6 +535,7 @@ new Chart("myChart", {
                         }
                     })
             }
+
             function getSystemFarm() {
                 fetch('../config/getDataSystem.php')
                     .then(res => res.text())
@@ -506,6 +543,7 @@ new Chart("myChart", {
                         document.getElementById('system_mode_input').value = data
                     })
             }
+
             function getStatusServer() {
                 var btnBtn = document.getElementById("btn-btn")
                 var btnAlert = document.getElementById("btn-alert")
@@ -529,6 +567,7 @@ new Chart("myChart", {
                         }
                     })
             }
+
             function getData() {
                 if (statusServer === 0) {
                     var changeKondisiTanaman = document.getElementById("kondisi-tanaman");
@@ -538,7 +577,7 @@ new Chart("myChart", {
 
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", "../config/getDataSensor.php", true);
-                xhr.onload = function () {
+                xhr.onload = function() {
                     if (xhr.status === 200) {
                         var data = JSON.parse(xhr.responseText);
 
@@ -708,7 +747,6 @@ new Chart("myChart", {
             window.onload = updateDeviceStatus;
             window.onload = getStatusServer;
             window.onload = getSystemFarm;
-
         </script>
 </body>
 

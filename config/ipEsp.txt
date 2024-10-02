@@ -1,1 +1,0 @@
-http://192.168.109.157/smart-farm/config/
