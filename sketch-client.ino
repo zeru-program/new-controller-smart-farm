@@ -3,6 +3,7 @@
 #include <WiFiClientSecure.h>   
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h> 
+#include <Firebase.h>
 #include <WiFiManager.h>
 
 
@@ -10,7 +11,11 @@
 const int MAX_RELAY_PINS = 10; 
 int relayPumpPins[MAX_RELAY_PINS] = {0};
 int relayFanPins[MAX_RELAY_PINS] = {0};
-String URL = "http://192.168.109.60/smart-farm/config/";
+// Firebase config details
+// URL hosting file
+// String URL = "http://192.168.109.60/smart-farm/config/"; 
+Firebase fb("https://controler-smart-farm-default-rtdb.firebaseio.com/");
+String URL = "";
 
 LiquidCrystal_I2C lcd(0x27,16,2);
 
@@ -155,6 +160,8 @@ void setup() {
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
   lcd.clear();
+   URL = fb.getString("config/server_ip");
+  Serial.print(fb.getString("config/server_ip"));
   delay(1000);
 
   lcd.setCursor(0, 0);
@@ -164,7 +171,7 @@ void setup() {
   lcd.setCursor(0, 0);
   lcd.print("Loading");
   animateLoading(2);
-  teksWelcomingLcd("192.168.109.60");
+  teksWelcomingLcd(URL);
   lcd.clear();
   
   getRelayPumpPins();

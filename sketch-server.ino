@@ -6,7 +6,7 @@
 
 #define DHTPIN 19
 #define DHTTYPE DHT11 
-#define MAX_SOIL_SENSORS 10 // Maksimum 10 soil sensors
+#define MAX_SOIL_SENSORS 3 // Maksimum 10 soil sensors
 // Firebase config details
 
 // URL hosting file
@@ -28,27 +28,43 @@ DHT dht11(DHTPIN, DHTTYPE);
 
 // Fungsi untuk mendapatkan pin soil sensor dari server
 void getSoilPins() {
-  HTTPClient http;
-  for (int i = 1; i <= MAX_SOIL_SENSORS; i++) {
-    String url = URL + "getDevice.php?soil=" + i;
-    http.begin(url);
-    int httpCode = http.GET();
-    if (httpCode > 0) {
-      String payload = http.getString();
-      Serial.print("Payload for soil "); Serial.print(i); Serial.print(": "); Serial.println(payload);
+  // HTTPClient http;
+  // for (int i = 1; i <= MAX_SOIL_SENSORS; i++) {
+  //   String url = URL + "getDevice.php?soil=" + i;
+  //   http.begin(url);
+  //   int httpCode = http.GET();
+  //   if (httpCode > 0) {
+  //     String payload = http.getString();
+  //     Serial.print("Payload for soil "); Serial.print(i); Serial.print(": "); Serial.println(payload);
 
-      int pin = payload.toInt(); // Konversi payload ke integer
-      if (pin > 0) {
-        soilPins[i - 1] = pin; // Simpan nilai pin
-        pinMode(pin, INPUT); // Set pin sebagai input
-      } else {
-        Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
-      }
+  //   //  int pin = payload.toInt(); // Konversi payload ke integer
+  //     // int pin = fb.getInt("data/-O6CRRduZZleytOeBYMw/soilPin1");
+  //     // if (pin > 0) {
+  //     //   soilPins[i - 1] = pin; // Simpan nilai pin
+  //     //   pinMode(pin, INPUT); // Set pin sebagai input
+  //     // } else {
+  //     //   Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
+  //     // }
+  //   } else {
+  //     Serial.print("Error code: ");
+  //     Serial.println(httpCode);
+  //   }
+  //   http.end();
+  // }
+   for (int i = 1; i <= MAX_SOIL_SENSORS; i++) {
+    // Membentuk jalur dinamis untuk mengambil data dari Firebase
+    String pinPath = "data/-O6CRRduZZleytOeBYMw/soilPin" + String(i);
+    
+    // Mengambil nilai pin dari Firebase
+    int pin = fb.getInt(pinPath);
+    
+    if (pin > 0) {
+      soilPins[i - 1] = pin; // Simpan nilai pin
+      pinMode(pin, INPUT);    // Set pin sebagai input
+      Serial.print("Pin untuk sensor tanah "); Serial.print(i); Serial.print(" : "); Serial.println(pin);
     } else {
-      Serial.print("Error code: ");
-      Serial.println(httpCode);
+      Serial.print("Invalid pin untuk sensor tanah "); Serial.print(i); Serial.println(".");
     }
-    http.end();
   }
 }
 
@@ -75,7 +91,6 @@ void setup() {
 
   URL = fb.getString("config/server_ip");
   Serial.print(fb.getString("config/server_ip"));
-  delay(2000);
   
   // DHT sensor initialization
   dht11.begin();
