@@ -1,262 +1,206 @@
-#include <WiFi.h>
-#include <HTTPClient.h>
-#include <WiFiClientSecure.h>   
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h> 
 #include <Firebase.h>
 #include <WiFiManager.h>
 
-
-// WiFi credentials
-const int MAX_RELAY_PINS = 10; 
+// Maksimum jumlah relay pin yang dapat digunakan
+const int MAX_RELAY_PINS = 11; 
+// lampu biru esp menandakan esp client
+const int espLed = 2;
+// Array untuk menyimpan pin relay pompa dan kipas
 int relayPumpPins[MAX_RELAY_PINS] = {0};
 int relayFanPins[MAX_RELAY_PINS] = {0};
-// Firebase config details
-// URL hosting file
-// String URL = "http://192.168.109.60/smart-farm/config/"; 
-Firebase fb("https://controler-smart-farm-default-rtdb.firebaseio.com/");
-String URL = "";
 
+// Inisialisasi koneksi Firebase
+Firebase fb("https://controler-smart-farm-default-rtdb.firebaseio.com/");
+
+// Inisialisasi LCD dengan alamat I2C 0x27 dan ukuran 16x2
 LiquidCrystal_I2C lcd(0x27,16,2);
 
-
-// void setUpIpconfig() {
-//   HTTPClient http;
-//   http.begin("https://zeru-program.github.io/new-controller-smart-farm/config/ipEsp.txt");
-//   int httpCode = http.GET();
-//   if (httpCode > 0) {
-//     String payload = http.getString();
-//     URL += payload;
-//     Serial.println(payload);
-//   } else {
-//       Serial.println("Error on HTTP request");
-//     }
-//     http.end();
-// }
-
-// Fungsi untuk mendapatkan pin soil sensor dari server
+// Fungsi untuk mengambil pin relay pompa dari Firebase
 void getRelayPumpPins() {
-  HTTPClient http;
   for (int i = 1; i <= MAX_RELAY_PINS; i++) {
-    String url = URL + "getRelayPins.php?pump=" + i;
-    http.begin(url);
-    int httpCode = http.GET();
-    if (httpCode > 0) {
-      String payload = http.getString();
-      Serial.print("Payload for pump "); Serial.print(i); Serial.print(": "); Serial.println(payload);
-
-      int pin = payload.toInt(); // Konversi payload ke integer
-      if (pin > 0) {
-        relayPumpPins[i - 1] = pin; // Simpan nilai pin
-        pinMode(pin, OUTPUT); // Set pin sebagai input
-        digitalWrite(pin, HIGH);
-      } else {
-        Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
-      }
-    } else {
-      Serial.print("Error code: ");
-      Serial.println(httpCode);
-    }
-    http.end();
+      String path = "dataPins/pumps/pump" + i;
+      relayPumpPins[i] = fb.getInt(path); // Mengambil pin dari Firebase
   }
 }
+
+// Fungsi untuk mengambil pin relay kipas dari Firebase
 void getRelayFanPins() {
-  HTTPClient http;
   for (int i = 1; i <= MAX_RELAY_PINS; i++) {
-    String url = URL + "getRelayPins.php?fan=" + i;
-    http.begin(url);
-    int httpCode = http.GET();
-    if (httpCode > 0) {
-      String payload = http.getString();
-      Serial.print("Payload for fan "); Serial.print(i); Serial.print(": "); Serial.println(payload);
-
-      int pin = payload.toInt(); // Konversi payload ke integer
-      if (pin > 0) {
-        relayFanPins[i - 1] = pin; // Simpan nilai pin
-        pinMode(pin, OUTPUT); // Set pin sebagai input
-        digitalWrite(pin, HIGH);
-      } else {
-        Serial.print("Invalid pin for soil sensor "); Serial.print(i); Serial.println(".");
-      }
-    } else {
-      Serial.print("Error code: ");
-      Serial.println(httpCode);
-    }
-    http.end();
+      String path = "dataPins/fans/fan" + i;
+      relayFanPins[i] = fb.getInt(path); // Mengambil pin dari Firebase
   }
 }
 
-// get status pump
+// Fungsi untuk mendapatkan status pompa dan mengontrol relay
 void getPumpStatus(int pumpNumber) {
-  delay(1000);
-  HTTPClient http;
-  String urlFix = URL + "getDataRelayEsp.php?pump=" + String(pumpNumber);
-  http.begin(urlFix);
-  int httpCode = http.GET();
-  int pinsPump = relayPumpPins[pumpNumber - 1];
-  
-  if (httpCode > 0) {
-    String payload = http.getString();
-    Serial.println("Status pump" + String(pumpNumber) + ": " + payload);
-    int status = payload.toInt(); // ubah string menjadi integer
-    if (status == 1) {
-      digitalWrite(pinsPump, LOW); // Mengaktifkan relay (ON)
-    } else if (status == 0) {
-      digitalWrite(pinsPump, HIGH); // Mematikan relay (OFF)
+    String path = "dataRelay/pump" + String(pumpNumber);
+    
+    int result = fb.getInt(path); // Mengambil status pompa dari Firebase
+    int pinsPump = relayPumpPins[pumpNumber];
+    
+    // Jika status pompa aktif, aktifkan relay
+    if (result == 1) {
+      digitalWrite(pinsPump, LOW); // Aktifkan relay (ON)
+    } 
+    // Jika status pompa tidak aktif, matikan relay
+    else if (result == 0) {
+      digitalWrite(pinsPump, HIGH); // Matikan relay (OFF)
+    } 
+    // Jika tidak ditemukan status
+    else {
+        Serial.println("error result pump not found");
     }
-  } else {
-      Serial.println("Error on HTTP request");
-    }
-    http.end();
 }
+
+// Fungsi untuk mendapatkan status kipas dan mengontrol relay
 void getFanStatus(int fanNumber) {
-  delay(1000);
-  HTTPClient http;
-  String urlFix = URL + "getDataRelayEsp.php?fan=" + String(fanNumber);
-  http.begin(urlFix);
-  int httpCode = http.GET();
-  int pinsFan = relayFanPins[fanNumber - 1];
-  
-  if (httpCode > 0) {
-    String payload = http.getString();
-    Serial.println("Status pump" + String(fanNumber) + ": " + payload);
-    int status = payload.toInt(); // ubah string menjadi integer
-    if (status == 1) {
-      digitalWrite(pinsFan, LOW); // Mengaktifkan relay (ON)
-    } else if (status == 0) {
-      digitalWrite(pinsFan, HIGH); // Mematikan relay (OFF)
+    String path = "dataRelay/fan" + String(fanNumber);
+    
+    int result = fb.getInt(path); // Mengambil status kipas dari Firebase
+    int pinsFan = relayFanPins[fanNumber];
+    
+    // Jika status kipas aktif, aktifkan relay
+    if (result == 1) {
+      digitalWrite(pinsFan, LOW); // Aktifkan relay (ON)
+    } 
+    // Jika status kipas tidak aktif, matikan relay
+    else if (result == 0) {
+      digitalWrite(pinsFan, HIGH); // Matikan relay (OFF)
+    } 
+    // Jika tidak ditemukan status
+    else {
+        Serial.println("error result fan not found");
     }
-  } else {
-      Serial.println("Error on HTTP request");
-    }
-    http.end();
 }
 
 void setup() {
   Serial.begin(115200);
   
+  pinMode(espLed, OUTPUT);
+  
+  // Inisialisasi LCD
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
   lcd.print("WiFi manager");
   lcd.setCursor(0, 1);
   lcd.print("Connection..");
-  //connectWiFi();
+  
+  // Inisialisasi WiFiManager untuk menghubungkan ke WiFi
   WiFiManager wifiManager;
 
-  // // Mengatur timeout (opsional)
-  // wifiManager.setTimeout(60); // 30 detik timeout
-
-  // Memulai konfigurasi WiFi
+  // Menjalankan konfigurasi WiFi secara otomatis
   if (!wifiManager.autoConnect("smart-farm-client", "zerudev09")) {
+    digitalWrite(espLed, LOW);
     Serial.println("Gagal terhubung, rebooting...");
     delay(3000);
-    ESP.restart();  
+    ESP.restart();  // Reboot jika gagal
   }
 
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Connected!");
+  digitalWrite(espLed, HIGH);
   Serial.println("Terhubung!");
   Serial.print("SSID: ");
   Serial.println(WiFi.SSID());
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
-  lcd.clear();
-   URL = fb.getString("config/server_ip");
-  Serial.print(fb.getString("config/server_ip"));
-  delay(1000);
-
-  lcd.setCursor(0, 0);
-  lcd.print("Wifi Connected !");
-  delay(500);
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Loading");
-  animateLoading(2);
-  teksWelcomingLcd(URL);
+  delay(1300);
   lcd.clear();
   
+  lcd.setCursor(0, 0);
+  lcd.print("Loading");
+  
+  // Menampilkan animasi loading
+  animateLoading(1);
+  
+  // Menampilkan teks selamat datang
+  teksWelcomingLcd();
+  lcd.clear();
+  
+  // Mengambil pin relay dari Firebase
   getRelayPumpPins();
   getRelayFanPins();
-
 }
 
 void loop() {
-  // if (WiFi.status() != WL_CONNECTED) {
-  //   connectWiFi();
-  // }
+  // Mengambil dan mengatur status relay untuk pompa dan kipas
   getPumpStatus(1);
   getFanStatus(1);
-  getDataTemp(1);
+  
+  // Mengambil dan menampilkan data suhu serta kelembaban tanah
+  getDataTemp();
   getDataMoisture(1);
+  
+  delay(2000); // Menunggu 2 detik sebelum mengulangi loop
 }
 
-void getDataTemp(int pin) {
-
-  // get temp
-  HTTPClient http;
-  http.begin(URL + "getDataSensorEsp.php?temperature=" + String(pin));
-  int httpCode = http.GET();
-  if (httpCode > 0) {
-    String payload = http.getString();
-    lcd.setCursor(0, 0);
-    lcd.print("Temp   :  ");
-    lcd.setCursor(11, 0);
-    lcd.print(payload + "C");
-  }
-
-  http.end();
+// Fungsi untuk mendapatkan dan menampilkan data suhu dari Firebase
+void getDataTemp() {
+    int result = fb.getInt("dataFarm/temperature"); // Mengambil suhu dari Firebase
+    
+    if (result) {
+        lcd.setCursor(0, 0);
+        lcd.print("Temp   :  ");
+        lcd.setCursor(11, 0);
+        lcd.print(result + "C"); // Menampilkan suhu di LCD
+    } else {
+        Serial.println("failed fetch temperature");
+    }
 }
 
+// Fungsi untuk mendapatkan dan menampilkan data kelembaban tanah dari Firebase
 void getDataMoisture(int pin) {
-
-  // get temp
-  HTTPClient http;
-  http.begin(URL + "getDataSensorEsp.php?moisture=" + String(pin));
-  int httpCode = http.GET();
-  if (httpCode > 0) {
-    String payload = http.getString();
-    lcd.setCursor(0, 1);
-    lcd.print("Humidity : ");
-    lcd.setCursor(11, 1);
-    lcd.print(payload + "%");
-  }
-
-  http.end();
+   int result = fb.getInt("dataFarm/moisture" + String(pin)); // Mengambil kelembaban tanah dari Firebase
+    
+    if (result) {
+        lcd.setCursor(0, 1);
+        lcd.print("Humidity : ");
+        lcd.setCursor(11, 1);
+        lcd.print(result + "%"); // Menampilkan kelembaban di LCD
+    } else {
+        Serial.println("failed fetch Moisture");
+    }
 }
 
-// lcd system
+// Fungsi animasi loading pada LCD
 void animateLoading(int repeats) {
   for (int r = 0; r < repeats; r++) {
     for (int i = 0; i < 10; i++) {
       lcd.setCursor(i, 1);
       lcd.print(".");
-      delay(200);
+      delay(200); // Menampilkan titik-titik dengan jeda 200ms
     }
     lcd.setCursor(0, 1);
     lcd.print("          ");
     delay(200);
   }
-    lcd.clear();
-    delay(500);
+  lcd.clear();
+  delay(500);
 }
 
-void teksWelcomingLcd(String ipWeb) {
+// Fungsi untuk menampilkan teks selamat datang di LCD
+void teksWelcomingLcd() {
   const char* welcomeText = "WELCOME";
   const char* smartFarmText = "TO SMART FARM";
 
-  // Menampilkan teks "WELCOME" per karakter
+  // Menampilkan teks "WELCOME" karakter per karakter
   lcd.setCursor(4, 0);
   for (int i = 0; welcomeText[i] != '\0'; i++) {
     lcd.print(welcomeText[i]);
-    delay(100); // Jeda 500ms untuk setiap karakter
+    delay(100); // Jeda 100ms untuk setiap karakter
   }
 
   delay(1000); // Jeda 1 detik sebelum menampilkan baris berikutnya
 
-  // Menampilkan teks "TO SMART FARM" per karakter
+  // Menampilkan teks "TO SMART FARM" karakter per karakter
   lcd.setCursor(1, 1);
   for (int i = 0; smartFarmText[i] != '\0'; i++) {
     lcd.print(smartFarmText[i]);
-    delay(100); // Jeda 500ms untuk setiap karakter
+    delay(100); // Jeda 100ms untuk setiap karakter
   } 
 
   delay(5000);
@@ -265,8 +209,9 @@ void teksWelcomingLcd(String ipWeb) {
   lcd.setCursor(0,0);
   lcd.print("Web Controller : ");
   
+  // Menampilkan alamat IP dari Firebase
   lcd.setCursor(0,1);
-  lcd.print(ipWeb);
+  lcd.print(fb.getString("config/ip"));
   delay(5000);
 
   lcd.clear();
