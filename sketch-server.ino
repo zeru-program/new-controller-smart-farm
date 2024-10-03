@@ -39,14 +39,16 @@ void setup() {
   dht11.begin();
   
   // Ambil pin sensor tanah dan inisialisasi dari Firebase
+  fb.setInt("config/load_soil_pins", 1);
   getSoilPins();
+  fb.setInt("config/load_soil_pins", 0);
 }
 
 void loop() {
   // Membaca data dari sensor dan mengirim ke Firebase
   postData();
   
-  delay(3500);  // Penundaan antar pengiriman data
+  delay(2500);  // Penundaan antar pengiriman data
 }
 
 void getSoilPins() {
@@ -61,14 +63,10 @@ void getSoilPins() {
     int pin = fb.getInt(pinPath);  // Ambil nilai pin dari Firebase
     
     // Jika pengambilan data gagal
-    if (fb.failed()) {
-      Serial.printf("Gagal mengambil pin untuk sensor tanah %d. Error: %s\n", i, fb.errorMessage().c_str());
-      continue;  // Lanjutkan ke iterasi berikutnya jika gagal
-    }
-    
+   
     // Set pin dan inisialisasi sebagai input
     if (pin > 0) {
-      soilPins[i - 1] = pin;  // Simpan pin yang valid
+      soilPins[i] = pin;  // Simpan pin yang valid
       pinMode(pin, INPUT);    // Set pin sebagai input
       Serial.print("Pin untuk sensor tanah ");
       Serial.print(i);
@@ -120,7 +118,7 @@ void postData() {
       
       // Tampilkan data kelembaban tanah
       Serial.printf("Sensor Tanah %d - Kelembaban: %d%%\n", i + 1, moisture[i]);
-      String path = "dataFarm/moisture" + i;  // Buat jalur Firebase untuk menyimpan data sensor
+      String path = "dataFarm/moisture" + String(i);  // Buat jalur Firebase untuk menyimpan data sensor
 
       // Kirim data kelembaban tanah ke Firebase
       if (fb.setFloat(path, moisture[i])) {
@@ -130,8 +128,6 @@ void postData() {
         Serial.print("Gagal mengirim data kelembaban tanah sensor ");
         Serial.println(i);
       }
-    } else {
-      Serial.println("Pin sensor tanah tidak ditemukan");
-    }
+    } 
   }
 }

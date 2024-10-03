@@ -19,17 +19,43 @@ LiquidCrystal_I2C lcd(0x27,16,2);
 
 // Fungsi untuk mengambil pin relay pompa dari Firebase
 void getRelayPumpPins() {
-  for (int i = 1; i <= MAX_RELAY_PINS; i++) {
-      String path = "dataPins/pumps/pump" + i;
-      relayPumpPins[i] = fb.getInt(path); // Mengambil pin dari Firebase
+  for (int i = 1; i < MAX_RELAY_PINS; i++) {
+      String path = "dataPins/pumps/pump" + String(i);
+      int pin = fb.getInt(path);
+
+      if (pin > 0) {
+        relayPumpPins[i] = pin;
+        pinMode(pin, OUTPUT);
+        digitalWrite(pin, HIGH);
+        Serial.println("Data pump" + String(i) + " is " + String(pin));// Mengambil pin dari Firebase
+      } else {
+        Serial.print("Pin");
+        Serial.print(i);
+        Serial.print(" tidak valid : ");
+        Serial.print(pin);
+        Serial.println(".");
+        continue;
+      }
   }
 }
 
 // Fungsi untuk mengambil pin relay kipas dari Firebase
 void getRelayFanPins() {
-  for (int i = 1; i <= MAX_RELAY_PINS; i++) {
-      String path = "dataPins/fans/fan" + i;
-      relayFanPins[i] = fb.getInt(path); // Mengambil pin dari Firebase
+  for (int i = 1; i < MAX_RELAY_PINS; i++) {
+      String path = "dataPins/fans/fan" + String(i);
+      int pin = fb.getInt(path);
+
+      if (pin > 0) {
+       relayFanPins[i] = pin;
+        pinMode(pin, OUTPUT);
+        digitalWrite(pin, HIGH);
+       Serial.println("Data fan" + String(i) + "is " + String(pin));// Mengambil pin dari Firebase
+      } else {
+        Serial.print("Pin tidak valid :  ");
+        Serial.print(i);
+        Serial.println(".");
+        continue;
+      }
   }
 }
 
@@ -39,6 +65,8 @@ void getPumpStatus(int pumpNumber) {
     
     int result = fb.getInt(path); // Mengambil status pompa dari Firebase
     int pinsPump = relayPumpPins[pumpNumber];
+    Serial.println(String(result));
+    Serial.println(String(pinsPump));
     
     // Jika status pompa aktif, aktifkan relay
     if (result == 1) {
@@ -122,8 +150,13 @@ void setup() {
   lcd.clear();
   
   // Mengambil pin relay dari Firebase
+  lcd.setCursor(0, 0);
+  lcd.print("GET relay pins..");
+  lcd.setCursor(0, 1);
+  lcd.print("GET soil pins..");
   getRelayPumpPins();
   getRelayFanPins();
+  lcd.clear();
 }
 
 void loop() {
@@ -135,7 +168,7 @@ void loop() {
   getDataTemp();
   getDataMoisture(1);
   
-  delay(2000); // Menunggu 2 detik sebelum mengulangi loop
+  delay(100); // Menunggu 2 detik sebelum mengulangi loop
 }
 
 // Fungsi untuk mendapatkan dan menampilkan data suhu dari Firebase
@@ -144,9 +177,9 @@ void getDataTemp() {
     
     if (result) {
         lcd.setCursor(0, 0);
-        lcd.print("Temp   :  ");
+        lcd.print("Temp     :  ");
         lcd.setCursor(11, 0);
-        lcd.print(result + "C"); // Menampilkan suhu di LCD
+        lcd.print(String(result) + (char)223 + "C"); // Menampilkan suhu di LCD
     } else {
         Serial.println("failed fetch temperature");
     }
@@ -160,7 +193,7 @@ void getDataMoisture(int pin) {
         lcd.setCursor(0, 1);
         lcd.print("Humidity : ");
         lcd.setCursor(11, 1);
-        lcd.print(result + "%"); // Menampilkan kelembaban di LCD
+        lcd.print(String(result) + "%"); // Menampilkan kelembaban di LCD
     } else {
         Serial.println("failed fetch Moisture");
     }
@@ -204,15 +237,5 @@ void teksWelcomingLcd() {
   } 
 
   delay(5000);
-  lcd.clear();
-  delay(1000);
-  lcd.setCursor(0,0);
-  lcd.print("Web Controller : ");
-  
-  // Menampilkan alamat IP dari Firebase
-  lcd.setCursor(0,1);
-  lcd.print(fb.getString("config/ip"));
-  delay(5000);
-
   lcd.clear();
 }
