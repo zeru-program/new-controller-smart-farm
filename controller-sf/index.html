@@ -421,27 +421,21 @@
 
             if (type === 'on') {
                 elem.classList.add("btno-active");
-                fetch(urlPostRelay, {
-                    method: "POST",
+                fetch(URL + "dataRelay.json", {
+                    method: "PATCH",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({
-                        fan: true,
-                        fanNumber: fanNumber,
-                        fanStatus: fanStatus
+                    body: JSON.stringify({      ["fan" + fanNumber]: 1
                     })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
+                .then(res => {
+                    if (res.ok) {
                         Swal.fire({
                             title: "Berhasil !",
-                            text: 'Fan' + fanNumber + ' berhasil dinyalakan',
+                            text: 'Fan' + fanNumber + ' berhasil nyala',
                             icon: "success"
                         });
-                    } else {
-                        alert("Error: " + data.message);
                     }
                 })
                 .catch(error => {
@@ -449,27 +443,21 @@
                 });
             } else if (type === 'off') {
                 elem.classList.add("btno-active");
-                fetch(urlPostRelay, {
-                    method: "POST",
+                fetch(URL + "dataRelay.json", {
+                    method: "PATCH",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({
-                        fan: true,
-                        fanNumber: fanNumber,
-                        fanStatus: fanStatus
+                    body: JSON.stringify({       ["fan" + fanNumber]: 0
                     })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
+                .then(res => {
+                    if (res.ok) {
                         Swal.fire({
                             title: "Berhasil !",
-                            text: 'Fan' + fanNumber + ' berhasil dimatikan',
+                            text: 'Fan' + fanNumber + ' berhasil mati',
                             icon: "success"
                         });
-                    } else {
-                        alert("Error: " + data.message);
                     }
                 })
                 .catch(error => {
@@ -517,30 +505,23 @@
 
         function changeSystem(elem) {
             var value = elem.value;
-            fetch("../config/postDataSystem.php",
+            fetch(URL + "config.json",
                 {
-                    method: "POST",
+                    method: "PATCH",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        system: value
+                        sf_operation: value
                     })
                 })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
+            .then(res => {
+                if (res.ok) {
+                  Swal.fire({
                         title: "Berhasil !",
                         text: 'mengganti system ke ' + value,
                         icon: "success"
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Failed !",
-                        text: 'gagal mengganti system',
-                        icon: "info"
-                    });
+                    });  
                 }
             })
         }
