@@ -136,7 +136,78 @@
                     <option value="schedule">schedule</option>
                 </select>
             </div>
+            <div class="flex-wrap mt-3" id="auto-popup" style="display:none;">
+                <h1 class="m-0">Automatic system</h1>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0">
+                        Middle temperature (jika turun dingin, jika naik panas) :
+                    </p>
+                    <input class="form-control" id="mid-temp" type="number" />
+                </div>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0">
+                        Middle humidity (jika turun kering, jika naik lembab) :
+                    </p>
+                    <input class="form-control" id="mid-humi" type="number" />
+                </div>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0">
+                        Middle moisture1 (jika turun kering, jika naik lembab) :
+                    </p>
+                    <input class="form-control" id="mid-moisture1" type="number" />
+                </div>
+                <button class="btn btn-success" type="button" onclick="saveAutoMode()">Save</button>
+            </div>
+            <div class="flex-wrap mt-3" id="schedule-popup" style="display:none;">
+                <h1 class="m-0">Scheduling system</h1>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0 col-4">
+                        Pagi :
+                    </p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="pagi-ipt">
+                        <div class="input-group-append">
+                            <span class="input-group-text">:00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0 col-4">
+                        Siang :
+                    </p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="siang-ipt">
+                        <div class="input-group-append">
+                            <span class="input-group-text">:00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0 col-4">
+                        Sore :
+                    </p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="sore-ipt">
+                        <div class="input-group-append">
+                            <span class="input-group-text">:00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0 col-4">
+                        Malam :
+                    </p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="malam-ipt">
+                        <div class="input-group-append">
+                            <span class="input-group-text">:00</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn m-2 btn-success" onclick="saveScheduleMode()" type="button">Save</button>
+            </div>
             <canvas id="myChart" class="my-3" style="width:100%;max-width:700px"></canvas>
+            <canvas id="myChartTemp" class="my-3" style="width:100%;max-width:700px"></canvas>
             <div class="container d-flex justify-content-center mt-3 mb-3">
                 <button class="btn-on-off btno-active" id="btns-on" style="display:flex" onclick="server('on')">START
                     SERVER</button>
@@ -221,56 +292,41 @@
         style="display:none;border-radius:50%;width:50px; height:50px;right:10px;bottom:10px;"
         onclick="openAlert()"><i class="bi bi-bell"></i></button>
     <!--btn popup alert-->
-
-    <!--popup error connect mysql-->
-    <div class="m-0 w-100 flex-column justify-content-center text-center align-items-center vh-100 shadow-lg position-fixed py-3"
-        id="popup-error-mysql"
-        style="display:none;top:0;left:0; background:rgba(225,225,225,.2);backdrop-filter:blur(2px);z-index:999;">
-
-        <img src="https://www.freeiconspng.com/uploads/error-icon-32.png" style="width:120px;" alt="" class="m-0">
-        <h1 class="m-0">Error 500</h1>
-        <h6 class="m-0">Server mysql is not connected</h6>
-        <p class="m-0">
-            silakan membuat dan menghubungkan server mysql ke website ini dengan konfigurasi di file
-            /config/db.php
-        </p>
-
-        <button class="btn btn-danger position-absolute" onclick="window.location.href = '/'"
-            style="left:15px;top:15px;"><i class="bi bi-arrow-left"></i></button>
-    </div>
-    <!--popup error connect mysql-->
-
-
-    <!-- <script src="../assets/circular.js" type="text/javascript" charset="utf-8"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-storage-compat.js"></script>
     <script src="../assets/main.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
+
+        const firebaseConfig = {
+            databaseURL: "https://controler-smart-farm-default-rtdb.firebaseio.com/"
+        }
+        firebase.initializeApp(firebaseConfig)
+
+        const database = firebase.database();
         const URL = "https://controler-smart-farm-default-rtdb.firebaseio.com/"
-        const xValues = ["08:00", "10:00", "12:00", "15:00", "18:00", "20:00", "23:00"]; // Time or any x-axis values
+        const xValues = ["Pagi", "Siang", "Sore", "Malam"];
         const tempValues = [];
         const humiValues = [];
         const moistureValues1 = [];
+        var statusServer = 0;
+        var autoMode = 0
+        var scheduleMode = 0
 
         // Creating the chart
         var myChart = new Chart("myChart", {
-            type: "line",
+            type: "bar",
             data: {
                 labels: xValues,
                 datasets: [{
-                    label: "Temp", // Optional label for the legend
+                    label: "Humidity", // Second dataset
                     fill: false,
                     lineTension: 0,
-                    backgroundColor: "rgba(242, 97, 63, 1)",
-                    borderColor: "rgba(242, 97, 63, 0.8)",
-                    data: tempValues
+                    backgroundColor: "#512B81",
+                    borderColor: "rgba(81, 43, 129, 0.8)",
+                    data: humiValues,
+                    stepped: true
                 },
-                    {
-                        label: "Humidity", // Second dataset
-                        fill: false,
-                        lineTension: 0,
-                        backgroundColor: "#512B81",
-                        borderColor: "rgba(81, 43, 129, 0.8)",
-                        data: humiValues
-                    },
                     {
                         label: "Moisture1", // Third dataset
                         fill: false,
@@ -299,274 +355,371 @@
                 }
             }
         });
+        var myChartTemp = new Chart("myChartTemp", {
+            type: "bar",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    label: "Temperature", // Second dataset
+                    fill: false,
+                    lineTension: 0,
+                    backgroundColor: "#800300",
+                    borderColor: "rgb(128, 3, 0, 0.8)",
+                    data: tempValues,
+                    stepped: true
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    display: true
+                }, // Display legend to differentiate datasets
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                            max: 7,
+                            callback: function(value, index, ticks) {
+                                switch (value) {
+                                    case 0:
+                                        return '21.0';
+                                        case 1:
+                                            return '21.3';
+                                            case 2:
+                                                return '21.5';
+                                                case 3:
+                                                    return '22.0';
+                                                    case 4:
+                                                        return '22.3';
+                                                        case 5:
+                                                            return '22.5';
+                                                            case 6:
+                                                                return '22.8';
+                                                                case 7:
+                                                                    return '23.0';
+                                                            }
+                                                    }
+                                            }
+                                    }]
+                            },
+                            animation: {
+                                duration: 1000, // Duration of the animation in milliseconds
+                                easing: 'easeInOutQuart' // Easing function for a smoother transition
+                            }
+                        }
+                    });
 
-        // Function to automatically update the chart data
-        function updateChart(temp, humi, moisture1) {
-            // Simulating new values being pushed to the datasets
-            tempValues.push(temp); // Adding random temp data
-            humiValues.push(humi); // Adding random humidity data
-            moistureValues1.push(moisture1); // Adding random moisture data
+                    // Function to automatically update the chart data
+                    function updateChartHM(humi, moisture1) {
+                        humiValues.push(humi); // Adding random humidity data
+                        moistureValues1.push(moisture1); // Adding random moisture data
 
-            // Shift xValues if needed (for example, if using timestamps)
-            if (xValues.length > 10) {
-                // Keep max 10 data points, can adjust accordingly
-                tempValues.shift();
-                humiValues.shift();
-                moistureValues1.shift();
-            }
+                        // Shift xValues if needed (for example, if using timestamps)
+                        if (xValues.length > 10) {
+                            // Keep max 10 data points, can adjust accordingly
+                            humiValues.shift();
+                            moistureValues1.shift();
+                        }
 
-            myChart.update(); // Update the chart with new data
-        }
+                        myChart.update(); // Update the chart with new data
+                    }
+                    function updateChartT(temp) {
+                        tempValues.push(temp);
+                        if (xValues.length > 10) {
+                            tempValues.shift();
+                        }
 
-        // Simulate live data updates every 2 seconds
-        setInterval(updateChart, 2000);
+                        myChartTemp.update(); // Update the chart with new data
+                    }
+                    updateChartHM(10, 90)
+                    updateChartT(5)
 
 
+                    function showAlert(type, elem) {
+                        var btnPlant = document.getElementById("btna-plant")
+                        var btnSensor = document.getElementById("btna-sensor")
+                        var btnPumpFan = document.getElementById("btna-pump-fan")
+                        var pPlant = document.getElementById("alert-plant")
+                        var pSensor = document.getElementById("alert-sensor")
+                        var pPumpFan = document.getElementById("alert-pump-fan")
 
-        function showAlert(type, elem) {
-            var btnPlant = document.getElementById("btna-plant")
-            var btnSensor = document.getElementById("btna-sensor")
-            var btnPumpFan = document.getElementById("btna-pump-fan")
-            var pPlant = document.getElementById("alert-plant")
-            var pSensor = document.getElementById("alert-sensor")
-            var pPumpFan = document.getElementById("alert-pump-fan")
+                        btnPlant.classList.remove("btna-active")
+                        btnSensor.classList.remove("btna-active")
+                        btnPumpFan.classList.remove("btna-active")
+                        pPlant.style.display = "none"
+                        pSensor.style.display = "none"
+                        pPumpFan.style.display = "none"
+                        elem.classList.add("btna-active")
 
-            btnPlant.classList.remove("btna-active")
-            btnSensor.classList.remove("btna-active")
-            btnPumpFan.classList.remove("btna-active")
-            pPlant.style.display = "none"
-            pSensor.style.display = "none"
-            pPumpFan.style.display = "none"
-            elem.classList.add("btna-active")
+                        if (type === 'plant') {
+                            pPlant.style.display = "flex"
+                        } else if (type === 'sensor') {
+                            pSensor.style.display = "flex"
+                        } else if (type === 'pump-fan') {
+                            pPumpFan.style.display = "flex"
+                        }
+                    }
 
-            if (type === 'plant') {
-                pPlant.style.display = "flex"
-            } else if (type === 'sensor') {
-                pSensor.style.display = "flex"
-            } else if (type === 'pump-fan') {
-                pPumpFan.style.display = "flex"
-            }
-        }
+                    function pumpButton(type, elem, pumpNumber) {
+                        var pinBtnOn = "pump" + pumpNumber + "-btn-on"
+                        var pinBtnOff = "pump" + pumpNumber + "-btn-off"
+                        var btnOn = document.getElementById(pinBtnOn);
+                        var btnOff = document.getElementById(pinBtnOff);
+                        btnOn.classList.remove("btno-active");
+                        btnOff.classList.remove("btno-active");
 
-        var urlPostRelay = "../config/postDataRelay.php";
+                        var pumpStatus = (type === 'on') ? 1: 0; // Pump ON or OFF
 
-        function pumpButton(type, elem, pumpNumber) {
-            var pinBtnOn = "pump" + pumpNumber + "-btn-on"
-            var pinBtnOff = "pump" + pumpNumber + "-btn-off"
-            var btnOn = document.getElementById(pinBtnOn);
-            var btnOff = document.getElementById(pinBtnOff);
-            btnOn.classList.remove("btno-active");
-            btnOff.classList.remove("btno-active");
-
-            var pumpStatus = (type === 'on') ? 1: 0; // Pump ON or OFF
-
-            if (type === 'on') {
-                elem.classList.add("btno-active");
-                fetch(URL + "dataRelay.json", {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        ["pump" + pumpNumber]: 1
+                        if (type === 'on') {
+                            elem.classList.add("btno-active");
+                            fetch(URL + "dataRelay.json", {
+                                method: "PATCH",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    ["pump" + pumpNumber]: 1
+                            })
+                            })
+                        .then(res => {
+                            if (res.ok) {
+                                Toast.fire({
+                                    icon: "success",
+                                    title: "Pump" + pumpNumber + " berhasil nyala."
+                            });
+                        }
+                        })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                } else if (type === 'off') {
+                    elem.classList.add("btno-active");
+                    fetch(URL + "dataRelay.json", {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            ["pump" + pumpNumber]: 0
+                        })
                     })
-                })
-                .then(res => {
-                    if (res.ok) {
-                        Swal.fire({
-                            title: "Berhasil !",
-                            text: 'Pump' + pumpNumber + ' berhasil nyala',
-                            icon: "success"
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            } else if (type === 'off') {
-                elem.classList.add("btno-active");
-                fetch(URL + "dataRelay.json", {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        ["pump" + pumpNumber]: 0
+                    .then(res => {
+                        if (res.ok) {
+                            Toast.fire({
+                                icon: "success",
+                                title: "Pump" + pumpNumber + " berhasil mati."
+                            });
+                        }
                     })
-                })
-                .then(res => {
-                    if (res.ok) {
-                        Swal.fire({
-                            title: "Berhasil !",
-                            text: 'Pump' + pumpNumber + ' berhasil mati',
-                            icon: "success"
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
-        }
-
-        function fanButton(type, elem, fanNumber) {
-            var pinBtnOn = "fan" + fanNumber + "-btn-on"
-            var pinBtnOff = "fan" + fanNumber + "-btn-off"
-            var btnOn = document.getElementById(pinBtnOn);
-            var btnOff = document.getElementById(pinBtnOff);
-            btnOn.classList.remove("btno-active")
-            btnOff.classList.remove("btno-active")
-
-            var fanStatus = (type === 'on') ? 1: 0; // Pump ON or OFF
-
-            if (type === 'on') {
-                elem.classList.add("btno-active");
-                fetch(URL + "dataRelay.json", {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({      ["fan" + fanNumber]: 1
-                    })
-                })
-                .then(res => {
-                    if (res.ok) {
-                        Swal.fire({
-                            title: "Berhasil !",
-                            text: 'Fan' + fanNumber + ' berhasil nyala',
-                            icon: "success"
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            } else if (type === 'off') {
-                elem.classList.add("btno-active");
-                fetch(URL + "dataRelay.json", {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({       ["fan" + fanNumber]: 0
-                    })
-                })
-                .then(res => {
-                    if (res.ok) {
-                        Swal.fire({
-                            title: "Berhasil !",
-                            text: 'Fan' + fanNumber + ' berhasil mati',
-                            icon: "success"
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
-        }
-
-        var statusServer = 0;
-
-        function server(state) {
-            let stateFix;
-            if (state === "on") {
-                stateFix = 1
-            } else if (state === "off") {
-                stateFix = 0
-            }
-            fetch(URL + "config.json", {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    server: stateFix
-                })
-            })
-            .then(res => {
-                if (res.ok) {
-                    if (state === "on") {
-                        Swal.fire({
-                            title: "Berhasil !",
-                            text: 'server on',
-                            icon: "success"
-                        });
-                    } else if (state === "off") {
-                        Swal.fire({
-                            title: "Berhasil !",
-                            text: 'server off',
-                            icon: "success"
-                        });
-                    }
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
                 }
-            })
-        }
 
-        function changeSystem(elem) {
-            var value = elem.value;
-            fetch(URL + "config.json",
-                {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        sf_operation: value
-                    })
-                })
-            .then(res => {
-                if (res.ok) {
-                  Swal.fire({
-                        title: "Berhasil !",
-                        text: 'mengganti system ke ' + value,
-                        icon: "success"
-                    });  
-                }
-            })
-        }
-
-        function getSystemFarm() {
-            fetch(URL + "config.json")
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('system_mode_input').value = data.sf_operation
-            })
-        }
-
-        function getStatusServer() {
-            var btnBtn = document.getElementById("btn-btn")
-            var btnAlert = document.getElementById("btn-alert")
-            fetch(URL + "config.json")
-            .then(res => res.json())
-            .then(data => {
-                var btnOn = document.getElementById("btns-on")
-                var btnOff = document.getElementById("btns-off")
-                if (data.server == 0) {
-                    btnOn.style.display = "flex"
-                    btnOff.style.display = "none"
-                    btnBtn.style.display = "none"
-                    btnAlert.style.display = "none"
-                    statusServer = 0
-                } else if (data.server == 1) {
-                    btnOn.style.display = "none"
-                    btnOff.style.display = "flex"
-                    btnBtn.style.display = "flex"
-                    btnAlert.style.display = "flex"
-                    statusServer = 1
-                }
-            })
-        }
-
-        function getData() {
-            if (statusServer === 0) {
-                var changeKondisiTanaman = document.getElementById("kondisi-tanaman");
-                changeKondisiTanaman.innerHTML = '<p class="bg-danger text-light m-0 px-3 py-1">Server not started</p>';
-                return;
             }
-            fetch(URL + "dataFarm.json")
-            .then(res => res.json())
-            .then(data => {
+
+            function fanButton(type, elem, fanNumber) {
+                var pinBtnOn = "fan" + fanNumber + "-btn-on"
+                var pinBtnOff = "fan" + fanNumber + "-btn-off"
+                var btnOn = document.getElementById(pinBtnOn);
+                var btnOff = document.getElementById(pinBtnOff);
+                btnOn.classList.remove("btno-active")
+                btnOff.classList.remove("btno-active")
+
+                var fanStatus = (type === 'on') ? 1: 0; // Pump ON or OFF
+
+                if (type === 'on') {
+                    elem.classList.add("btno-active");
+                    fetch(URL + "dataRelay.json", {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            ["fan" + fanNumber]: 1
+                        })
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            Toast.fire({
+                                icon: "success",
+                                title: "Fan" + fanNumber + " berhasil nyala."
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                } else if (type === 'off') {
+                    elem.classList.add("btno-active");
+                    fetch(URL + "dataRelay.json", {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            ["fan" + fanNumber]: 0
+                        })
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            Toast.fire({
+                                icon: "success",
+                                title: "Fan" + fanNumber + " berhasil mati."
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            }
+
+            function server(state) {
+                let stateFix;
+                if (state === "on") {
+                    stateFix = 1
+                } else if (state === "off") {
+                    stateFix = 0
+                }
+                if (state === "off") {
+                    fetch(URL + "dataFarm.json", {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            temperature: 0,
+                            humidity: 0,
+                            moisture1: 0
+                        })
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                           fetch(URL + "dataOperation.json", {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            pagi_done: 0,
+                            siang_done: 0,
+                            sore_done: 0,
+                            malam_done: 0
+                        })
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            return
+                        }
+                    }) 
+                        }
+                    })
+                }
+                fetch(URL + "config.json",
+                    {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            server: stateFix
+                        })
+                    })
+                .then(res => {
+                    if (res.ok) {
+                        if (state === "on") {
+                            Swal.fire({
+                                title: "Berhasil !",
+                                text: 'server on',
+                                icon: "success"
+                            });
+                        } else if (state === "off") {
+                            Swal.fire({
+                                title: "Berhasil !",
+                                text: 'server off',
+                                icon: "success"
+                            });
+                        }
+                    }
+                })
+            }
+
+            function changeSystem(elem) {
+                var value = elem.value;
+                fetch(URL + "config.json",
+                    {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            sf_operation: value
+                        })
+                    })
+                .then(res => {
+                    if (res.ok) {
+                        getSystemFarm()
+                        Swal.fire({
+                            title: "Berhasil !",
+                            text: 'mengganti system ke ' + value,
+                            icon: "success"
+                        });
+                    }
+                })
+            }
+
+            function getSystemFarm() {
+                fetch(URL + "config.json")
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('system_mode_input').value = data.sf_operation
+                    if (data.sf_operation === "automatic") {
+                        document.getElementById("auto-popup").style.display = "flex"
+                        autoMode = 1
+                    } else if (data.sf_operation === "schedule") {
+                        document.getElementById("schedule-popup").style.display = "flex"
+                        scheduleMode = 1
+                    } else {
+                        document.getElementById("auto-popup").style.display = "none"
+                        document.getElementById("schedule-popup").style.display = "none"
+                        autoMode = 0
+                        scheduleMode = 0
+                    }
+                })
+            }
+
+            function getStatusServer() {
+                var btnBtn = document.getElementById("btn-btn")
+                var btnAlert = document.getElementById("btn-alert")
+                fetch(URL + "config.json")
+                .then(res => res.json())
+                .then(data => {
+                    var btnOn = document.getElementById("btns-on")
+                    var btnOff = document.getElementById("btns-off")
+                    if (data.server == 0) {
+                        btnOn.style.display = "flex"
+                        btnOff.style.display = "none"
+                        btnBtn.style.display = "none"
+                        btnAlert.style.display = "none"
+                        statusServer = 0
+                    } else if (data.server == 1) {
+                        btnOn.style.display = "none"
+                        btnOff.style.display = "flex"
+                        btnBtn.style.display = "flex"
+                        btnAlert.style.display = "flex"
+                        statusServer = 1
+                    }
+                })
+            }
+
+            database.ref("dataFarm").on('value', snapshot => {
+                if (statusServer === 0) {
+                    var changeKondisiTanaman = document.getElementById("kondisi-tanaman");
+                    changeKondisiTanaman.innerHTML = '<p class="bg-danger text-light m-0 px-3 py-1">Server not started</p>';
+                    return;
+                }
+                var data = snapshot.val()
                 if (data) {
                     var moistureValue1 = parseFloat(data.moisture1);
                     var changeKondisiTanaman = document.getElementById("kondisi-tanaman");
@@ -643,41 +796,36 @@
                     alert("HTTP error");
                 }
             })
-        }
 
-
-        function getAlert() {
-            fetch(URL + "alert.json")
-            .then(res => res.json())
-            .then(data => {
-                for (let key in data) {
-                    var val = data[key]
-                    var newEl = document.createElement("div")
-                    newEl.innerHTML = `
-                    <div class="d-flex flex-column rounded-2 bg-warning container w-100 my-2 py-2" style="">
-                    <p class="m-0">${val.title}</p>
-                    <p class="m-0" style="font-size:.7em">Created by ${val.created_by}, ${val.created_at}</p>
-                    <p class="m-0" style="font-size:.7em">${val.message}</p>
-                    </div>
-                    `;
-                    if (val.type === "plant") {
-                        document.getElementById("alert-plant").appendChild(newEl)
-                    } else if (val.type === 'sensor') {
-                        document.getElementById("alert-sensor").appendChild(newEl)
-                    } else if (val.type === 'pump-fan') {
-                        document.getElementById("alert-pump-fan").appendChild(newEl)
-                    } else {
-                        alert('error display alert.')
+            function getAlert() {
+                fetch(URL + "alert.json")
+                .then(res => res.json())
+                .then(data => {
+                    for (let key in data) {
+                        var val = data[key]
+                        var newEl = document.createElement("div")
+                        newEl.innerHTML = `
+                        <div class="d-flex flex-column rounded-2 bg-warning container w-100 my-2 py-2" style="">
+                        <p class="m-0">${val.title}</p>
+                        <p class="m-0" style="font-size:.7em">Created by ${val.created_by}, ${val.created_at}</p>
+                        <p class="m-0" style="font-size:.7em">${val.message}</p>
+                        </div>
+                        `;
+                        if (val.type === "plant") {
+                            document.getElementById("alert-plant").appendChild(newEl)
+                        } else if (val.type === 'sensor') {
+                            document.getElementById("alert-sensor").appendChild(newEl)
+                        } else if (val.type === 'pump-fan') {
+                            document.getElementById("alert-pump-fan").appendChild(newEl)
+                        } else {
+                            alert('error display alert.')
+                        }
                     }
-                }
-            })
-        }
+                })
+            }
 
-
-        function updateDeviceStatus() {
-            fetch(URL + "dataRelay.json")
-            .then(response => response.json())
-            .then(data => {
+            database.ref("dataRelay").on('value', snapshot => {
+                var data = snapshot.val();
                 var statusPumps = [];
                 var statusFans = [];
 
@@ -686,8 +834,8 @@
                     statusPumps[i] = data['pump' + i]; // Get the status (0 or 1)
                     statusFans[i] = data['fan' + i]; // Get the status (0 or 1)
 
-                    // Check if pump status has changed
-                    if (statusPumps[i]) {
+                    // Check if pump status exists (even if it's 0)
+                    if (typeof statusPumps[i] !== 'undefined') {
                         // Update pump buttons if status has changed
                         var btnOnPump = document.getElementById('pump' + i + '-btn-on');
                         var btnOffPump = document.getElementById('pump' + i + '-btn-off');
@@ -695,14 +843,14 @@
                         if (statusPumps[i] == 1) {
                             btnOnPump.classList.add("btno-active");
                             btnOffPump.classList.remove("btno-active");
-                        } else {
+                        } else if (statusPumps[i] == 0) {
                             btnOnPump.classList.remove("btno-active");
                             btnOffPump.classList.add("btno-active");
                         }
                     }
 
-                    // Check if fan status has changed
-                    if (statusFans[i]) {
+                    // Check if fan status exists (even if it's 0)
+                    if (typeof statusFans[i] !== 'undefined') {
                         // Update fan buttons if status has changed
                         var btnOnFan = document.getElementById('fan' + i + '-btn-on');
                         var btnOffFan = document.getElementById('fan' + i + '-btn-off');
@@ -710,32 +858,273 @@
                         if (statusFans[i] == 1) {
                             btnOnFan.classList.add("btno-active");
                             btnOffFan.classList.remove("btno-active");
-                        } else {
+                        } else if (statusFans[i] == 0) {
                             btnOnFan.classList.remove("btno-active");
                             btnOffFan.classList.add("btno-active");
                         }
                     }
                 }
-                console.log(statusPumps[1])
+            });
+
+            var midTempValue = 0
+            var midHumiValue = 0
+            var midMoisture1Value = 0
+            var pagiTime = 0
+            var siangTime = 0
+            var soreTime = 0
+            var malamTime = 0
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+
+            let lastTemperature = null;
+            let lastMoisture1 = null;
+            function saveAutoMode() {
+                var midTemp = document.getElementById("mid-temp").value
+                var midHumi = document.getElementById("mid-humi").value
+                var midMoisture1 = document.getElementById("mid-moisture1").value
+                fetch(URL + "dataOperation.json",
+                    {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            mid_temp: midTemp,
+                            mid_humidity: midHumi,
+                            mid_moisture1: midMoisture1
+                        })
+                    })
+                .then(res => {
+                    if (res.ok) {
+                        Toast.fire({
+                            icon: "success",
+                            title: "Pengaturan disimpan."
+                        });
+                    }
+                })
+            }
+            function loadAutoMode() {
+                var midTemp = document.getElementById("mid-temp")
+                var midHumi = document.getElementById("mid-humi")
+                var midMoisture1 = document.getElementById("mid-moisture1")
+                fetch(URL + "dataOperation.json")
+                .then(res => res.json())
+                .then(data => {
+                    midTemp.value = parseFloat(data.mid_temp)
+                    midHumi.value = parseInt(data.mid_humidity)
+                    midMoisture1.value = parseInt(data.mid_moisture1)
+
+                    midTempValue = parseFloat(data.mid_temp)
+                    midHumiValue = parseInt(data.mid_humidity)
+                    midMoisture1Value = parseInt(data.mid_moisture1)
+                })
+            }
+            function checkAutoMode() {
+                if (statusServer == 1 && autoMode == 1) {
+                    fetch(URL + "dataFarm.json")
+                    .then(res => res.json())
+                    .then(data => {
+                        // Cek jika suhu berbeda dengan suhu sebelumnya
+                        if (lastTemperature !== data.temperature) {
+                            if (data.temperature < midTempValue) {
+                                fanButton("off", document.getElementById("fan1-btn-off"), 1);
+                            } else if (data.temperature > midTempValue) {
+                                fanButton("on", document.getElementById("fan1-btn-on"), 1);
+                            }
+                            // Simpan suhu sekarang sebagai suhu terakhir
+                            lastTemperature = data.temperature;
+                        }
+                        setTimeout(() => {
+                            if (lastMoisture1 !== data.moisture1) {
+                                if (data.moisture1 < midMoisture1Value) {
+                                    pumpButton("on", document.getElementById("pump1-btn-on"), 1);
+                                } else if (data.moisture1 > midMoisture1Value) {
+                                    pumpButton("off", document.getElementById("pump1-btn-off"), 1);
+                                }
+                                // Simpan suhu sekarang sebagai suhu terakhir
+                                lastMoisture1 = data.moisture1;
+                            }
+                        },
+                            2000)
+                    })
+                    .catch(error => {
+                        console.error("Error fetching data:",
+                            error);
+                    });
+                }
+            }
+
+
+            function saveScheduleMode() {
+                var pagiIpt = document.getElementById("pagi-ipt").value
+                var siangIpt = document.getElementById("siang-ipt").value
+                var soreIpt = document.getElementById("sore-ipt").value
+                var malamIpt = document.getElementById("malam-ipt").value
+                fetch(URL + "dataOperation.json",
+                    {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            pagi_sc: pagiIpt,
+                            siang_sc: siangIpt,
+                            sore_sc: soreIpt,
+                            malam_sc: malamIpt
+                        })
+                    })
+                .then(res => {
+                    if (res.ok) {
+                        Toast.fire({
+                            icon: "success",
+                            title: "Pengaturan disimpan."
+                        });
+                    } else {
+                        alert("error")
+                    }
+                })
+                .catch(error => {
+                    console.error("Terjadi kesalahan saat menyimpan:", error);
+                    alert("Terjadi kesalahan saat menyimpan pengaturan.");
+                });
+            }
+            function loadScheduleMode() {
+                var pagiIpt = document.getElementById("pagi-ipt")
+                var siangIpt = document.getElementById("siang-ipt")
+                var soreIpt = document.getElementById("sore-ipt")
+                var malamIpt = document.getElementById("malam-ipt")
+                fetch(URL + "dataOperation.json")
+                .then(res => res.json())
+                .then(data => {
+                    pagiIpt.value = parseInt(data.pagi_sc)
+                    siangIpt.value = parseInt(data.siang_sc)
+                    soreIpt.value = parseInt(data.sore_sc)
+                    malamIpt.value = parseInt(data.malam_sc)
+
+                    pagiTime = parseInt(data.pagi_sc)
+                    siangTime = parseInt(data.siang_sc)
+                    soreTime = parseInt(data.sore_sc)
+                    malamTime = parseInt(data.malam_sc)
+                })
+            }
+            function checkScheduleMode() {
+                if (statusServer == 1 && scheduleMode == 1) {
+                    fetch(URL + "dataOperation.json")
+                    .then(res => res.json())
+                    .then(data => {
+                        let now = new Date();
+                        let hours = now.getHours();
+
+                        if (parseInt(data.pagi_sc) == hours) {
+                            if (data.pagi_done == 0) {
+                                fetch(URL + "dataOperation.json", {
+                                    method: "PATCH",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                },
+                                    body: JSON.stringify({
+                                        pagi_done: 1
+                                })
+                            })
+                        .then(res => {
+                            if (res.ok) {
+                                pumpButton("on", document.getElementById("pump1-btn-on"), 1);
+                                setTimeout(() => {
+                                    fanButton("off", document.getElementById("fan1-btn-off"), 1);
+                            }, 2000)
+                        }
+                        })
+                    }
+                } else if (parseInt(data.siang_sc) == hours) {
+                    if (data.siang_done == 0) {
+                        fetch(URL + "dataOperation.json", {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                siang_done: 1
+                            })
+                        })
+                        .then(res => {
+                            if (res.ok) {
+                                pumpButton("off", document.getElementById("pump1-btn-off"), 1);
+                                setTimeout(() => {
+                                    fanButton("on", document.getElementById("fan1-btn-on"), 1);
+                                }, 2000)
+                            }
+                        })
+                    }
+                } else if (parseInt(data.sore_sc) == hours) {
+                    if (data.sore_done == 0) {
+                        fetch(URL + "dataOperation.json", {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                sore_done: 1
+                            })
+                        })
+                        .then(res => {
+                            if (res.ok) {
+                                pumpButton("off", document.getElementById("pump1-btn-off"), 1);
+                                setTimeout(() => {
+                                    fanButton("on", document.getElementById("fan1-btn-on"), 1);
+                                }, 2000)
+                            }
+                        })
+                    }
+                } else if (parseInt(data.malam_sc) == hours) {
+                    if (data.malam_done == 0) {
+                        fetch(URL + "dataOperation.json", {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                malam_done: 1
+                            })
+                        })
+                        .then(res => {
+                            if (res.ok) {
+
+                                pumpButton("on", document.getElementById("pump1-btn-on"), 1);
+
+                                setTimeout(() => {
+                                    fanButton("off", document.getElementById("fan1-btn-off"), 1);
+                                }, 2000)
+                            }
+                        })
+                    }
+                } else {
+                    pumpButton("off", document.getElementById("pump1-btn-off"), 1);
+                    fanButton("off", document.getElementById("fan1-btn-off"), 1);
+                }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error("Error fetching data:",
+                    error);
             });
         }
+    }
 
-
-
-
-        setInterval(getData, 500);
-        setInterval(getStatusServer, 500);
-        setInterval(updateDeviceStatus, 1000);
-        setInterval(getSystemFarm, 1000);
-        //     getAlert()
-        window.onload = getData;
-        window.onload = updateDeviceStatus;
-        window.onload = getStatusServer;
-        window.onload = getSystemFarm;
-    </script>
+    setInterval(checkAutoMode, 3000);
+    setInterval(checkScheduleMode, 10000);
+    setInterval(getStatusServer, 500);
+    setInterval(getSystemFarm, 1000);
+    //     getAlert()
+    getStatusServer();
+    loadAutoMode()
+    loadScheduleMode()
+    getSystemFarm();
+</script>
 </body>
 
 </html>

@@ -148,6 +148,7 @@ html {
 .box-sensor {
   background-color: #512B81;
   border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,.4);
   width: 180px;
   height: 150px;
   color: white;
