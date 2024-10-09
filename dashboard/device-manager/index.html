@@ -78,9 +78,6 @@
             <th class="text-left" style="border-right:3px solid white;">No</th>
             <th class="text-left" style="border-right:3px solid white;">Device name</th>
             <th class="text-left" style="border-right:3px solid white;">Pin</th>
-            <th class="text-left" style="border-right:3px solid white;">Type</th>
-            <th class="text-left" style="border-right:3px solid white;">Kondisi</th>
-            <th class="text-left" style="border-right:3px solid white;">Updated at</th>
             <th class="text-left" style="border-right:3px solid white;">Action</th>
           </tr>
         </thead>
@@ -95,19 +92,18 @@
     
       var URL = "https://controler-smart-farm-default-rtdb.firebaseio.com/"
     function getData() {
-        fetch(URL + "dataPins.json")
+        fetch(URL + "dataPins/pumps.json")
         .then(res => res.json())
         .then(data => {
+          var i = 0
             for (let key in data) {
+              i++
                 var val = data[key]
                 var newEl = document.createElement("tr")
                 newEl.innerHTML = `
-                  <td>${val.pump1}</td>
-                  <td>${val.device_name}</td>
-                  <td>${val.pin}</td>
-                  <td>${val.type}</td>
-                  <td>${val.kondisi}</td>
-                  <td>${val.updated_at}</td>
+                  <td>${i}</td>
+                  <td>${key}</td>
+                  <td>${val}</td>
                   <td class="gap-2"><button class="btn btn-warning mx-1" onclick="editData('${val.id}', this)">Edit</button><button class="btn btn-danger" onclick="deleteData('${val.id}', this)">Delete</button></td>
                 `;
                 document.getElementById("device-table").appendChild(newEl)
