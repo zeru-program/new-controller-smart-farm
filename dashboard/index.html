@@ -53,19 +53,7 @@
       <main class="py-4 w-100">
         <div class="container d-flex flex-column">
             <h1 class="fw-bold">Welcome Admin!</h1>
-            <div class="d-flex align-items-center gap-2">
-                <p class="m-0">Status server (mysql) : </p>
-                <span class="bg-primarys p-1" id="kondisi-mysql">Loading...</span>
-            </div>
-            <div class="d-flex align-items-center mt-2 gap-2">
-                <p class="m-0">Status esp32 (server) : </p>
-                <span class="bg-primarys p-1" id="kondisi-esp2">Loading...</span>
-            </div>
-            <div class="d-flex align-items-center gap-2 mt-2">
-                <p class="m-0">Status esp32 (client) : </p>
-                <span class="bg-primarys p-1" id="kondisi-esp1">Loading..</span>
-            </div>
-            <div class="d-flex align-items-center gap-2 mt-2">
+           <div class="d-flex align-items-center gap-2 mt-2">
                 <p class="m-0 col-5">Farm system : </p> 
                 <select name="" onchange="changeSystem(this)" class="bg-primarys border-0 px-3 py-1" value="" id="system_mode_input">
                   <option value="" hidden>Loading..</option>
@@ -74,95 +62,141 @@
                   <option value="schedule">schedule</option>
                 </select>
             </div>
-            <div class="d-flex align-items-center gap-2 mt-2">
-                <p class="m-0 col-5">Ip addres (just ip) : </p> 
-                <input type="text" value="loading.." name="" id="ip-addres" class="form-control">
-            </div>
-            <div class="d-flex align-items-center gap-2 mt-2">
-                <p class="m-0 col-5">Ip addres (ip complete) : </p> 
-                <input type="text" value="loading.." name="" id="ip-addres-complete" class="form-control">
-            </div>
-            <div class="d-flex align-items-center gap-2 mt-2">
-                <button class="btn btn-primarys" onclick="saveIp()">Save ip</button>
-            </div>
+            
+            <div class="flex-wrap mt-3" id="auto-popup" style="display:none;">
+              <h1 class="m-0">Automatic system</h1>
+              <div class="d-flex gap-2 mt-2 align-items-center">
+                  <p class="m-0">
+                      Middle temperature (jika turun dingin, jika naik panas) :
+                  </p>
+                  <input class="form-control" id="mid-temp" type="number" />
+              </div>
+              <div class="d-flex gap-2 mt-2 align-items-center">
+                  <p class="m-0">
+                      Middle humidity (jika turun kering, jika naik lembab) :
+                  </p>
+                  <input class="form-control" id="mid-humi" type="number" />
+              </div>
+              <div class="d-flex gap-2 mt-2 align-items-center">
+                  <p class="m-0">
+                      Middle moisture1 (jika turun kering, jika naik lembab) :
+                  </p>
+                  <input class="form-control" id="mid-moisture1" type="number" />
+              </div>
+              <button class="btn btn-success" type="button" onclick="saveAutoMode()">Save</button>
+          </div>
+          <div class="flex-wrap flex-column mt-3" id="schedule-popup" style="display:none;">
+              <h1 class="m-0">Scheduling system</h1>
+              <div class="d-flex gap-2 mt-2 align-items-center">
+                  <p class="m-0 col-4">
+                      Pagi :
+                  </p>
+                  <div class="input-group mb-3">
+                      <input type="text" class="form-control" id="pagi-ipt">
+                      <div class="input-group-append">
+                          <span class="input-group-text">:00</span>
+                      </div>
+                  </div>
+              </div>
+              <div class="d-flex gap-2 mt-2 align-items-center">
+                  <p class="m-0 col-4">
+                      Siang :
+                  </p>
+                  <div class="input-group mb-3">
+                      <input type="text" class="form-control" id="siang-ipt">
+                      <div class="input-group-append">
+                          <span class="input-group-text">:00</span>
+                      </div>
+                  </div>
+              </div>
+              <div class="d-flex gap-2 mt-2 align-items-center">
+                  <p class="m-0 col-4">
+                      Sore :
+                  </p>
+                  <div class="input-group mb-3">
+                      <input type="text" class="form-control" id="sore-ipt">
+                      <div class="input-group-append">
+                          <span class="input-group-text">:00</span>
+                      </div>
+                  </div>
+              </div>
+              <div class="d-flex gap-2 mt-2 align-items-center">
+                  <p class="m-0 col-4">
+                      Malam :
+                  </p>
+                  <div class="input-group mb-3">
+                      <input type="text" class="form-control" id="malam-ipt">
+                      <div class="input-group-append">
+                          <span class="input-group-text">:00</span>
+                      </div>
+                  </div>
+              </div>
+              <button class="btn m-2 btn-success" onclick="saveScheduleMode()" type="button">Save</button>
+          </div>
+          <canvas id="myChart" class="my-3" style="width:100%;max-width:700px"></canvas>
+            
         </div>
       </main>
     
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script>
-    function getStatusMysql() {
-      fetch("../config/db.php?status")
-      .then(res => res.text())
-      .then(data => {
-          var mysql = document.getElementById("kondisi-mysql")
-          if (data === 'connect') {
-              mysql.textContent = "Connect"
-              mysql.classList.add("bg-primarys")
-              mysql.classList.add("text-dark")
-              mysql.classList.remove("bg-danger")
-              mysql.classList.remove("text-light")
-          } else {
-              mysql.textContent = "Refused"
-              mysql.classList.remove("bg-primarys")
-              mysql.classList.remove("text-dark")
-              mysql.classList.add("bg-danger")
-              mysql.classList.add("text-light")
-          }
-          
-      })
-      
-    }
-      
-    function getStatusEsp() {
-      fetch("../config/getStatusEsp.php")
-      .then(res => res.json())
-      .then(data => {
-          var esp1 = document.getElementById("kondisi-esp1")
-          var esp2 = document.getElementById("kondisi-esp2")
-          
-          if (data.esp_client === "1") {
-              esp1.textContent = "Connect"
-              esp1.classList.add("bg-primarys")
-              esp1.classList.add("text-dark")
-              esp1.classList.remove("bg-danger")
-              esp1.classList.remove("text-light")
-          } else {
-              esp1.textContent = "Refused"
-              esp1.classList.remove("bg-primarys")
-              esp1.classList.remove("text-dark")
-              esp1.classList.add("bg-danger")
-              esp1.classList.add("text-light")
-          }
-          if (data.esp_server === "1") {
-              esp2.textContent = "Connect"
-              esp2.classList.add("bg-primarys")
-              esp2.classList.add("text-dark")
-              esp2.classList.remove("bg-danger")
-              esp2.classList.remove("text-light")
-          } else {
-              esp2.textContent = "Refused"
-              esp2.classList.remove("bg-primarys")
-              esp2.classList.remove("text-dark")
-              esp2.classList.add("bg-danger")
-              esp2.classList.add("text-light")
-          }
-      })
-      
-    }
-    
-    function getIpAddres() {
-        fetch("https://controler-smart-farm-default-rtdb.firebaseio.com/config.json")
-        .then(res => res.json())
-        .then(data => {
-            var ip1 = document.getElementById("ip-addres")
-            var ip2 = document.getElementById("ip-addres-complete")
-            
-            ip1.value = data.ip
-            ip2.value = data.server_ip
-        })
-    }
-    
-    function saveIp() {
+      var URL = "https://controler-smart-farm-default-rtdb.firebaseio.com/"
+      var statusServer = 0
+
+      const xValues = ["Pagi", "Siang", "Sore", "Malam"];
+        const tempValues = [];
+        const humiValues = [];
+        const moistureValues1 = [];
+        var statusServer = 0;
+        var autoMode = 0
+        var scheduleMode = 0
+
+        // Creating the chart
+        var myChart = new Chart("myChart", {
+            type: "line",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    label: "Humidity", // Second dataset
+                    fill: false,
+                    lineTension: 0,
+                    backgroundColor: "#512B81",
+                    borderColor: "rgba(81, 43, 129, 0.8)",
+                    data: humiValues,
+                    stepped: true
+                },
+                    {
+                        label: "Moisture1", // Third dataset
+                        fill: false,
+                        lineTension: 0,
+                        backgroundColor: "rgba(255, 32, 78, 1)",
+                        borderColor: "rgba(255, 32, 78, 0.7)",
+                        data: moistureValues1
+                    }]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    display: true
+                }, // Display legend to differentiate datasets
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                            max: 100
+                        }
+                    }]
+                },
+                animation: {
+                    duration: 1000, // Duration of the animation in milliseconds
+                    easing: 'easeInOutQuart' // Easing function for a smoother transition
+                }
+            }
+        });
+       
+
+      function saveIp() {
         var ip1 = document.getElementById("ip-addres").value
         var ip2 = document.getElementById("ip-addres-complete").value 
         var data = {
@@ -190,18 +224,17 @@
     
       function changeSystem(elem) {
             var value = elem.value;
-            fetch("../config/postDataSystem.php", {
-                method: "POST",
+            fetch(URL + "config.json", {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    system: value
+                    sf_operation: value
                   })
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
+            .then(res => {
+              if (res.ok) {
                     Swal.fire({
                         title: "Berhasil !",
                         text: 'mengganti system ke ' + value,
@@ -215,20 +248,284 @@
                       });
                 }
             })
-        }
+          }
         
         function getSystemFarm() {
-            fetch('../config/getDataSystem.php')
-            .then(res => res.text())
+            fetch(URL + "config.json")
+            .then(res => res.json())
             .then(data => {
-                document.getElementById('system_mode_input').value = data
+                document.getElementById('system_mode_input').value = data.sf_operation
+                if (data.sf_operation === "automatic") {
+                        document.getElementById("auto-popup").style.display = "flex"
+                        document.getElementById("schedule-popup").style.display = "none"
+                        autoMode = 1
+                      } else if (data.sf_operation === "schedule") {
+                      document.getElementById("auto-popup").style.display = "none"
+                        document.getElementById("schedule-popup").style.display = "flex"
+                        scheduleMode = 1
+                    } else {
+                        document.getElementById("auto-popup").style.display = "none"
+                        document.getElementById("schedule-popup").style.display = "none"
+                        autoMode = 0
+                        scheduleMode = 0
+                    }
             })
+        }  
+        var midTempValue = 0
+            var midHumiValue = 0
+            var midMoisture1Value = 0
+            var pagiTime = 0
+            var siangTime = 0
+            var soreTime = 0
+            var malamTime = 0
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+
+            let lastTemperature = null;
+            let lastMoisture1 = null;
+            function saveAutoMode() {
+                var midTemp = document.getElementById("mid-temp").value
+                var midHumi = document.getElementById("mid-humi").value
+                var midMoisture1 = document.getElementById("mid-moisture1").value
+                fetch(URL + "dataOperation.json",
+                    {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            mid_temp: midTemp,
+                            mid_humidity: midHumi,
+                            mid_moisture1: midMoisture1
+                        })
+                    })
+                .then(res => {
+                    if (res.ok) {
+                        Toast.fire({
+                            icon: "success",
+                            title: "Pengaturan disimpan."
+                        });
+                    }
+                })
+            }
+            function loadAutoMode() {
+                var midTemp = document.getElementById("mid-temp")
+                var midHumi = document.getElementById("mid-humi")
+                var midMoisture1 = document.getElementById("mid-moisture1")
+                fetch(URL + "dataOperation.json")
+                .then(res => res.json())
+                .then(data => {
+                    midTemp.value = parseFloat(data.mid_temp)
+                    midHumi.value = parseInt(data.mid_humidity)
+                    midMoisture1.value = parseInt(data.mid_moisture1)
+
+                    midTempValue = parseFloat(data.mid_temp)
+                    midHumiValue = parseInt(data.mid_humidity)
+                    midMoisture1Value = parseInt(data.mid_moisture1)
+                })
+            }
+            function checkAutoMode() {
+                if (statusServer == 1 && autoMode == 1) {
+                    fetch(URL + "dataFarm.json")
+                    .then(res => res.json())
+                    .then(data => {
+                        // Cek jika suhu berbeda dengan suhu sebelumnya
+                        if (lastTemperature !== data.temperature) {
+                            if (data.temperature < midTempValue) {
+                                fanButton("off", document.getElementById("fan1-btn-off"), 1);
+                            } else if (data.temperature > midTempValue) {
+                                fanButton("on", document.getElementById("fan1-btn-on"), 1);
+                            }
+                            // Simpan suhu sekarang sebagai suhu terakhir
+                            lastTemperature = data.temperature;
+                        }
+                        setTimeout(() => {
+                            if (lastMoisture1 !== data.moisture1) {
+                                if (data.moisture1 < midMoisture1Value) {
+                                    pumpButton("on", document.getElementById("pump1-btn-on"), 1);
+                                } else if (data.moisture1 > midMoisture1Value) {
+                                    pumpButton("off", document.getElementById("pump1-btn-off"), 1);
+                                }
+                                // Simpan suhu sekarang sebagai suhu terakhir
+                                lastMoisture1 = data.moisture1;
+                            }
+                        },
+                            2000)
+                    })
+                    .catch(error => {
+                        console.error("Error fetching data:",
+                            error);
+                    });
+                }
+            }
+
+
+            function saveScheduleMode() {
+                var pagiIpt = document.getElementById("pagi-ipt").value
+                var siangIpt = document.getElementById("siang-ipt").value
+                var soreIpt = document.getElementById("sore-ipt").value
+                var malamIpt = document.getElementById("malam-ipt").value
+                fetch(URL + "dataOperation.json",
+                    {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            pagi_sc: pagiIpt,
+                            siang_sc: siangIpt,
+                            sore_sc: soreIpt,
+                            malam_sc: malamIpt
+                        })
+                    })
+                .then(res => {
+                    if (res.ok) {
+                        Toast.fire({
+                            icon: "success",
+                            title: "Pengaturan disimpan."
+                        });
+                    } else {
+                        alert("error")
+                    }
+                })
+                .catch(error => {
+                    console.error("Terjadi kesalahan saat menyimpan:", error);
+                    alert("Terjadi kesalahan saat menyimpan pengaturan.");
+                });
+            }
+            function loadScheduleMode() {
+                var pagiIpt = document.getElementById("pagi-ipt")
+                var siangIpt = document.getElementById("siang-ipt")
+                var soreIpt = document.getElementById("sore-ipt")
+                var malamIpt = document.getElementById("malam-ipt")
+                fetch(URL + "dataOperation.json")
+                .then(res => res.json())
+                .then(data => {
+                    pagiIpt.value = parseInt(data.pagi_sc)
+                    siangIpt.value = parseInt(data.siang_sc)
+                    soreIpt.value = parseInt(data.sore_sc)
+                    malamIpt.value = parseInt(data.malam_sc)
+
+                    pagiTime = parseInt(data.pagi_sc)
+                    siangTime = parseInt(data.siang_sc)
+                    soreTime = parseInt(data.sore_sc)
+                    malamTime = parseInt(data.malam_sc)
+                })
+            }
+            function checkScheduleMode() {
+                if (statusServer == 1 && scheduleMode == 1) {
+                    fetch(URL + "dataOperation.json")
+                    .then(res => res.json())
+                    .then(data => {
+                        let now = new Date();
+                        let hours = now.getHours();
+
+                        if (parseInt(data.pagi_sc) == hours) {
+                            if (data.pagi_done == 0) {
+                                fetch(URL + "dataOperation.json", {
+                                    method: "PATCH",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                },
+                                    body: JSON.stringify({
+                                        pagi_done: 1
+                                })
+                            })
+                        .then(res => {
+                            if (res.ok) {
+                                pumpButton("on", document.getElementById("pump1-btn-on"), 1);
+                                setTimeout(() => {
+                                    fanButton("off", document.getElementById("fan1-btn-off"), 1);
+                            }, 2000)
+                        }
+                        })
+                    }
+                } else if (parseInt(data.siang_sc) == hours) {
+                    if (data.siang_done == 0) {
+                        fetch(URL + "dataOperation.json", {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                siang_done: 1
+                            })
+                        })
+                        .then(res => {
+                            if (res.ok) {
+                                pumpButton("off", document.getElementById("pump1-btn-off"), 1);
+                                setTimeout(() => {
+                                    fanButton("on", document.getElementById("fan1-btn-on"), 1);
+                                }, 2000)
+                            }
+                        })
+                    }
+                } else if (parseInt(data.sore_sc) == hours) {
+                    if (data.sore_done == 0) {
+                        fetch(URL + "dataOperation.json", {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                sore_done: 1
+                            })
+                        })
+                        .then(res => {
+                            if (res.ok) {
+                                pumpButton("off", document.getElementById("pump1-btn-off"), 1);
+                                setTimeout(() => {
+                                    fanButton("on", document.getElementById("fan1-btn-on"), 1);
+                                }, 2000)
+                            }
+                        })
+                    }
+                } else if (parseInt(data.malam_sc) == hours) {
+                    if (data.malam_done == 0) {
+                        fetch(URL + "dataOperation.json", {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                malam_done: 1
+                            })
+                        })
+                        .then(res => {
+                            if (res.ok) {
+
+                                pumpButton("on", document.getElementById("pump1-btn-on"), 1);
+
+                                setTimeout(() => {
+                                    fanButton("off", document.getElementById("fan1-btn-off"), 1);
+                                }, 2000)
+                            }
+                        })
+                    }
+                } else {
+                    pumpButton("off", document.getElementById("pump1-btn-off"), 1);
+                    fanButton("off", document.getElementById("fan1-btn-off"), 1);
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching data:",
+                    error);
+            });
         }
-      
-      getIpAddres()
+    }
+
+    
+      setInterval(checkAutoMode, 3000);
+      setInterval(checkScheduleMode, 10000);
+       loadAutoMode()
+      loadScheduleMode()
       setInterval(getSystemFarm, 1000)
-      setInterval(getStatusMysql, 2000)
-      setInterval(getStatusEsp, 2000)
       
     </script>
   </body>
