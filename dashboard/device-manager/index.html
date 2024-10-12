@@ -17,342 +17,344 @@
     <link rel="stylesheet" href="../../assets/    style.css" type="text/css" media="all" />
     <script type="text/javascript" charset="utf-8">
         var role = localStorage.getItem("role")
-        if (!localStorage.getItem("login") || role !== "user") {
-          window.location.href = "/"
+        if (!localStorage.getItem("login") || role !== "admin") {
+            window.location.href = "/"
         }
-        </script>
-        <style>
+    </script>
+    <style>
         .temp-update-class {
-    background-color: rgba(56, 108, 95, .3);
-}
-        </style>
+            background-color: rgba(56, 108, 95, .3);
+        }
+    </style>
 </head>
-  <body>
-    
+<body>
+
     <!--navbar -->
     <nav class="navbar navbar-expand-lg" style="background:white;">
         <div class="container-fluid">
-          <a class="navbar-brand" href="/">SF - Dashboard</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="bi bi-list"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="/dashboard/">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link fw-bold" href="#">Device manager</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="farm-data/">Farm data</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/">Account</a>
-              </li>
-            </ul>
-          </div>
+            <a class="navbar-brand" href="/">SF - Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="bi bi-list"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold" href="#">Device manager</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../account/">Account</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-      </nav>
-      <!--navbar -->
+    </nav>
+    <!--navbar -->
 
-      <main class="py-4 w-100">
+    <main class="py-4 w-100">
         <div class="container d-flex flex-column">
             <h1 class="fw-bold">Device manager</h1>
-            <p class="m-0">New device</p>
+            <p class="m-0">
+                New device
+            </p>
             <form class="d-flex flex-column" id="form-create-device">
-            <span>device name</span>
-            <input class="form-control" type="text" required placeholder="enter here.." required id="device_name"/>
-            <span class="mt-2">device pin</span>
-            <input class="form-control" type="number" required placeholder="enter here.." required id="device_pin"/>
-            <span class="mt-2">device type</span>
-            <select name="" required id="device_type" class="form-control">
-              <option value="" hidden>Select one</option>
-              <option value="dhts">DHT</option>
-                <option value="soils">SOIL MOISTURE</option>
-                <option value="pumps">PUMP</option>
-                <option value="fans">FAN</option>
-          </select>
-            <button class="btn btn-primary mt-3 mb-3 col-5" type="submit">Create new device</button>
+                <span>device name</span>
+                <input class="form-control" type="text" required placeholder="enter here.." required id="device_name" />
+                <span class="mt-2">device pin</span>
+                <input class="form-control" type="number" required placeholder="enter here.." required id="device_pin" />
+                <span class="mt-2">device type</span>
+                <select name="" required id="device_type" class="form-control">
+                    <option value="" hidden>Select one</option>
+                    <option value="dhts">DHT</option>
+                    <option value="soils">SOIL MOISTURE</option>
+                    <option value="pumps">PUMP</option>
+                    <option value="fans">FAN</option>
+                </select>
+                <button class="btn btn-primary mt-3 mb-3 col-5" type="submit">Create new device</button>
             </form>
-             <div style="overflow: auto;" class="m-1">
-                 <h2 class="m-0">Sensor</h2>
-      <table class="custom-table">
-        <thead>
-          <tr>
-            <th class="text-left" style="border-right:3px solid white;">No</th>
-            <th class="text-left" style="border-right:3px solid white;">Device name</th>
-            <th class="text-left" style="border-right:3px solid white;">Pin</th>
-            <th class="text-left" style="border-right:3px solid white;">Action</th>
-          </tr>
-        </thead>
-        <tbody id="device-table">
-        </tbody>
-      </table>
+            <div style="overflow: auto;" class="m-1">
+                <h2 class="m-0">Sensor</h2>
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th class="text-left" style="border-right:3px solid white;">No</th>
+                            <th class="text-left" style="border-right:3px solid white;">Device name</th>
+                            <th class="text-left" style="border-right:3px solid white;">Pin</th>
+                            <th class="text-left" style="border-right:3px solid white;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="device-table">
+                    </tbody>
+                </table>
+            </div>
+            <div style="overflow: auto;" class="m-1">
+                <h2 class="m-0">Pump/Fan</h2>
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th class="text-left" style="border-right:3px solid white;">No</th>
+                            <th class="text-left" style="border-right:3px solid white;">Device name</th>
+                            <th class="text-left" style="border-right:3px solid white;">Pin</th>
+                            <th class="text-left" style="border-right:3px solid white;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="device-pump-fan-table">
+                    </tbody>
+                </table>
+            </div>
         </div>
-             <div style="overflow: auto;" class="m-1">
-                 <h2 class="m-0">Pump/Fan</h2>
-      <table class="custom-table">
-        <thead>
-          <tr>
-            <th class="text-left" style="border-right:3px solid white;">No</th>
-            <th class="text-left" style="border-right:3px solid white;">Device name</th>
-            <th class="text-left" style="border-right:3px solid white;">Pin</th>
-            <th class="text-left" style="border-right:3px solid white;">Action</th>
-          </tr>
-        </thead>
-        <tbody id="device-pump-fan-table">
-        </tbody>
-      </table>
-        </div>
-        </div>
-      </main>
-    
+    </main>
+
     <script src=".js" type="text/javascript" charset="utf-8"></script>
     <script>
-    
-    var URL = "https://controler-smart-farm-default-rtdb.firebaseio.com/"
-   
-    function getData() {
-    fetch(URL + "dataPins.json")
-    .then(res => res.json())
-    .then(data => {
-        var i = 0;
-        var iPF = 0;
 
-        // Fungsi untuk mengurutkan kunci secara numerik berdasarkan angka setelah 'pump', 'fan', dll.
-        const sortKeys = (obj) => {
-            return Object.keys(obj).sort((a, b) => {
-                const numA = parseInt(a.match(/\d+/)); // Ambil angka dari string, misal "pump10" -> 10
-                const numB = parseInt(b.match(/\d+/)); // Ambil angka dari string, misal "pump2" -> 2
-                return numA - numB; // Urutkan secara numerik
-            });
-        };
+        var URL = "https://controler-smart-farm-default-rtdb.firebaseio.com/"
 
-        // proses dht
-        const dhtKeys = sortKeys(data.dhts);
-        dhtKeys.forEach((key, index) => {
-            i++;
-            const val = data.dhts[key];
-            var newEl = document.createElement("tr");
-            newEl.innerHTML = `
-                <td>${i}</td>
-                <td>${key}</td>
-                <td>${val}</td>
-                <td class="gap-2">
-                    <button class="btn btn-warning mx-1" onclick="editData('${key}', this)">Edit</button>
-                    <button class="btn btn-danger" onclick="deleteData('${key}', this)">Delete</button>
-                </td>
-            `;
-            document.getElementById("device-table").appendChild(newEl);
-        });
+        function getData() {
+            fetch(URL + "dataPins.json")
+            .then(res => res.json())
+            .then(data => {
+                var i = 0;
+                var iPF = 0;
 
-        // proses soil
-        const soilKeys = sortKeys(data.soils);
-        soilKeys.forEach((key, index) => {
-            i++;
-            const val = data.soils[key];
-            var newEl = document.createElement("tr");
-            newEl.innerHTML = `
-                <td>${i}</td>
-                <td>${key}</td>
-                <td>${val}</td>
-                <td class="gap-2">
-                    <button class="btn btn-warning mx-1" onclick="editData('${key}', this)">Edit</button>
-                    <button class="btn btn-danger" onclick="deleteData('${key}', this)">Delete</button>
-                </td>
-            `;
-            document.getElementById("device-table").appendChild(newEl);
-        });
-
-        // proses pump
-        const pumpKeys = sortKeys(data.pumps);
-        pumpKeys.forEach((key, index) => {
-            iPF++;
-            const val = data.pumps[key];
-            var newEl = document.createElement("tr");
-            newEl.innerHTML = `
-                <td>${iPF}</td>
-                <td>${key}</td>
-                <td>${val}</td>
-                <td class="gap-2">
-                    <button class="btn btn-warning mx-1" onclick="editData('${key}', this)">Edit</button>
-                    <button class="btn btn-danger" onclick="deleteData('${key}', this)">Delete</button>
-                </td>
-            `;
-            document.getElementById("device-pump-fan-table").appendChild(newEl);
-        });
-
-        // proses fan
-        const fanKeys = sortKeys(data.fans);
-        fanKeys.forEach((key, index) => {
-            iPF++;
-            const val = data.fans[key];
-            var newEl = document.createElement("tr");
-            newEl.innerHTML = `
-                <td>${iPF}</td>
-                <td>${key}</td>
-                <td>${val}</td>
-                <td class="gap-2">
-                    <button class="btn btn-warning mx-1" onclick="editData('${key}', this)">Edit</button>
-                    <button class="btn btn-danger" onclick="deleteData('${key}', this)">Delete</button>
-                </td>
-            `;
-            document.getElementById("device-pump-fan-table").appendChild(newEl);
-        });
-    })
-    .catch(error => alert(error));
-}
-   
-    document.getElementById("form-create-device").addEventListener("submit", (event) => {
-        event.preventDefault();
-        createDevice();
-    })
-    
-    function createDevice() {
-    // Ambil nilai input dari form
-    const deviceName = document.getElementById('device_name');
-    const devicePin = document.getElementById('device_pin');
-    const deviceType = document.getElementById('device_type').value;
-
-    // Buat objek data yang akan dikirim
-    const data = {
-        [deviceName.value]: parseInt(devicePin.value)
-    };
-
-    // Lakukan fetch dengan method POST ke endpoint
-    fetch(URL + "dataPins/" + deviceType + ".json", { // ganti URL ini dengan endpoint yang sesuai
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data), // konversi data ke JSON string
-    })
-    .then(response => response.json()) // parsing response ke JSON
-    .then(data => {
-        Swal.fire({
-                title: "Berhasil!",
-                text: "Berhasil menambahkan device baru.",
-                icon: "success"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    location.reload()
-                }
-            })
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        alert('Failed to create device.');
-    });
-}
-     function editData(id, elem) {
-    var siblingTd = elem.parentElement.parentElement.getElementsByTagName("td");
-        siblingTd[2].contentEditable = true;
-        siblingTd[2].classList.add("temp-update-class");
-    
-    elem.setAttribute("onclick", `updateNowData('${id}', this)`);
-    elem.innerHTML = "SAVE";
-     }
-     
-function updateNowData(uniqueId, elem) {
-    Swal.fire({
-        title: "Are you sure?",
-        text: "Data akan diperbarui jika kamu mengonfirmasi",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, update it!"
-    }).then((result) => {
-        if (result.isConfirmed) {
-             var contentId = document.querySelector(".temp-update-class");
-                const letters = uniqueId.replace(/\d+$/, '');
-                var obj = {
-                    [uniqueId]: contentId.textContent
+                // Fungsi untuk mengurutkan kunci secara numerik berdasarkan angka setelah 'pump', 'fan', dll.
+                const sortKeys = (obj) => {
+                    return Object.keys(obj).sort((a, b) => {
+                        const numA = parseInt(a.match(/\d+/)); // Ambil angka dari string, misal "pump10" -> 10
+                        const numB = parseInt(b.match(/\d+/)); // Ambil angka dari string, misal "pump2" -> 2
+                        return numA - numB; // Urutkan secara numerik
+                    });
                 };
-                
-                fetch(URL + 'dataPins/' + letters + "s.json", {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(obj)
-                })
-                .then(response => {
-                    if (response.ok) {
-                          Swal.fire({
-                title: "Berhasil!",
-                text: "Berhasil mengupdate pin device.",
-                icon: "success"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    location.reload()
-                }
-            })  
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-            
-        } else {
-            // Action if user cancels 
-            elem.innerHTML = "Edit";
-            elem.setAttribute("onclick", `editData('${uniqueId}', this)`);
-            var siblingTd = elem.parentElement.parentElement.getElementsByTagName("td");
-            for (var i = 0; i < siblingTd.length - 1; i++) {
-                siblingTd[i].contentEditable = false;
-                siblingTd[i].classList.remove("temp-update-class");
-            }
-            document.getElementById("device-table").innerHTML = ""
-            getData();
-        }
-    });
-}
-     function deleteData(id, elem) {
-     const letters = id.replace(/\d+$/, ''); // Hapus semua angka di akhir
-     const numbers = id.match(/\d+$/)?.[0] || ''; // Ambil hanya angka di akhir
 
-    Swal.fire({
-        title: "Are you sure?",
-        text: "Data akan dihapus jika kamu mengonfirmasi",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(URL + "dataPins/" + letters + "s/" + id + ".json", {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(response => {
-                    if (response.ok) {
-                   Swal.fire({
-                title: "Berhasil!",
-                text: "Berhasil menghapus device.",
-                icon: "success"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    location.reload()
-                }
-            })  
+                // proses dht
+                const dhtKeys = sortKeys(data.dhts);
+                dhtKeys.forEach((key, index) => {
+                    i++;
+                    const val = data.dhts[key];
+                    var newEl = document.createElement("tr");
+                    newEl.innerHTML = `
+                    <td>${i}</td>
+                    <td>${key}</td>
+                    <td>${val}</td>
+                    <td class="gap-2">
+                    <button class="btn btn-warning mx-1" onclick="editData('${key}', this)">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteData('${key}', this)">Delete</button>
+                    </td>
+                    `;
+                    document.getElementById("device-table").appendChild(newEl);
+                });
+
+                // proses soil
+                const soilKeys = sortKeys(data.soils);
+                soilKeys.forEach((key, index) => {
+                    i++;
+                    const val = data.soils[key];
+                    var newEl = document.createElement("tr");
+                    newEl.innerHTML = `
+                    <td>${i}</td>
+                    <td>${key}</td>
+                    <td>${val}</td>
+                    <td class="gap-2">
+                    <button class="btn btn-warning mx-1" onclick="editData('${key}', this)">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteData('${key}', this)">Delete</button>
+                    </td>
+                    `;
+                    document.getElementById("device-table").appendChild(newEl);
+                });
+
+                // proses pump
+                const pumpKeys = sortKeys(data.pumps);
+                pumpKeys.forEach((key, index) => {
+                    iPF++;
+                    const val = data.pumps[key];
+                    var newEl = document.createElement("tr");
+                    newEl.innerHTML = `
+                    <td>${iPF}</td>
+                    <td>${key}</td>
+                    <td>${val}</td>
+                    <td class="gap-2">
+                    <button class="btn btn-warning mx-1" onclick="editData('${key}', this)">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteData('${key}', this)">Delete</button>
+                    </td>
+                    `;
+                    document.getElementById("device-pump-fan-table").appendChild(newEl);
+                });
+
+                // proses fan
+                const fanKeys = sortKeys(data.fans);
+                fanKeys.forEach((key, index) => {
+                    iPF++;
+                    const val = data.fans[key];
+                    var newEl = document.createElement("tr");
+                    newEl.innerHTML = `
+                    <td>${iPF}</td>
+                    <td>${key}</td>
+                    <td>${val}</td>
+                    <td class="gap-2">
+                    <button class="btn btn-warning mx-1" onclick="editData('${key}', this)">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteData('${key}', this)">Delete</button>
+                    </td>
+                    `;
+                    document.getElementById("device-pump-fan-table").appendChild(newEl);
+                });
+            })
+            .catch(error => alert(error));
+        }
+
+        document.getElementById("form-create-device").addEventListener("submit", (event) => {
+            event.preventDefault();
+            createDevice();
+        })
+
+        function createDevice() {
+            // Ambil nilai input dari form
+            const deviceName = document.getElementById('device_name');
+            const devicePin = document.getElementById('device_pin');
+            const deviceType = document.getElementById('device_type').value;
+
+            // Buat objek data yang akan dikirim
+            const data = {
+                [deviceName.value]: parseInt(devicePin.value)
+            };
+
+            // Lakukan fetch dengan method POST ke endpoint
+            fetch(URL + "dataPins/" + deviceType + ".json", {
+                // ganti URL ini dengan endpoint yang sesuai
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data), // konversi data ke JSON string
+            })
+            .then(response => response.json()) // parsing response ke JSON
+            .then(data => {
+                Swal.fire({
+                    title: "Berhasil!",
+                    text: "Berhasil menambahkan device baru.",
+                    icon: "success"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload()
                     }
                 })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-            } else {
-                
-            }
-       })
-     }
-    
-    getData()
-    
+            })
+            .catch((error) => {
+                console.error('Error:',
+                    error);
+                alert('Failed to create device.');
+            });
+        }
+        function editData(id, elem) {
+            var siblingTd = elem.parentElement.parentElement.getElementsByTagName("td");
+            siblingTd[2].contentEditable = true;
+            siblingTd[2].classList.add("temp-update-class");
+
+            elem.setAttribute("onclick", `updateNowData('${id}', this)`);
+            elem.innerHTML = "SAVE";
+        }
+
+        function updateNowData(uniqueId, elem) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Data akan diperbarui jika kamu mengonfirmasi",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, update it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var contentId = document.querySelector(".temp-update-class");
+                    const letters = uniqueId.replace(/\d+$/, '');
+                    var obj = {
+                        [uniqueId]: contentId.textContent
+                    };
+
+                    fetch(URL + 'dataPins/' + letters + "s.json", {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(obj)
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: "Berhasil mengupdate pin device.",
+                                icon: "success"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload()
+                                }
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:',
+                            error);
+                    });
+
+                } else {
+                    // Action if user cancels
+                    elem.innerHTML = "Edit";
+                    elem.setAttribute("onclick", `editData('${uniqueId}', this)`);
+                    var siblingTd = elem.parentElement.parentElement.getElementsByTagName("td");
+                    for (var i = 0; i < siblingTd.length - 1; i++) {
+                        siblingTd[i].contentEditable = false;
+                        siblingTd[i].classList.remove("temp-update-class");
+                    }
+                    document.getElementById("device-table").innerHTML = ""
+                    getData();
+                }
+            });
+        }
+        function deleteData(id, elem) {
+            const letters = id.replace(/\d+$/,
+                ''); // Hapus semua angka di akhir
+            const numbers = id.match(/\d+$/)?.[0] || ''; // Ambil hanya angka di akhir
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Data akan dihapus jika kamu mengonfirmasi",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(URL + "dataPins/" + letters + "s/" + id + ".json", {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: "Berhasil menghapus device.",
+                                icon: "success"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload()
+                                }
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:',
+                            error);
+                    });
+                } else {}
+            })
+        }
+
+        getData()
+
     </script>
-  </body>
+</body>
 </html>

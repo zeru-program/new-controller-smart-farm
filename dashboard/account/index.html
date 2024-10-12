@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Smart farm - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!--Google Fonts and Icons-->
+    <script src="https://cdn.jsdelivr.net/npm/js-circle-progress/dist/circle-progress.min.js" type="module"></script>
+    <link rel="shortcut icon" href="https://i.pinimg.com/474x/ef/f6/ac/eff6acfcf843833a9b21070769dae764.jpg" type="image/x-icon">
+    <!-- style path -->
+    <link rel="stylesheet" href="../../assets/dashboard.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="../../assets/    style.css" type="text/css" media="all" />
+    <script type="text/javascript" charset="utf-8">
+        var role = localStorage.getItem("role")
+        if (!localStorage.getItem("login") || role !== "admin") {
+            window.location.href = "/"
+        }
+    </script>
+    <style>
+        .temp-update-class {
+            background-color: rgba(56, 108, 95, .3);
+        }
+    </style>
+</head>
+<body>
+
+    <!--navbar -->
+    <nav class="navbar navbar-expand-lg" style="background:white;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">SF - Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="bi bi-list"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../device-manager/">Device manager</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold" href="#">Account</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!--navbar -->
+
+    <main class="py-4 w-100">
+        <div class="container d-flex flex-column">
+            <h1 class="fw-bold">Account manager</h1>
+            <p class="m-0">
+                New account
+            </p>
+            <form class="d-flex flex-column" id="form-create-account">
+                <span>username</span>
+                <input class="form-control" type="text" required placeholder="enter here.." required id="username_ipt" />
+                <span>password</span>
+                <input class="form-control" type="password" required placeholder="enter here.." required id="password_ipt" />
+                <span class="mt-2">email</span>
+                <input class="form-control" type="email" required placeholder="enter here.." required id="email_ipt" />
+                <span class="mt-2">role</span>
+                <select name="" required id="role_ipt" class="form-control">
+                    <option value="" hidden>Select one</option>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <button class="btn btn-primary mt-3 mb-3 col-5" type="submit">Create new device</button>
+            </form>
+            <div style="overflow: auto;" class="m-1">
+                <h2 class="m-0">Account</h2>
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th class="text-left" style="border-right:3px solid white;">No</th>
+                            <th class="text-left" style="border-right:3px solid white;">Username</th>
+                            <th class="text-left" style="border-right:3px solid white;">Password</th>
+                            <th class="text-left" style="border-right:3px solid white;">Role</th>
+                            <th class="text-left" style="border-right:3px solid white;">Email</th>
+                            <th class="text-left" style="border-right:3px solid white;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="account-table">
+                    </tbody>
+                </table>
+            </div>
+            <div style="overflow: auto;" class="m-1">
+                <h2 class="m-0">Contact sender from landing page home</h2>
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th class="text-left" style="border-right:3px solid white;">No</th>
+                            <th class="text-left" style="border-right:3px solid white;">Username</th>
+                            <th class="text-left" style="border-right:3px solid white;">Email</th>
+                            <th class="text-left" style="border-right:3px solid white;">Message</th>
+                            <th class="text-left" style="border-right:3px solid white;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contact-table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src=".js" type="text/javascript" charset="utf-8"></script>
+    <script>
+
+        var URL = "https://controler-smart-farm-default-rtdb.firebaseio.com/"
+
+        function getData() {
+            fetch(URL + "account.json")
+            .then(res => res.json())
+            .then(data => {
+                var i = 0
+                for (let key in data) {
+                    i++
+                    var val = data[key]
+                    var newEl = document.createElement("tr");
+                    newEl.innerHTML = `
+                    <td>${i}</td>
+                    <td>${val.username}</td>
+                    <td>${val.password}</td>
+                    <td>${val.role}</td>
+                    <td>${val.email}</td>
+                    <td class="gap-2">
+                    <button class="btn btn-warning mx-1" onclick="editData('${key}', this)">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteData('${key}', this)">Delete</button>
+                    </td>
+                    `;
+                    document.getElementById("account-table").appendChild(newEl);
+
+                }
+            })
+            .catch(error => alert(error));
+        }
+        function getDataContact() {
+            fetch(URL + "contact.json")
+            .then(res => res.json())
+            .then(data => {
+                var i = 0
+                for (let key in data) {
+                    i++
+                    var val = data[key]
+                    var newEl = document.createElement("tr");
+                    newEl.innerHTML = `
+                    <td>${i}</td>
+                    <td>${val.name}</td>
+                    <td>${val.email}</td>
+                    <td>${val.message}</td>
+                    <td>
+                    <button class="btn btn-danger" onclick="deleteDataContact('${key}', this)">Delete</button>
+                    </td>
+                    `;
+                    document.getElementById("contact-table").appendChild(newEl);
+
+                }
+            })
+            .catch(error => alert(error));
+        }
+
+        document.getElementById("form-create-account").addEventListener("submit", (event) => {
+            event.preventDefault();
+            createAccount();
+        })
+
+
+        function createAccount() {
+            // Ambil nilai input dari form
+            const username = document.getElementById('username_ipt').value.trim();
+            const password = document.getElementById('password_ipt').value.trim();
+            const emailIpt = document.getElementById('email_ipt').value.trim();
+            const role = document.getElementById('role_ipt').value.trim();
+
+            // Validasi input
+            if (!username || !password || !emailIpt || !role) {
+                Swal.fire({
+                    title: "Gagal!",
+                    text: "Semua field harus diisi.",
+                    icon: "error"
+                });
+                return;
+            }
+
+            // Validasi format email menggunakan regex
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(emailIpt)) {
+                Swal.fire({
+                    title: "Gagal!",
+                    text: "Format email tidak valid.",
+                    icon: "error"
+                });
+                return;
+            }
+
+            // Validasi panjang password
+            if (password.length < 8) {
+                Swal.fire({
+                    title: "Gagal!",
+                    text: "Password harus memiliki minimal 8 karakter.",
+                    icon: "error"
+                });
+                return;
+            }
+
+            var sameUsername = false;
+            var date = new Date();
+            var now = date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+
+            // Buat objek data yang akan dikirim
+            const data = {
+                username: username,
+                password: password,
+                email: emailIpt,
+                role: role,
+                created_at: now
+            };
+
+            // Cek apakah username sudah tersedia
+            fetch(URL + "account.json")
+            .then(res => res.json())
+            .then(existingData => {
+                for (let key in existingData) {
+                    var val = existingData[key];
+                    if (username === val.username) {
+                        sameUsername = true;
+                        break; // Keluar dari loop jika username ditemukan
+                    }
+                }
+
+                if (sameUsername) {
+                    Swal.fire({
+                        title: "Gagal!",
+                        text: "Username sudah tersedia.",
+                        icon: "error"
+                    });
+                } else {
+                    // Lakukan fetch dengan method POST ke endpoint
+                    fetch(URL + "account.json", {
+                        // ganti URL ini dengan endpoint yang sesuai
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data), // konversi data ke JSON string
+                    })
+                    .then(response => response.json()) // parsing response ke JSON
+                    .then(data => {
+                        Swal.fire({
+                            title: "Berhasil!",
+                            text: "Berhasil menambahkan account baru.",
+                            icon: "success"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('Error:',
+                            error);
+                        Swal.fire({
+                            title: "Gagal!",
+                            text: "Terjadi kesalahan saat menambahkan account.",
+                            icon: "error"
+                        });
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: "Gagal!",
+                    text: "Terjadi kesalahan saat memvalidasi username.",
+                    icon: "error"
+                });
+            });
+        }
+
+
+        function editData(id, elem) {
+            var siblingTd = elem.parentElement.parentElement.getElementsByTagName("td");
+            for (let i = 0; i < siblingTd.length - 1; i++) {
+                siblingTd[i].contentEditable = true;
+                siblingTd[i].classList.add("temp-update-class");
+            }
+
+            elem.setAttribute("onclick", `updateNowData('${id}', this)`);
+            elem.innerHTML = "SAVE";
+        }
+
+        function updateNowData(uniqueId, elem) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Data akan diperbarui jika kamu mengonfirmasi",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, update it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var contentId = document.querySelectorAll(".temp-update-class");
+                    var obj = {
+                        username: contentId[1].textContent,
+                        password: contentId[2].textContent,
+                        role: contentId[3].textContent,
+                        email: contentId[4].textContent
+                    };
+
+                    fetch(URL + 'account/' + uniqueId + '.json', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(obj)
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: "Berhasil mengupdate account.",
+                                icon: "success"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload()
+                                }
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:',
+                            error);
+                    });
+
+                } else {
+                    // Action if user cancels
+                    elem.innerHTML = "Edit";
+                    elem.setAttribute("onclick", `editData('${uniqueId}', this)`);
+                    var siblingTd = elem.parentElement.parentElement.getElementsByTagName("td");
+                    for (var i = 0; i < siblingTd.length - 1; i++) {
+                        siblingTd[i].contentEditable = false;
+                        siblingTd[i].classList.remove("temp-update-class");
+                    }
+                    document.getElementById("account-table").innerHTML = ""
+                    getData();
+                }
+            });
+        }
+        function deleteData(id, elem) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Data akan dihapus jika kamu mengonfirmasi",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(URL + "account/" + id + ".json", {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: "Berhasil menghapus account.",
+                                icon: "success"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload()
+                                }
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:',
+                            error);
+                    });
+                } else {}
+            })
+        }
+
+        function deleteDataContact(id, elem) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Data akan dihapus jika kamu mengonfirmasi",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(URL + "contact/" + id + ".json", {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: "Berhasil menghapus account.",
+                                icon: "success"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload()
+                                }
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:',
+                            error);
+                    });
+                } else {}
+            })
+        }
+
+        getData()
+        getDataContact()
+
+    </script>
+</body>
+</html>

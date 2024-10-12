@@ -16,254 +16,265 @@
     <link rel="stylesheet" href="../assets/style.css" type="text/css" media="all" />
     <script type="text/javascript" charset="utf-8">
         var role = localStorage.getItem("role")
-        if (!localStorage.getItem("login") || role !== "user") {
-          window.location.href = "/"
+        if (!localStorage.getItem("login") || role !== "admin") {
+            window.location.href = "/"
         }
-        </script>
+    </script>
 </head>
-  <body>
-    
+<body>
+
     <!--navbar -->
     <nav class="navbar navbar-expand-lg" style="background:white;">
         <div class="container-fluid">
-          <a class="navbar-brand" href="/">SF - Dashboard</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="bi bi-list"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link fw-bold" href="/">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="device-manager/">Device manager</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="farm-data/">Farm data</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/">Account</a>
-              </li>
-            </ul>
-          </div>
+            <a class="navbar-brand" href="/">SF - Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="bi bi-list"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/device-manager/">Device manager</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/account/">Account</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-      </nav>
-      <!--navbar -->
+    </nav>
+    <!--navbar -->
 
-      <main class="py-4 w-100">
+    <main class="py-4 w-100">
         <div class="container d-flex flex-column">
             <h1 class="fw-bold">Welcome Admin!</h1>
             <h4 class="mb-0 mt-2">Realtime data farm</h4>
             <span class="my-1" id="display-time"></span>
-           <div class="d-flex gap-2 mt-2">
-                <p class="m-0 col-5">Temperature : </p>
+            <div class="d-flex gap-2 mt-2">
+                <p class="m-0 col-5">
+                    Temperature :
+                </p>
                 <div class="input-group mb-3">
-                      <input disabled type="number" class="form-control" id="temp-val">
-                      <div class="input-group-append">
-                          <span class="input-group-text">°C</span>
-                      </div>
-                  </div>
+                    <input disabled type="number" class="form-control" id="temp-val">
+                    <div class="input-group-append">
+                        <span class="input-group-text">°C</span>
+                    </div>
+                </div>
             </div>
-           <div class="d-flex gap-2 mt-2">
-                <p class="m-0 col-5">Humidity : </p>
+            <div class="d-flex gap-2 mt-2">
+                <p class="m-0 col-5">
+                    Humidity :
+                </p>
                 <div class="input-group mb-3">
-                      <input disabled type="number" class="form-control" id="humi-val">
-                      <div class="input-group-append">
-                          <span class="input-group-text">%</span>
-                      </div>
-                  </div>
+                    <input disabled type="number" class="form-control" id="humi-val">
+                    <div class="input-group-append">
+                        <span class="input-group-text">%</span>
+                    </div>
+                </div>
             </div>
-           <div class="d-flex gap-2 mt-2">
-                <p class="m-0 col-5">Moisture : </p>
+            <div class="d-flex gap-2 mt-2">
+                <p class="m-0 col-5">
+                    Moisture :
+                </p>
                 <div class="input-group mb-3">
-                      <input disabled type="number" class="form-control" id="ms-val">
-                      <div class="input-group-append">
-                          <span class="input-group-text">%</span>
-                      </div>
-                  </div>
+                    <input disabled type="number" class="form-control" id="ms-val">
+                    <div class="input-group-append">
+                        <span class="input-group-text">%</span>
+                    </div>
+                </div>
             </div>
-           <div class="d-flex align-items-center gap-2 mt-2">
-                <p class="m-0 col-5">Farm system : </p> 
+            <div class="d-flex align-items-center gap-2 mt-2">
+                <p class="m-0 col-5">
+                    Farm system :
+                </p>
                 <select name="" onchange="changeSystem(this)" class="bg-primarys border-0 px-3 py-1" value="" id="system_mode_input">
-                  <option value="" hidden>Loading..</option>
-                  <option value="automatic">automatic</option>
-                  <option value="manual">manual</option>
-                  <option value="schedule">schedule</option>
+                    <option value="" hidden>Loading..</option>
+                    <option value="automatic">automatic</option>
+                    <option value="manual">manual</option>
+                    <option value="schedule">schedule</option>
                 </select>
             </div>
             <div class="flex-wrap mt-3" id="auto-popup" style="display:none;">
-              <h1 class="m-0">Automatic system</h1>
-              <div class="d-flex gap-2 mt-2 align-items-center">
-                  <p class="m-0">
-                      Middle temperature (jika turun dingin, jika naik panas) :
-                  </p>
-                  <input class="form-control" id="mid-temp" type="number" />
-              </div>
-              <div class="d-flex gap-2 mt-2 align-items-center">
-                  <p class="m-0">
-                      Middle humidity (jika turun kering, jika naik lembab) :
-                  </p>
-                  <input class="form-control" id="mid-humi" type="number" />
-              </div>
-              <div class="d-flex gap-2 mt-2 align-items-center">
-                  <p class="m-0">
-                      Middle moisture1 (jika turun kering, jika naik lembab) :
-                  </p>
-                  <input class="form-control" id="mid-moisture1" type="number" />
-              </div>
-              <button class="btn btn-success" type="button" onclick="saveAutoMode()">Save</button>
-          </div>
-          <div class="flex-wrap flex-column mt-3" id="schedule-popup" style="display:none;">
-              <h1 class="m-0">Scheduling system</h1>
-              <div class="d-flex gap-2 mt-2 align-items-center">
-                  <p class="m-0 col-4">
-                      Pagi :
-                  </p>
-                  <div class="input-group mb-3">
-                      <input type="text" class="form-control" id="pagi-ipt">
-                      <div class="input-group-append">
-                          <span class="input-group-text">:00</span>
-                      </div>
-                  </div>
-              </div>
-              <div class="d-flex gap-2 mt-2 align-items-center">
-                  <p class="m-0 col-4">
-                      Siang :
-                  </p>
-                  <div class="input-group mb-3">
-                      <input type="text" class="form-control" id="siang-ipt">
-                      <div class="input-group-append">
-                          <span class="input-group-text">:00</span>
-                      </div>
-                  </div>
-              </div>
-              <div class="d-flex gap-2 mt-2 align-items-center">
-                  <p class="m-0 col-4">
-                      Sore :
-                  </p>
-                  <div class="input-group mb-3">
-                      <input type="text" class="form-control" id="sore-ipt">
-                      <div class="input-group-append">
-                          <span class="input-group-text">:00</span>
-                      </div>
-                  </div>
-              </div>
-              <div class="d-flex gap-2 mt-2 align-items-center">
-                  <p class="m-0 col-4">
-                      Malam :
-                  </p>
-                  <div class="input-group mb-3">
-                      <input type="text" class="form-control" id="malam-ipt">
-                      <div class="input-group-append">
-                          <span class="input-group-text">:00</span>
-                      </div>
-                  </div>
-              </div>
-              <button class="btn m-2 btn-success" onclick="saveScheduleMode()" type="button">Save</button>
-          </div>
+                <h1 class="m-0">Automatic system</h1>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0">
+                        Middle temperature (jika turun dingin, jika naik panas) :
+                    </p>
+                    <input class="form-control" id="mid-temp" type="number" />
+                </div>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0">
+                        Middle humidity (jika turun kering, jika naik lembab) :
+                    </p>
+                    <input class="form-control" id="mid-humi" type="number" />
+                </div>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0">
+                        Middle moisture1 (jika turun kering, jika naik lembab) :
+                    </p>
+                    <input class="form-control" id="mid-moisture1" type="number" />
+                </div>
+                <button class="btn btn-success" type="button" onclick="saveAutoMode()">Save</button>
+            </div>
+            <div class="flex-wrap flex-column mt-3" id="schedule-popup" style="display:none;">
+                <h1 class="m-0">Scheduling system</h1>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0 col-4">
+                        Pagi :
+                    </p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="pagi-ipt">
+                        <div class="input-group-append">
+                            <span class="input-group-text">:00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0 col-4">
+                        Siang :
+                    </p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="siang-ipt">
+                        <div class="input-group-append">
+                            <span class="input-group-text">:00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0 col-4">
+                        Sore :
+                    </p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="sore-ipt">
+                        <div class="input-group-append">
+                            <span class="input-group-text">:00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-2 align-items-center">
+                    <p class="m-0 col-4">
+                        Malam :
+                    </p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="malam-ipt">
+                        <div class="input-group-append">
+                            <span class="input-group-text">:00</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn m-2 btn-success" onclick="saveScheduleMode()" type="button">Save</button>
+            </div>
             <h4 class="mb-0 mt-2">Control grafik</h4>
-           <div class="d-flex flex-column gap-2 mt-2">
-                <p class="m-0 col-5">Grafik temperature : </p> 
+            <div class="d-flex flex-column gap-2 mt-2">
+                <p class="m-0 col-5">
+                    Grafik temperature :
+                </p>
                 <span>Pastikan nilai temperature tidak melebihi 33.</span>
                 <div class="d-flex flex-column">
                     <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="temp-pagi">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Pagi</span>
-                      </div>
-                  </div>
-                  <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="temp-siang">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Siang</span>
-                      </div>
-                  </div>
-                  <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="temp-sore">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Sore</span>
-                      </div>
-                  </div>
-                  <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="temp-malam">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Malam</span>
-                      </div>
-                  </div>
-                  <div class="mb-3">
-                      <button class="btn btn-block btn-success" onclick="saveGrafik('temperature')">Save</button>
-                  </div>
+                        <input type="number" class="form-control" id="temp-pagi">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Pagi</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" id="temp-siang">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Siang</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" id="temp-sore">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Sore</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" id="temp-malam">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Malam</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-block btn-success" onclick="saveGrafik('temperature')">Save</button>
+                    </div>
                 </div>
             </div>
-           <div class="d-flex flex-column gap-2 mt-2">
-                <p class="m-0 col-5">Grafik humidity : </p> 
+            <div class="d-flex flex-column gap-2 mt-2">
+                <p class="m-0 col-5">
+                    Grafik humidity :
+                </p>
                 <div class="d-flex flex-column">
                     <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="humidity-pagi">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Pagi</span>
-                      </div>
-                  </div>
-                  <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="humidity-siang">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Siang</span>
-                      </div>
-                  </div>
-                  <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="humidity-sore">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Sore</span>
-                      </div>
-                  </div>
-                  <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="humidity-malam">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Malam</span>
-                      </div>
-                  </div>
-                  <div class="mb-3">
-                      <button class="btn btn-block btn-success" onclick="saveGrafik('humidity')">Save</button>
-                  </div>
+                        <input type="number" class="form-control" id="humidity-pagi">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Pagi</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" id="humidity-siang">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Siang</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" id="humidity-sore">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Sore</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" id="humidity-malam">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Malam</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-block btn-success" onclick="saveGrafik('humidity')">Save</button>
+                    </div>
                 </div>
             </div>
-           <div class="d-flex flex-column gap-2 mt-2">
-                <p class="m-0 col-5">Grafik moisture1 : </p> 
+            <div class="d-flex flex-column gap-2 mt-2">
+                <p class="m-0 col-5">
+                    Grafik moisture1 :
+                </p>
                 <span>jika nilai moisture adalah 0 maka simpan saja 1 jika mau menyimpan untuk data nya supaya tidak terjadi kesalahan.</span>
                 <div class="d-flex flex-column">
                     <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="moisture1-pagi">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Pagi</span>
-                      </div>
-                  </div>
-                  <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="moisture1-siang">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Siang</span>
-                      </div>
-                  </div>
-                  <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="moisture1-sore">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Sore</span>
-                      </div>
-                  </div>
-                  <div class="input-group mb-3">
-                      <input type="number" class="form-control" id="moisture1-malam">
-                      <div class="input-group-append">
-                          <span class="input-group-text">Malam</span>
-                      </div>
-                  </div>
-                  <div class="mb-3">
-                      <button class="btn btn-block btn-success" onclick="saveGrafik('moisture1')">Save</button>
-                  </div>
+                        <input type="number" class="form-control" id="moisture1-pagi">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Pagi</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" id="moisture1-siang">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Siang</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" id="moisture1-sore">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Sore</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" id="moisture1-malam">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Malam</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-block btn-success" onclick="saveGrafik('moisture1')">Save</button>
+                    </div>
                 </div>
             </div>
-          
+
             <canvas id="myChart" class="my-3" style="width:100%;max-width:700px"></canvas>
             <canvas id="myChartTemp" class="my-3" style="width:100%;max-width:700px"></canvas>
-            
+
             <div class="container d-flex justify-content-center mt-3 mb-3">
                 <button class="btn-on-off btno-active" id="btns-on" style="display:flex" onclick="server('on')">START
                     SERVER</button>
@@ -272,13 +283,13 @@
                     id="btns-off" onclick="server('off')">TURN OFF SERVER</button>
             </div>
         </div>
-      </main>
-    
-    
+    </main>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-storage-compat.js"></script>
     <script src="../assets/dashboard.js" type="text/javascript" charset="utf-8"></script>
-  </body>
+</body>
 </html>

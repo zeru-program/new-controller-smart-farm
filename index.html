@@ -62,7 +62,7 @@
 
         <!--about us page editing-->
         <div id="about" class="d-flex py-4 position-relative align-items-center text-center text-dark flex-column w-100" style="padding-top:100px !important;background:white">
-            <img src="assets/team.jpg" style="width:80%" class="mb-3 wow fadeIn rounded-3" data-wow-delay=".5s" data-wow-duration="3s" alt="team" />
+            <img src="https://raw.githubusercontent.com/zeru-program/new-controller-smart-farm/refs/heads/main/assets/team.jpg" style="width:80%" class="mb-3 wow fadeIn rounded-3" data-wow-delay=".5s" data-wow-duration="3s" alt="team" />
             <h1 class="m-0 fw-bold wow fadeIn" data-wow-delay="1s">About us</h1>
             <p class="m-0 container wow fadeIn" data-wow-delay="1.5s">
                 Kami ada tim yang membuat rangkaian elektronika berbasis internet yang bertujuan untuk meningkatkan kualitas pertanian. sebelumnya apa itu smart farm,
@@ -106,19 +106,22 @@
                     <span>zeruprogram@gmail.com</span>
                 </div>
             </div>
-            <form action="" class="mt-2 d-flex flex-column wow fadeInLeft" data-wow-delay="2s">
+            <form class="mt-2 d-flex flex-column wow fadeInLeft"
+            data-wow-delay="2s"
+            onsubmit="event.preventDefault(); sendMess();">
                 <p class="m-0">
                     You're name
                 </p>
-                <input type="text" class="input-order" name="" id="">
+                <input type="text" required class="input-order" name=""
+                id="name_input">
                 <p class="m-0 mt-2">
                     Email address
                 </p>
-                <input type="email" class="input-order" name="" id="">
+                <input type="email" class="input-order" name="" id="email_input">
                 <p class="m-0 mt-2">
-                    Email address
+                    Message
                 </p>
-                <textarea name="" id="" class="input-order"></textarea>
+                <textarea name="" id="message_input" class="input-order"></textarea>
                 <button class="btn-submit mt-2" type="submit">Submit</button>
             </form>
         </div>
@@ -260,6 +263,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-storage-compat.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
     document.getElementById("spinner").style.display = "flex"
     setTimeout(() => {
@@ -268,7 +272,42 @@
     }, 1200)
     document.querySelectorAll('.wow').forEach(function(element) {
   element.style.setProperty("data-wow-duration", '5s');
-}); new WOW().init();
+});
+new WOW().init();
+
+function sendMess() {
+  var name = document.getElementById("name_input")
+   var email = document.getElementById("email_input")
+   var message = document.getElementById("message_input")
+   
+   var data = {
+     name: name.value,
+     email: email.value,
+     message: message.value
+   }
+   
+   fetch("https://controler-smart-farm-default-rtdb.firebaseio.com/contact.json", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json"
+     },
+     body: JSON.stringify(data)
+   })
+   .then(res => {
+       if (res.ok) {
+         Swal.fire({
+                    title: "Berhasil !",
+                    text: "pesan terkirim",
+                    icon: "success"
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    location.reload()
+                  }
+                });
+       }
+   })
+   .catch(error => alert(error))
+}
    
     </script>
 </body>
