@@ -35,6 +35,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#faq">FAQ</a>
                     </li>
+                    <li class="nav-item gap-2" id="nav-login">
+                        <button class="btn btn-success" type="button"
+                        onclick="window.location.href = '/auth/login/'">Login</button>
+                        <button class="btn btn-success" type="button"
+                        onclick="window.location.href = '/auth/register/'">Register</button>
+                    </li>
+                    <li class="nav-item gap-2" id="nav-logout">
+                        <button class="btn btn-success" type="button"
+                        onclick="logout()">Logout</button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -308,7 +318,21 @@ function sendMess() {
    })
    .catch(error => alert(error))
 }
+   if (localStorage.getItem("login")) {
+     document.getElementById("nav-login").style.display = "none"
+     document.getElementById("nav-logout").style.display = "flex"
+   } else {
+     document.getElementById("nav-login").style.display = "flex"
+     document.getElementById("nav-logout").style.display = "none"
+   }
    
+   function logout() {
+        localStorage.removeItem("login");
+        localStorage.removeItem("user_id"); // Correct usage of val
+        localStorage.removeItem("role"); // Correct usage of val
+        localStorage.removeItem("username");
+        location.reload()
+   }
     </script>
 </body>
 
