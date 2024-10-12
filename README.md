@@ -8,6 +8,7 @@
 
 Kami ada tim yang membuat rangkaian elektronika berbasis internet yang bertujuan untuk meningkatkan kualitas pertanian. sebelumnya apa itu smart farm,
 Smart farm adalah teknologi canggih berbasis pertanian yang dapat membantu petani untuk meningkatkan efisiensi dan produktivitas melalui solusi teknologi inovatif. Kami percaya dengan adanya teknologi smart farm petani dapat mengatasi permasalahan seperti kekurangan tenaga kerja dan perubahan iklim.
+
 ## Installation
 
 Install my-project with git clone
@@ -18,11 +19,4 @@ Install my-project with git clone
  running index html in your server
 ```
     
-## Installation
 
-Install my-project with npm
-
-```bash
-  npm install my-project
-  cd my-project
-```
