@@ -53,6 +53,35 @@
       <main class="py-4 w-100">
         <div class="container d-flex flex-column">
             <h1 class="fw-bold">Welcome Admin!</h1>
+            <h4 class="mb-0 mt-2">Realtime data farm</h4>
+            <span class="my-1" id="display-time"></span>
+           <div class="d-flex gap-2 mt-2">
+                <p class="m-0 col-5">Temperature : </p>
+                <div class="input-group mb-3">
+                      <input disabled type="number" class="form-control" id="temp-val">
+                      <div class="input-group-append">
+                          <span class="input-group-text">°C</span>
+                      </div>
+                  </div>
+            </div>
+           <div class="d-flex gap-2 mt-2">
+                <p class="m-0 col-5">Humidity : </p>
+                <div class="input-group mb-3">
+                      <input disabled type="number" class="form-control" id="humi-val">
+                      <div class="input-group-append">
+                          <span class="input-group-text">%</span>
+                      </div>
+                  </div>
+            </div>
+           <div class="d-flex gap-2 mt-2">
+                <p class="m-0 col-5">Moisture : </p>
+                <div class="input-group mb-3">
+                      <input disabled type="number" class="form-control" id="ms-val">
+                      <div class="input-group-append">
+                          <span class="input-group-text">%</span>
+                      </div>
+                  </div>
+            </div>
            <div class="d-flex align-items-center gap-2 mt-2">
                 <p class="m-0 col-5">Farm system : </p> 
                 <select name="" onchange="changeSystem(this)" class="bg-primarys border-0 px-3 py-1" value="" id="system_mode_input">
@@ -62,7 +91,6 @@
                   <option value="schedule">schedule</option>
                 </select>
             </div>
-            
             <div class="flex-wrap mt-3" id="auto-popup" style="display:none;">
               <h1 class="m-0">Automatic system</h1>
               <div class="d-flex gap-2 mt-2 align-items-center">
@@ -133,400 +161,124 @@
               </div>
               <button class="btn m-2 btn-success" onclick="saveScheduleMode()" type="button">Save</button>
           </div>
-          <canvas id="myChart" class="my-3" style="width:100%;max-width:700px"></canvas>
+            <h4 class="mb-0 mt-2">Control grafik</h4>
+           <div class="d-flex flex-column gap-2 mt-2">
+                <p class="m-0 col-5">Grafik temperature : </p> 
+                <span>Pastikan nilai temperature tidak melebihi 33.</span>
+                <div class="d-flex flex-column">
+                    <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="temp-pagi">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Pagi</span>
+                      </div>
+                  </div>
+                  <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="temp-siang">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Siang</span>
+                      </div>
+                  </div>
+                  <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="temp-sore">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Sore</span>
+                      </div>
+                  </div>
+                  <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="temp-malam">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Malam</span>
+                      </div>
+                  </div>
+                  <div class="mb-3">
+                      <button class="btn btn-block btn-success" onclick="saveGrafik('temperature')">Save</button>
+                  </div>
+                </div>
+            </div>
+           <div class="d-flex flex-column gap-2 mt-2">
+                <p class="m-0 col-5">Grafik humidity : </p> 
+                <div class="d-flex flex-column">
+                    <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="humidity-pagi">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Pagi</span>
+                      </div>
+                  </div>
+                  <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="humidity-siang">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Siang</span>
+                      </div>
+                  </div>
+                  <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="humidity-sore">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Sore</span>
+                      </div>
+                  </div>
+                  <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="humidity-malam">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Malam</span>
+                      </div>
+                  </div>
+                  <div class="mb-3">
+                      <button class="btn btn-block btn-success" onclick="saveGrafik('humidity')">Save</button>
+                  </div>
+                </div>
+            </div>
+           <div class="d-flex flex-column gap-2 mt-2">
+                <p class="m-0 col-5">Grafik moisture1 : </p> 
+                <span>jika nilai moisture adalah 0 maka simpan saja 1 jika mau menyimpan untuk data nya supaya tidak terjadi kesalahan.</span>
+                <div class="d-flex flex-column">
+                    <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="moisture1-pagi">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Pagi</span>
+                      </div>
+                  </div>
+                  <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="moisture1-siang">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Siang</span>
+                      </div>
+                  </div>
+                  <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="moisture1-sore">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Sore</span>
+                      </div>
+                  </div>
+                  <div class="input-group mb-3">
+                      <input type="number" class="form-control" id="moisture1-malam">
+                      <div class="input-group-append">
+                          <span class="input-group-text">Malam</span>
+                      </div>
+                  </div>
+                  <div class="mb-3">
+                      <button class="btn btn-block btn-success" onclick="saveGrafik('moisture1')">Save</button>
+                  </div>
+                </div>
+            </div>
+          
+            <canvas id="myChart" class="my-3" style="width:100%;max-width:700px"></canvas>
+            <canvas id="myChartTemp" class="my-3" style="width:100%;max-width:700px"></canvas>
             
+            <div class="container d-flex justify-content-center mt-3 mb-3">
+                <button class="btn-on-off btno-active" id="btns-on" style="display:flex" onclick="server('on')">START
+                    SERVER</button>
+                <button class="btn-on-off btno-active"
+                    style="display:none;background:#FF2842 !important;border:3px solid #FF2842 !important;"
+                    id="btns-off" onclick="server('off')">TURN OFF SERVER</button>
+            </div>
         </div>
       </main>
     
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-    <script>
-      var URL = "https://controler-smart-farm-default-rtdb.firebaseio.com/"
-      var statusServer = 0
-
-      const xValues = ["Pagi", "Siang", "Sore", "Malam"];
-        const tempValues = [];
-        const humiValues = [];
-        const moistureValues1 = [];
-        var statusServer = 0;
-        var autoMode = 0
-        var scheduleMode = 0
-
-        // Creating the chart
-        var myChart = new Chart("myChart", {
-            type: "line",
-            data: {
-                labels: xValues,
-                datasets: [{
-                    label: "Humidity", // Second dataset
-                    fill: false,
-                    lineTension: 0,
-                    backgroundColor: "#512B81",
-                    borderColor: "rgba(81, 43, 129, 0.8)",
-                    data: humiValues,
-                    stepped: true
-                },
-                    {
-                        label: "Moisture1", // Third dataset
-                        fill: false,
-                        lineTension: 0,
-                        backgroundColor: "rgba(255, 32, 78, 1)",
-                        borderColor: "rgba(255, 32, 78, 0.7)",
-                        data: moistureValues1
-                    }]
-            },
-            options: {
-                responsive: true,
-                legend: {
-                    display: true
-                }, // Display legend to differentiate datasets
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            min: 0,
-                            max: 100
-                        }
-                    }]
-                },
-                animation: {
-                    duration: 1000, // Duration of the animation in milliseconds
-                    easing: 'easeInOutQuart' // Easing function for a smoother transition
-                }
-            }
-        });
-       
-
-      function saveIp() {
-        var ip1 = document.getElementById("ip-addres").value
-        var ip2 = document.getElementById("ip-addres-complete").value 
-        var data = {
-            ip: ip1,
-            server_ip: ip2
-        }
-        fetch("https://controler-smart-farm-default-rtdb.firebaseio.com/config.json", {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        })
-        .then(res => {
-            if (res.ok) {
-                Swal.fire({
-                        title: "Berhasil !",
-                        text: "berhasil memperbarui ip",
-                        icon: "success"
-                  });
-                  getIpAddres()
-            }
-        })
-    }
-    
-      function changeSystem(elem) {
-            var value = elem.value;
-            fetch(URL + "config.json", {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    sf_operation: value
-                  })
-            })
-            .then(res => {
-              if (res.ok) {
-                    Swal.fire({
-                        title: "Berhasil !",
-                        text: 'mengganti system ke ' + value,
-                        icon: "success"
-                      });
-                } else {
-                    Swal.fire({
-                        title: "Failed !",
-                        text: 'gagal mengganti system',
-                        icon: "info"
-                      });
-                }
-            })
-          }
-        
-        function getSystemFarm() {
-            fetch(URL + "config.json")
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('system_mode_input').value = data.sf_operation
-                if (data.sf_operation === "automatic") {
-                        document.getElementById("auto-popup").style.display = "flex"
-                        document.getElementById("schedule-popup").style.display = "none"
-                        autoMode = 1
-                      } else if (data.sf_operation === "schedule") {
-                      document.getElementById("auto-popup").style.display = "none"
-                        document.getElementById("schedule-popup").style.display = "flex"
-                        scheduleMode = 1
-                    } else {
-                        document.getElementById("auto-popup").style.display = "none"
-                        document.getElementById("schedule-popup").style.display = "none"
-                        autoMode = 0
-                        scheduleMode = 0
-                    }
-            })
-        }  
-        var midTempValue = 0
-            var midHumiValue = 0
-            var midMoisture1Value = 0
-            var pagiTime = 0
-            var siangTime = 0
-            var soreTime = 0
-            var malamTime = 0
-
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-
-            let lastTemperature = null;
-            let lastMoisture1 = null;
-            function saveAutoMode() {
-                var midTemp = document.getElementById("mid-temp").value
-                var midHumi = document.getElementById("mid-humi").value
-                var midMoisture1 = document.getElementById("mid-moisture1").value
-                fetch(URL + "dataOperation.json",
-                    {
-                        method: "PATCH",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            mid_temp: midTemp,
-                            mid_humidity: midHumi,
-                            mid_moisture1: midMoisture1
-                        })
-                    })
-                .then(res => {
-                    if (res.ok) {
-                        Toast.fire({
-                            icon: "success",
-                            title: "Pengaturan disimpan."
-                        });
-                    }
-                })
-            }
-            function loadAutoMode() {
-                var midTemp = document.getElementById("mid-temp")
-                var midHumi = document.getElementById("mid-humi")
-                var midMoisture1 = document.getElementById("mid-moisture1")
-                fetch(URL + "dataOperation.json")
-                .then(res => res.json())
-                .then(data => {
-                    midTemp.value = parseFloat(data.mid_temp)
-                    midHumi.value = parseInt(data.mid_humidity)
-                    midMoisture1.value = parseInt(data.mid_moisture1)
-
-                    midTempValue = parseFloat(data.mid_temp)
-                    midHumiValue = parseInt(data.mid_humidity)
-                    midMoisture1Value = parseInt(data.mid_moisture1)
-                })
-            }
-            function checkAutoMode() {
-                if (statusServer == 1 && autoMode == 1) {
-                    fetch(URL + "dataFarm.json")
-                    .then(res => res.json())
-                    .then(data => {
-                        // Cek jika suhu berbeda dengan suhu sebelumnya
-                        if (lastTemperature !== data.temperature) {
-                            if (data.temperature < midTempValue) {
-                                fanButton("off", document.getElementById("fan1-btn-off"), 1);
-                            } else if (data.temperature > midTempValue) {
-                                fanButton("on", document.getElementById("fan1-btn-on"), 1);
-                            }
-                            // Simpan suhu sekarang sebagai suhu terakhir
-                            lastTemperature = data.temperature;
-                        }
-                        setTimeout(() => {
-                            if (lastMoisture1 !== data.moisture1) {
-                                if (data.moisture1 < midMoisture1Value) {
-                                    pumpButton("on", document.getElementById("pump1-btn-on"), 1);
-                                } else if (data.moisture1 > midMoisture1Value) {
-                                    pumpButton("off", document.getElementById("pump1-btn-off"), 1);
-                                }
-                                // Simpan suhu sekarang sebagai suhu terakhir
-                                lastMoisture1 = data.moisture1;
-                            }
-                        },
-                            2000)
-                    })
-                    .catch(error => {
-                        console.error("Error fetching data:",
-                            error);
-                    });
-                }
-            }
-
-
-            function saveScheduleMode() {
-                var pagiIpt = document.getElementById("pagi-ipt").value
-                var siangIpt = document.getElementById("siang-ipt").value
-                var soreIpt = document.getElementById("sore-ipt").value
-                var malamIpt = document.getElementById("malam-ipt").value
-                fetch(URL + "dataOperation.json",
-                    {
-                        method: "PATCH",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            pagi_sc: pagiIpt,
-                            siang_sc: siangIpt,
-                            sore_sc: soreIpt,
-                            malam_sc: malamIpt
-                        })
-                    })
-                .then(res => {
-                    if (res.ok) {
-                        Toast.fire({
-                            icon: "success",
-                            title: "Pengaturan disimpan."
-                        });
-                    } else {
-                        alert("error")
-                    }
-                })
-                .catch(error => {
-                    console.error("Terjadi kesalahan saat menyimpan:", error);
-                    alert("Terjadi kesalahan saat menyimpan pengaturan.");
-                });
-            }
-            function loadScheduleMode() {
-                var pagiIpt = document.getElementById("pagi-ipt")
-                var siangIpt = document.getElementById("siang-ipt")
-                var soreIpt = document.getElementById("sore-ipt")
-                var malamIpt = document.getElementById("malam-ipt")
-                fetch(URL + "dataOperation.json")
-                .then(res => res.json())
-                .then(data => {
-                    pagiIpt.value = parseInt(data.pagi_sc)
-                    siangIpt.value = parseInt(data.siang_sc)
-                    soreIpt.value = parseInt(data.sore_sc)
-                    malamIpt.value = parseInt(data.malam_sc)
-
-                    pagiTime = parseInt(data.pagi_sc)
-                    siangTime = parseInt(data.siang_sc)
-                    soreTime = parseInt(data.sore_sc)
-                    malamTime = parseInt(data.malam_sc)
-                })
-            }
-            function checkScheduleMode() {
-                if (statusServer == 1 && scheduleMode == 1) {
-                    fetch(URL + "dataOperation.json")
-                    .then(res => res.json())
-                    .then(data => {
-                        let now = new Date();
-                        let hours = now.getHours();
-
-                        if (parseInt(data.pagi_sc) == hours) {
-                            if (data.pagi_done == 0) {
-                                fetch(URL + "dataOperation.json", {
-                                    method: "PATCH",
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                },
-                                    body: JSON.stringify({
-                                        pagi_done: 1
-                                })
-                            })
-                        .then(res => {
-                            if (res.ok) {
-                                pumpButton("on", document.getElementById("pump1-btn-on"), 1);
-                                setTimeout(() => {
-                                    fanButton("off", document.getElementById("fan1-btn-off"), 1);
-                            }, 2000)
-                        }
-                        })
-                    }
-                } else if (parseInt(data.siang_sc) == hours) {
-                    if (data.siang_done == 0) {
-                        fetch(URL + "dataOperation.json", {
-                            method: "PATCH",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                siang_done: 1
-                            })
-                        })
-                        .then(res => {
-                            if (res.ok) {
-                                pumpButton("off", document.getElementById("pump1-btn-off"), 1);
-                                setTimeout(() => {
-                                    fanButton("on", document.getElementById("fan1-btn-on"), 1);
-                                }, 2000)
-                            }
-                        })
-                    }
-                } else if (parseInt(data.sore_sc) == hours) {
-                    if (data.sore_done == 0) {
-                        fetch(URL + "dataOperation.json", {
-                            method: "PATCH",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                sore_done: 1
-                            })
-                        })
-                        .then(res => {
-                            if (res.ok) {
-                                pumpButton("off", document.getElementById("pump1-btn-off"), 1);
-                                setTimeout(() => {
-                                    fanButton("on", document.getElementById("fan1-btn-on"), 1);
-                                }, 2000)
-                            }
-                        })
-                    }
-                } else if (parseInt(data.malam_sc) == hours) {
-                    if (data.malam_done == 0) {
-                        fetch(URL + "dataOperation.json", {
-                            method: "PATCH",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                malam_done: 1
-                            })
-                        })
-                        .then(res => {
-                            if (res.ok) {
-
-                                pumpButton("on", document.getElementById("pump1-btn-on"), 1);
-
-                                setTimeout(() => {
-                                    fanButton("off", document.getElementById("fan1-btn-off"), 1);
-                                }, 2000)
-                            }
-                        })
-                    }
-                } else {
-                    pumpButton("off", document.getElementById("pump1-btn-off"), 1);
-                    fanButton("off", document.getElementById("fan1-btn-off"), 1);
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching data:",
-                    error);
-            });
-        }
-    }
-
-    
-      setInterval(checkAutoMode, 3000);
-      setInterval(checkScheduleMode, 10000);
-       loadAutoMode()
-      loadScheduleMode()
-      setInterval(getSystemFarm, 1000)
-      
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-storage-compat.js"></script>
+    <script src="../assets/dashboard.js" type="text/javascript" charset="utf-8"></script>
   </body>
 </html>

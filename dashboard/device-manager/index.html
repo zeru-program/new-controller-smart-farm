@@ -142,18 +142,10 @@ function updateNowData(uniqueId, elem) {
                 // Mendapatkan data yang akan diperbarui dari elemen dengan class "temp-update-class"
                 var contentId = document.querySelectorAll(".temp-update-class");
                 var obj = {
-                    id: contentId[0].textContent,
-                    device_name: contentId[1].textContent,
-                    pin: contentId[2].textContent,
-                    type: contentId[3].textContent,
-                    kondisi: contentId[4].textContent,
-                    updated_at: contentId[5].textContent
-                };
+                    pin: contentId[2].textContent  };
                 
-                // Kirim data ke server menggunakan fetch/AJAX (opsional, jika diperlukan)
-                // Contoh AJAX dengan fetch (opsional, tambahkan URL endpoint-mu)
-                fetch('../../config/updateDevice.php', {
-                    method: 'POST',
+                fetch(URL + 'dataPins/', {
+                    method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
                     },
