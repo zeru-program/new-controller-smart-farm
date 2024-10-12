@@ -27,7 +27,7 @@
 
 <body>
     <!--navbar -->
-    <nav class="navbar navbar-expand-lg" style="background:white;">
+    <nav class="navbar navbar-expand-lg w-100  shadow-lg position-fixed" style="background:white;left:0;top:0;z-index:999;">
         <div class="container-fluid">
             <img src="../assets/logo.png" style="width: 50px;" alt="">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -48,7 +48,7 @@
     </nav>
     <!--navbar -->
 
-    <main class="m-0">
+    <main class="m-0" style="padding-top:65px">
         <div class="w-100 py-3 d-flex flex-column justify-content-center align-items-center bg-primarys gap-2"
             id="body-append-value-sensor">
             <div class="d-flex gap-2">
@@ -208,6 +208,7 @@
             </div>
             <canvas id="myChart" class="my-3" style="width:100%;max-width:700px"></canvas>
             <canvas id="myChartTemp" class="my-3" style="width:100%;max-width:700px"></canvas>
+            <span class="text-center" id="status-server-span">Server : Loading...</span>
             <div class="container d-flex justify-content-center mt-3 mb-3">
                 <button class="btn-on-off btno-active" id="btns-on" style="display:flex" onclick="server('on')">START
                     SERVER</button>
@@ -217,6 +218,86 @@
             </div>
         </div>
     </main>
+    
+    
+    <!--footer -->
+    <footer class="footer position-relative py-3 text-center"
+    style="padding-bottom:66px !important">
+        <div class="mt-3" style="width:300px">
+            <img src="assets/logo.png" style="width:80px" alt="">
+            <h3 class="foottitle">OneIoT SmartFarm</h3>
+            <p class="m-0 px-3">
+                SMKN 4 Bogor X-PPLG 2 group 1 Smart farm IOT project
+            </p>
+        </div>
+        <div class="mt-3 d-flex flex-column">
+            <h3 class="foottitle mx-auto">Navigation</h3>
+            <a href="#home">Home</a>
+            <a href="#about">About Us</a>
+            <a href="#contact">Contact Us</a>
+            <a href="#faq">FAQ</a>
+        </div>
+        <div class="mt-3">
+            <h3 class="foottitle">Our Team</h3>
+            <div class="con-team-footer">
+                <p class="fw-bold">
+                    Justine
+                </p>
+                <p class="">
+                    Ali Yasir Fauzan
+                </p>
+                <p class="">
+                    Ahmad Nur Khaaliq
+                </p>
+                <p class="">
+                    Rizky Febriansyah Pratama
+                </p>
+                <p class="">
+                    M. Bardan Sulaiman
+                </p>
+                <p class="">
+                    M. Pachmi Alkamil
+                </p>
+                <p class="">
+                    M. Sihab Budin
+                </p>
+                <p class="">
+                    M. Egi Syarif
+                </p>
+            </div>
+        </div>
+        <div class="mt-3">
+            <i class="bi bi-geo-alt-fill"></i>
+            <p class="m-0">
+                South Bogor, West Java, Indonesia.
+            </p>
+            <i class="bi bi-whatsapp"></i>
+            <p class="m-0">
+                +6287774487198
+            </p>
+            <i class="bi bi-whatsapp"></i>
+            <p class="m-0">
+                +6282114201343
+            </p>
+            <i class="bi bi-envelope"></i>
+            <p class="m-0">
+                @zeruprogram@gmail.com
+            </p>
+        </div>
+        <div class="mt-3 px-3 d-flex flex-column position-absolute"
+        style="bottom:5px;color:#a1a1a1">
+            <p class="m-0">
+                © 2024 One iot X PPLG 2 SMKN4 BOGOR. All right reversed. v1.0
+            </p>
+        </div>
+    </footer>
+    <!--footer -->
+    
+    <div class="w-100 vh-100 bg-light position-fixed justify-content-center align-items-center" style="top:0;left:0; display:none;z-index:9999999999999999;" id="spinner">
+        <div class="spinner-grow text-success" role="status">
+        </div>
+    </div>
+    
 
     <!--popup alert-->
     <div class="m-0 w-100 shadow-lg position-fixed py-3" id="popup-alert"
@@ -296,5 +377,13 @@
     <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-storage-compat.js"></script>
     <script src="../assets/main.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+    document.getElementById("spinner").style.display = "flex"
+    setTimeout(() => {
+        
+    document.getElementById("spinner").style.display = "none"
+    }, 1200)
+   
+    </script>
 </body>
 </html>

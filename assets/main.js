@@ -1,4 +1,3 @@
-AOS.init();
 
 function openAlert() {
     document.getElementById("popup-alert").style.display = "flex"
@@ -440,18 +439,21 @@ function getStatusServer() {
     .then(data => {
         var btnOn = document.getElementById("btns-on")
         var btnOff = document.getElementById("btns-off")
+        var spanServer = document.getElementById("status-server-span")
         if (data.server == 0) {
             btnOn.style.display = "flex"
             btnOff.style.display = "none"
             btnBtn.style.display = "none"
             btnAlert.style.display = "none"
             statusServer = 0
+            spanServer.innerText = "Server : Off"
         } else if (data.server == 1) {
             btnOn.style.display = "none"
             btnOff.style.display = "flex"
             btnBtn.style.display = "flex"
             btnAlert.style.display = "flex"
             statusServer = 1
+            spanServer.innerText = "Server : On"
         }
     })
 }

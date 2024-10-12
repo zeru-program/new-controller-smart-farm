@@ -9,17 +9,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <!--Google Fonts and Icons-->
-    <script src="https://cdn.jsdelivr.net/npm/js-circle-progress/dist/circle-progress.min.js" type="module"></script>
     <link rel="shortcut icon" href="https://i.pinimg.com/474x/ef/f6/ac/eff6acfcf843833a9b21070769dae764.jpg" type="image/x-icon">
     <!-- style path -->
     <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
-    <!--<script type="text/javascript" charset="utf-8">-->
-    <!--window.location.href = "controller-sf/index.html"
-        </script>-->
 </head>
-<body class="aos-init" data-aos-easing="ease">
+<body>
     <!--navbar -->
-    <nav class="navbar navbar-expand-lg" style="background:white;">
+    <nav class="navbar navbar-expand-lg shadow-lg w-100" style="background:white;position:fixed;top:0;left:0;z-index:9999999;">
         <div class="container-fluid">
             <img src="assets/logo.png" style="width:50px" alt="">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,16 +41,16 @@
     </nav>
     <!--navbar -->
 
-    <header class="w-100 hero-home" id="home" style='background: url("assets/bg-hero-home.jpg") fixed no-repeat center center; background-size:cover'>
-        <div class="cotainer w-100 vh-100 d-flex flex-column text-center justify-content-center align-items-center" data-aos="fadeIn" data-aos-duration="2000">
-            <p class="m-0">
+    <header class="w-100 hero-home" id="home" style='background: url("https://pixabay.com/get/g4d74ab4a2b06d2ae27386c11a11d5f68a8c417936c489f3326fedd082ef27e78dc8eb2218dd37d05c6de14374cfdaf9b74966d2061a65acf5eadc6a2aac847d2_1920.jpg") fixed no-repeat center center; background-size:cover'>
+        <div class="cotainer w-100 vh-100 d-flex flex-column text-center text-light justify-content-center align-items-center wow">
+            <p class="m-0 wow fadeIn">
                 improve your farming with
             </p>
-            <h1 style="font-size:2em;" class="m-0 text-uppercase fw-bolder">Smart Farm</h1>
-            <p class="m-0">
-                Click start to move farming controller page!
+            <h1 style="font-size:2em;" class="m-0 text-uppercase fw-bolder wow bounceIn" data-wow-delay="1s">Smart Farm</h1>
+            <p class="m-0 wow fadeIn" data-wow-delay="2s">
+                Kontrol pertanian dari jarak jauh
             </p>
-            <a href="/controller-sf/" class="mt-2" data-aos="fadeIn" data-aos-duration="1000" data-aos-delay="500">
+            <a href="/controller-sf/" class="mt-2 wow bounceIn" data-wow-delay="3s">
                 <button class="btn-start py-2" type="button">
                     <b>START</b>
                 </button>
@@ -66,42 +62,41 @@
 
         <!--about us page editing-->
         <div id="about" class="d-flex py-4 position-relative align-items-center text-center text-dark flex-column w-100" style="padding-top:100px !important;background:white">
-            <img src="assets/team.jpg" style="width:30%" class="mb-3 rounded-3" alt="team" data-aos="fadeIn" />
-            <h1 class="m-0 fw-bold" data-aos="fadeIn">About us</h1>
-            <p class="m-0 container" data-aos="fadeIn">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure natus nemo ipsam qui iusto, nam voluptate velit deserunt adipisci beatae. Repudiandae necessitatibus doloremque et optio a, iusto placeat sapiente qui.
+            <img src="assets/team.jpg" style="width:80%" class="mb-3 wow fadeIn rounded-3" data-wow-delay=".5s" data-wow-duration="3s" alt="team" />
+            <h1 class="m-0 fw-bold wow fadeIn" data-wow-delay="1s">About us</h1>
+            <p class="m-0 container wow fadeIn" data-wow-delay="1.5s">
+                Kami ada tim yang membuat rangkaian elektronika berbasis internet yang bertujuan untuk meningkatkan kualitas pertanian. sebelumnya apa itu smart farm,
+                Smart farm adalah teknologi canggih berbasis pertanian yang dapat membantu petani untuk meningkatkan efisiensi dan produktivitas melalui solusi teknologi inovatif. Kami percaya dengan adanya teknologi smart farm petani dapat mengatasi permasalahan seperti kekurangan tenaga kerja dan perubahan iklim.
             </p>
         </div>
 
         <div class="d-flex py-4 gap-3 container justify-content-center  align-items-center text-dark flex-column w-100" style="background:white;">
             <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
                 <div class="d-flex" style="border: 1.5px solid #386c5f;width:250px;height:250px;">
-                    <img src="assets/farmer-ins.jpg" style="z-index:99999;margin-top:10px;margin-left:10px;width:250px;height:250px;object-fit:cover" data-aos="fadeIn" alt="" class="">
+                    <img src="assets/farmer-ins.jpg" style="z-index:99999;margin-top:10px;margin-left:10px;width:250px;height:250px;object-fit:cover" alt="" class="wow fadeIn" data-wow-delay="1s">
                 </div>
                 <div class="d-flex flex-column contain-text-why" style="">
-                    <h1 class="m-0 text-uppercase text-wrap fw-bold font-why-choose-sf" data-aos="fadeIn">why choose smart farm?</h1>
+                    <h1 class="m-0 text-uppercase text-wrap fw-bold font-why-choose-sf wow bounceIn">why choose smart farm?</h1>
                 </div>
             </div>
             <div class="d-flex mt-2 text-center">
-                <p class="m-0" data-aos="fadeIn">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium voluptatum eligendi exercitationem quidem nulla esse nam dolor sunt eaque possimus minima, iusto consequatur neque nisi facere saepe, explicabo qui numquam.
+                <p class="m-0 wow fadeIn" data-wow-delay="1s">
+                    Smart farm menawarkan solusi teknologi inovatif yang dirancang untuk meningkatkan efisiensi dan produktivitas,meningkatkan kualitas hasil panen,memfasilitasi pengelolaan pertanian, menghemat biaya, sistem yang kami buat pun dapat dikendalikan dari jarak jauh, dengan satu syarat setiap device harus terhubung dengan Internet.
                 </p>
             </div>
             <div class="mt-3 d-flex flex-column align-items-center">
-                <h1 class="m-0 fw-bold" data-aos="fadeIn">Our Circuits</h1>
-                <img src="https://zeru-program.github.io/new-controller-smart-farm/assets/circuits.png" style="width:100%" alt="circuits image" class="m-0">
-                <img src="pcb-sf-img.png" style="width:100%" alt="circuits image2" class="m-0">
+                <h1 class="m-0 fw-bold wow slideInLeft">Our Circuits</h1>
+                <img src="https://zeru-program.github.io/new-controller-smart-farm/assets/circuits.png" style="width:100%" alt="circuits image" class="m-0 wow fadeIn">
+                <img src="pcb-sf-img.png" style="width:100%" alt="circuits image2" class="m-0 wow fadeIn" data-wow-delay="1s">
             </div>
         </div>
         <!--about us page editing-->
 
         <!--contact us page editing-->
         <div id="contact" class="py-4 d-flex flex-column container" style="background:white;">
-            <h1 class="m-0 fw-bold text-center" data-aos="fadeIn">Order our product</h1>
-            <p class="m-0 text-center" data-aos="fadeIn">
-                (smart farm project)
-            </p>
-            <div class="mt-4 d-flex flex-column" data-aos="fadeIn">
+            <h1 class="m-0 fw-bold text-center wow fadeIn">Contact our Team</h1>
+            
+            <div class="mt-4 d-flex flex-column wow fadeInLeft"  data-wow-delay="1s">
                 <div class="d-flex gap-1">
                     <i class="bi bi-whatsapp" style="color:green;"></i>
                     <span>+6287774487198</span>
@@ -111,7 +106,7 @@
                     <span>zeruprogram@gmail.com</span>
                 </div>
             </div>
-            <form action="" class="mt-2 d-flex flex-column" data-aos="fadeIn">
+            <form action="" class="mt-2 d-flex flex-column wow fadeInLeft" data-wow-delay="2s">
                 <p class="m-0">
                     You're name
                 </p>
@@ -131,44 +126,44 @@
 
         <!--faq page editing-->
         <div id="faq" class="py-4 d-flex flex-column container" style="background:white;">
-            <h1 class="fw-bold" style="" data-aos="fadeIn">Frequently Asked Questions</h1>
-            <p class="" data-aos="fadeIn">
+            <h1 class="fw-bold wow fadeInLeft">Frequently Asked Questions</h1>
+            <p class="wow fadeIn" data-wow-delay=".5s">
                 maybe it's will help you
             </p>
-            <div class="accordion accordion-flush" id="accordionFlushExample" data-aos="fadeIn">
+            <div class="accordion accordion-flush wow fadeInLeft" data-wow-delay="1s" id="accordionFlushExample">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                            Accordion Item #1
+                            Bagaimana cara  menggunakan nya?
                         </button>
                     </h2>
                     <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">
-                            Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.
+                        <div class="accordion-body"> 
+                        Pergi ke halaman controler smart farm, scroll kebawah pastikan button server dalam keadaan menyala jika belum aktifkan server dengan mengklik button. Realtime data sensor akan ditampilkan di section paling atas, pastikan kerangka iot juga nyala dan terhubung ke internet. kamu bisa mengendalikan pertanian dengan 3 mode yaitu otomatis, manual, dan scheduling. kamu bisa mencoba interaksi untuk mematikan atau menyalakan pompa atau kipas denga mengklik button toolbar di kanan bawah di atas button alert.
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                            Accordion Item #2
+                            Berapa mode kontroller yang tersedia?
                         </button>
                     </h2>
                     <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                         <div class="accordion-body">
-                            Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.
+                            3. Saat ini kami memiliki 3 mode atau 3 system kontroller. Otomatis, manual, dan scheduling. Mode Otomatis akan mendeteksi sensor secara otomatis dan jika nilai sensor kurang atau lebih dari yang ditentukan akan menyalakan atau mematikan pompa atau kipas. Mode manual kalian dapat mengontrol pompa dan kipas secara sendiri tidak dari system untuk pengerjaaan system sensor tetap berjalan otomatis. Mode sceuduling kalian diberikan inputan waktu kapan pompa atau kipas akan menyala atau mati.
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                            Accordion Item #3
+                            Database apa yang digunakan?
                         </button>
                     </h2>
                     <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">
-                            Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.
+                        <div class="accordion-body"> 
+                        Saat ini kami menggunakan RTDB Atau Realtime Database dari Firebase.
                         </div>
                     </div>
                 </div>
@@ -178,29 +173,15 @@
 
     </main>
 
-    <!--wave animation-->
-    <!-- <div>
-          <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http:/www.w3.org/1999/xlink" viewbox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
-            <defs>
-              <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
-            </defs>
-            <g class="parallax">
-              <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(56,108,95,0.7)"/>
-              <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(56,108,95,0.5)"/>
-              <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(56,108,95,0.3)"/>
-              <use xlink:href="#gentle-wave" x="48" y="7" fill="#386c5f"/>
-            </g>
-          </svg>
-        </div>-->
-    <!--wave animation-->
 
 
     <!--footer -->
-    <footer class="footer container-fluid py-3 text-center">
-        <div class="mt-3">
+    <footer class="footer position-relative py-3 text-center"
+    style="padding-bottom:66px !important">
+        <div class="mt-3" style="width:300px">
             <img src="assets/logo.png" style="width:80px" alt="">
-            <h3 class="foottitle ">OneIoT SmartFarm</h3>
-            <p class="mx-auto col-5">
+            <h3 class="foottitle">OneIoT SmartFarm</h3>
+            <p class="m-0 px-3">
                 SMKN 4 Bogor X-PPLG 2 group 1 Smart farm IOT project
             </p>
         </div>
@@ -214,7 +195,7 @@
         <div class="mt-3">
             <h3 class="foottitle">Our Team</h3>
             <div class="con-team-footer">
-                <p class="">
+                <p class="fw-bold">
                     Justine
                 </p>
                 <p class="">
@@ -258,14 +239,38 @@
                 @zeruprogram@gmail.com
             </p>
         </div>
-        <div class="mt-3 d-flex flex-column">
-            <p>
-                © 2024 One iot X PPLG 2. All right reversed. v1.0
+        <div class="mt-3 px-3 d-flex flex-column position-absolute"
+        style="bottom:5px;color:#a1a1a1">
+            <p class="m-0">
+                © 2024 One iot X PPLG 2 SMKN4 BOGOR. All right reversed. v1.0
             </p>
         </div>
     </footer>
     <!--footer -->
+    
+    <div class="w-100 vh-100 bg-light position-fixed justify-content-center align-items-center" style="top:0;left:0; display:none;z-index:9999999999999999;" id="spinner">
+        <div class="spinner-grow text-success" role="status">
+        </div>
+    </div>
+    
     <script src="/assets/main.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/wowjs@1.1.3/css/libs/animate.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js" integrity="sha512-Eak/29OTpb36LLo2r47IpVzPBLXnAMPAVypbSZiZ4Qkf8p/7S/XRG5xp7OKWPPYfJT6metI+IORkR5G8F900+g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-storage-compat.js"></script>
+
+    <script>
+    document.getElementById("spinner").style.display = "flex"
+    setTimeout(() => {
+        
+    document.getElementById("spinner").style.display = "none"
+    }, 1200)
+    document.querySelectorAll('.wow').forEach(function(element) {
+  element.style.setProperty("data-wow-duration", '5s');
+}); new WOW().init();
+   
+    </script>
 </body>
 
 </html>

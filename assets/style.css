@@ -73,11 +73,11 @@ html {
 }
 
 .btn-start {
-  background-color: #000000;
+  background-color: #386c5f;
   color: white;
   border: 0;
-  padding-inline: 30px;
-  padding-block: 8px;
+  padding-inline: 35px;
+  padding-block: 10px;
   border-radius: 20px;
 }
 .btn-on-off {
@@ -281,6 +281,7 @@ tr:nth-child(odd) {
   text-align: center;
   align-items: center;
   justify-content: center;
+  padding: 0;
   width: 100%;
   margin: 0%;
 }
