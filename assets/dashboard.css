@@ -1,3 +1,33 @@
+
+/* navbar */
+.navbar-toggler {
+    border: 0 !important;
+    border-radius: 3px !important;
+    background: rgba(78, 247, 161, 0.4) !important;
+}
+.navbar-toggler:focus,
+.navbar-toggler:hover,
+.navbar-toggler:active {
+    box-shadow: 0 0 0 !important;
+}
+.navbar {
+}
+.nav-link {
+    color: #386c5f;
+}
+.bi-list {
+    color: #386c5f !important;
+    font-size: 1.8em;
+    font-weight: 600;
+}
+@media only screen and (min-width: 600px) {
+    .navbar-collapse {
+        position: absolute;
+        right: 10px;
+    }
+}
+/* navbar */
+
 .custom-table {
     border-collapse: collapse;
     width: 100%;
