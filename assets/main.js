@@ -440,7 +440,6 @@ function getStatusServer() {
                 btnOn.style.display = "none";
                 btnOff.style.display = "flex";
                 btnBtn.style.display = "flex";
-                btnAlert.style.display = "flex";
                 statusServer = 1;
                 spanServer.innerText = "Server : On";
             }
