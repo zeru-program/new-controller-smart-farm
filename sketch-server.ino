@@ -4,7 +4,7 @@
 
 #define DHTPIN 19
 #define DHTTYPE DHT11 
-#define MAX_SOIL_SENSORS 11  // Jumlah maksimum sensor tanah (10 sensor tanah + 1 DHT)
+#define MAX_SOIL_SENSORS 3 // Jumlah maksimum sensor tanah (10 sensor tanah + 1 DHT)
 
 // Inisialisasi Firebase dengan URL database
 Firebase fb("https://controler-smart-farm-default-rtdb.firebaseio.com/");
@@ -38,25 +38,24 @@ void setup() {
   // Inisialisasi sensor DHT
   dht11.begin();
   
+  Serial.println("Getting soil moisture pin..");
   // Ambil pin sensor tanah dan inisialisasi dari Firebase
-  fb.setInt("config/load_soil_pins", 1);
   getSoilPins();
-  fb.setInt("config/load_soil_pins", 0);
 }
 
 void loop() {
   // Membaca data dari sensor dan mengirim ke Firebase
   postData();
   
-  delay(2500);  // Penundaan antar pengiriman data
+  delay(50);  // Penundaan antar pengiriman data
 }
 
 void getSoilPins() {
   // Mengambil pin untuk DHT dari Firebase
-  DHTPIN_NEW = fb.getInt("dataPins/dhts/dht1");
+ /* DHTPIN_NEW = fb.getInt("dataPins/dhts/dht1");
   Serial.print("Pin DHT berhasil diambil: ");
   Serial.println(DHTPIN_NEW);
-
+  */
   // Ambil pin untuk sensor tanah dari Firebase
   for (int i = 1; i < MAX_SOIL_SENSORS; i++) {
     String pinPath = "dataPins/soils/soil" + String(i);  // Membuat jalur dinamis untuk setiap sensor tanah
