@@ -4,7 +4,7 @@
 #include <WiFiManager.h>
 
 // Maksimum jumlah relay pin yang dapat digunakan
-const int MAX_RELAY_PINS = 11; 
+const int MAX_RELAY_PINS = 10; 
 // lampu biru esp menandakan esp client
 const int espLed = 2;
 // Array untuk menyimpan pin relay pompa dan kipas

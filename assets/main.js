@@ -218,10 +218,14 @@ function pumpButton(type, elem, pumpNumber) {
         })
             .then(res => {
                 if (res.ok) {
+                   elem.textContent = "Loading.."
+                setTimeout(function() {
                     Toast.fire({
                         icon: "success",
                         title: "Pump" + pumpNumber + " berhasil nyala."
                     });
+                    elem.textContent = "ON"
+                }, 3000);
                 }
             })
             .catch(error => {
@@ -240,10 +244,14 @@ function pumpButton(type, elem, pumpNumber) {
         })
             .then(res => {
                 if (res.ok) {
+                   elem.textContent = "Loading.."
+                setTimeout(function() {
                     Toast.fire({
                         icon: "success",
                         title: "Pump" + pumpNumber + " berhasil mati."
                     });
+                    elem.textContent = "OFF"
+                }, 3000);
                 }
             })
             .catch(error => {
@@ -275,10 +283,14 @@ function fanButton(type, elem, fanNumber) {
         })
             .then(res => {
                 if (res.ok) {
+                   elem.textContent = "Loading.."
+                setTimeout(function() {
                     Toast.fire({
                         icon: "success",
                         title: "Fan" + fanNumber + " berhasil nyala."
                     });
+                    elem.textContent = "ON"
+                }, 3000);
                 }
             })
             .catch(error => {
@@ -296,11 +308,15 @@ function fanButton(type, elem, fanNumber) {
             })
         })
             .then(res => {
-                if (res.ok) {
+               if (res.ok) {
+                elem.textContent = "Loading.."
+                setTimeout(function() {
                     Toast.fire({
                         icon: "success",
                         title: "Fan" + fanNumber + " berhasil mati."
                     });
+                    elem.textContent = "OFF"
+                }, 3000);
                 }
             })
             .catch(error => {
