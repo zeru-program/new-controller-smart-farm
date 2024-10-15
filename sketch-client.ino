@@ -4,7 +4,7 @@
 #include <WiFiManager.h>
 
 // Maksimum jumlah relay pin yang dapat digunakan
-const int MAX_RELAY_PINS = 10; 
+const int MAX_RELAY_PINS = 3; 
 // lampu biru esp menandakan esp client
 const int espLed = 2;
 // Array untuk menyimpan pin relay pompa dan kipas
@@ -49,10 +49,10 @@ void getRelayFanPins() {
        relayFanPins[i] = pin;
         pinMode(pin, OUTPUT);
         digitalWrite(pin, HIGH);
-       Serial.println("Data fan" + String(i) + "is " + String(pin));// Mengambil pin dari Firebase
+       Serial.println("Data fan" + String(i) + " is " + String(pin));// Mengambil pin dari Firebase
       } else {
-        Serial.print("Pin tidak valid :  ");
-        Serial.print(i);
+        Serial.print("Pin fan" + String(i) + " tidak valid :  ");
+        Serial.print(pin);
         Serial.println(".");
         continue;
       }
@@ -63,23 +63,19 @@ void getRelayFanPins() {
 void getPumpStatus(int pumpNumber) {
     String path = "dataRelay/pump" + String(pumpNumber);
     
-    int result = fb.getInt(path); // Mengambil status pompa dari Firebase
+    int result = fb.getInt(path); 
     int pinsPump = relayPumpPins[pumpNumber];
-    Serial.println(String(result));
-    Serial.println(String(pinsPump));
+    Serial.println("pump"+ String(pinsPump) + " is " + String(result));
     
-    // Jika status pompa aktif, aktifkan relay
-    if (result == 1) {
-      digitalWrite(pinsPump, LOW); // Aktifkan relay (ON)
-    } 
-    // Jika status pompa tidak aktif, matikan relay
-    else if (result == 0) {
-      digitalWrite(pinsPump, HIGH); // Matikan relay (OFF)
-    } 
-    // Jika tidak ditemukan status
-    else {
-        Serial.println("error result pump not found");
-    }
+      if (result == 1) {
+        digitalWrite(pinsPump, LOW); // Aktifkan relay (ON)
+      }
+      else if (result == 0) {
+        digitalWrite(pinsPump,   HIGH); // Matikan relay (OFF)
+      }  else {
+          Serial.println("error result pump not found");
+      }
+   
 }
 
 // Fungsi untuk mendapatkan status kipas dan mengontrol relay
@@ -88,19 +84,21 @@ void getFanStatus(int fanNumber) {
     
     int result = fb.getInt(path); // Mengambil status kipas dari Firebase
     int pinsFan = relayFanPins[fanNumber];
+    Serial.println("fan"+ String(pinsFan) + " is " + String(result));
     
-    // Jika status kipas aktif, aktifkan relay
-    if (result == 1) {
-      digitalWrite(pinsFan, LOW); // Aktifkan relay (ON)
-    } 
-    // Jika status kipas tidak aktif, matikan relay
-    else if (result == 0) {
-      digitalWrite(pinsFan, HIGH); // Matikan relay (OFF)
-    } 
-    // Jika tidak ditemukan status
-    else {
-        Serial.println("error result fan not found");
-    }
+
+      if (result == 1) {
+        digitalWrite(pinsFan, LOW); // Aktifkan relay (ON)
+      } 
+      // Jika status kipas tidak aktif, matikan relay
+      else if (result == 0) {
+        digitalWrite(pinsFan, HIGH); // Matikan relay (OFF)
+      } 
+      // Jika tidak ditemukan status
+      else {
+          Serial.println("error result fan not found");
+      }
+   
 }
 
 void setup() {
@@ -132,13 +130,9 @@ void setup() {
   lcd.print("Connected!");
   digitalWrite(espLed, HIGH);
   Serial.println("Terhubung!");
-  Serial.print("SSID: ");
-  Serial.println(WiFi.SSID());
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
-  delay(1300);
   lcd.clear();
   
+  Serial.print("lcd animation..");
   lcd.setCursor(0, 0);
   lcd.print("Loading");
   
@@ -168,35 +162,32 @@ void loop() {
   getDataTemp();
   getDataMoisture(1);
   
-  delay(100); // Menunggu 2 detik sebelum mengulangi loop
+  delay(1);
 }
 
 // Fungsi untuk mendapatkan dan menampilkan data suhu dari Firebase
 void getDataTemp() {
     int result = fb.getInt("dataFarm/temperature"); // Mengambil suhu dari Firebase
     
-    if (result) {
-        lcd.setCursor(0, 0);
-        lcd.print("Temp     :  ");
-        lcd.setCursor(11, 0);
-        lcd.print(String(result) + (char)223 + "C"); // Menampilkan suhu di LCD
-    } else {
-        Serial.println("failed fetch temperature");
-    }
+    lcd.setCursor(11, 0);
+    lcd.print("     ");
+    lcd.setCursor(0, 0);
+    lcd.print("Temp     :  ");
+    lcd.setCursor(11, 0);
+    lcd.print(String(result) + (char)223 + "C"); // Menampilkan suhu di LCD
+   
 }
 
 // Fungsi untuk mendapatkan dan menampilkan data kelembaban tanah dari Firebase
 void getDataMoisture(int pin) {
    int result = fb.getInt("dataFarm/moisture" + String(pin)); // Mengambil kelembaban tanah dari Firebase
     
-    if (result) {
-        lcd.setCursor(0, 1);
-        lcd.print("Humidity : ");
-        lcd.setCursor(11, 1);
-        lcd.print(String(result) + "%"); // Menampilkan kelembaban di LCD
-    } else {
-        Serial.println("failed fetch Moisture");
-    }
+    lcd.setCursor(11, 1);
+    lcd.print("     ");
+    lcd.setCursor(0, 1);
+    lcd.print("Humidity : ");
+    lcd.setCursor(11, 1);
+    lcd.print(String(result) + "%");
 }
 
 // Fungsi animasi loading pada LCD
